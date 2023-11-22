@@ -1,10 +1,10 @@
-package com.example.demo01.src.test.java.com.example.springboot_ecommerce.DAO;
+package com.example.demo01.DAO;
 
-import com.example.springboot_ecommerce.Pojo.Customer;
-import com.example.springboot_ecommerce.Pojo.Order;
-import com.example.springboot_ecommerce.Pojo.OrderDetailForm;
-import com.example.springboot_ecommerce.Pojo.OrderDetails;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.example.demo01.src.DAO.OrderDAO;
+import com.example.demo01.src.Pojo.Customer;
+import com.example.demo01.src.Pojo.Order;
+import com.example.demo01.src.Pojo.OrderDetailForm;
+import com.example.demo01.src.Pojo.OrderDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Time;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
