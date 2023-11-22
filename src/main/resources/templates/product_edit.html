@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+    <title>Product Edit</title>
+    <link rel="icon" type="image/x-icon"th:href="@{/image/logo.png}">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <!-- Latest compiled JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.js"></script>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/richtext/richtext.min.css}">
+    <script th:src="@{/richtext/jquery.richtext.min.js}"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="navbar navbar-expand-lg bg-dark navbar-dark">
+            <a class="navbar-brand" th:href="@{/home}">
+                <img th:src="@{/image/logo.png}" style="width:100px;height:50px">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggle"
+                    aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggle">
+                <ul class="navbar-nav">
+                    <li class="nav-item" sec:authorize="hasAuthority('Admin')">
+                        <a class="nav-link" th:href="@{/users/1}">Users</a>
+                    </li>
+                    <th:block sec:authorize="hasAnyAuthority('Admin','Editor')">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/categories/1}">Categories</a>
+                        </li>
+                    </th:block>
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','Editor')">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/brands/1}">Brands</a>
+                        </li>
+                    </th:block>
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','Editor','SalesPerson','Shipper')">
+
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/products/1}">Products</a>
+                        </li>
+                    </th:block>
+
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','Assistant')">
+
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/questions}">Questions</a>
+                        </li>
+                    </th:block>
+                    <th:block sec:authorize="hasAnyAuthority('Admin','SalesPerson')">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/customers}">Customers</a>
+                        </li>
+                    </th:block>
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','SalesPerson')">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/shipping}">Shipping</a>
+                        </li>
+                    </th:block>
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','Editor','Shipper')">
+
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/orders/1}">Orders</a>
+                        </li>
+                    </th:block>
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','SalesPerson')">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/report}">Sales Report</a>
+                        </li>
+                    </th:block>
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','Editor')">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/article}">Articles</a>
+                        </li>
+                    </th:block>
+
+                    <th:block>
+                        <li class="nav-item" sec:authorize="hasAuthority('Admin')">
+                            <a class="nav-link" th:href="@{/settings}">Settings</a>
+                        </li>
+                    </th:block>
+
+
+                    <li class="nav-item">
+                        <img th:src="@{/image/thumbnail.jpeg}" alt="" width="30" height="30" class="d-inline-block align-text-top">
+                    </li>
+                    <li class="nav-item  mx-2">
+
+                        <div class="dropdown">
+                            <a class="nav-link text-warning btn btn-outline- dropdown-toggle"data-bs-toggle="dropdown" aria-expanded="false" sec:authentication="principal.username"></a>
+
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+
+                </ul>
+            </div>
+
+        </div>
+        <div class="container mt-3">
+            <div class="row">
+                <div class="col-12">
+                    <h2>Manage Product | [[${pageTitle}]]</h2>
+                </div>
+
+
+            </div>
+
+
+            <div class="row mt-3 justify-content-center">
+                <form th:action="@{/product/updateProduct}" method="post" enctype="multipart/form-data" th:object="${product}">
+                    <input type="hidden" th:field="*{id}">
+                    <div>
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#overview" type="button" role="tab">Overview</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#description"  type="button"role="tab">Description</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#images" type="button" role="tab">Images</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#details" type="button" role="tab">Details</button>
+                            </li>
+
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#shipping" type="button" role="tab">Shipping</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active " id="overview" role="tabpanel">
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Product Name</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" id='pname' class="form-control" th:field="*{name}" required minlength="3"
+                                               maxlength="256">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Alias</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="text" th:field="*{alias}"
+                                               placeholder="Default is product name(spaces are replaced by dashes)"
+                                               minlength="3" maxlength="45">
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Brand Name</label>
+                                    <div class="col-sm-10">
+                                        <select th:field="*{brandId}" id="brand" class="form-control" >
+                                            <th:block th:each="brand:${brandList}">
+                                                <option th:value="${brand.getId()}">[[${brand.name}]]</option>
+                                            </th:block>
+
+                                        </select>
+
+
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Category Name</label>
+                                    <div class="col-sm-10">
+
+                                        <select th:field="*{categoryId}"  id="category" class="form-control" required >
+                                            <th:block th:each="category:${productCBName}">
+                                                <option th:value="${category.cid}">[[${category.categoryName}]]</option>
+                                            </th:block>
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Enabled</label>
+                                    <div class="col-sm-10">
+                                        <input name="enabled" type="checkbox" th:field="*{enabled}" value=1>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">In-Stock</label>
+                                    <div class="col-sm-10">
+                                        <input type="checkbox" th:field="*{inStock}" value=1>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Cost</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="number" th:field="*{cost}">
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Price</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="number" th:field="*{price}">
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Discount</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="number" th:field="*{discountPercent}">
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="description" role="tabpanel">
+                                <!--product_description-->
+                                <div class="m-2">
+                                    <label>Short Description:</label>
+                                    <textarea class="form-control" id='shortDescrption' th:field="*{shortDescription}" rows="5" required></textarea>
+                                </div>
+
+
+                                <div class="m-2">
+                                    <label>Full Description:</label>
+                                    <textarea class="form-control" id='fullDescrption' th:field="*{fullContent}" rows="10" required></textarea>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="images" role="tabpanel ">
+
+                                <!--product_image-->
+                                <div class="row" id="divProductImages">
+                                    <div class="col border m-3 p-2">
+                                        <div><label>Main Image:[[${product.Mainimage}]]</label></div>
+                                        <div class="m-4">
+                                            <img id="de"  alt="Main Image Preview" style="width: 120px;" class="img-thumbnail"
+                                                 th:src="@{${product.getMainImagePath()}}">
+                                        </div>
+                                        <div>
+                                            <input type="file" id="fileImage" name="mImage" th:required="${product.mainimage==null}" accept="image/jpeg,image/png">
+                                            <input type="hidden" th:field="*{Mainimage}">
+                                        </div>
+                                    </div>
+
+                                    <th:block th:each="extraImage,status:${pimage}" >
+                                        <!--The original extra images if the product had-->
+                                        <div class="col border m-3 p-2" th:id="'divExtraImage'+${status.index}">
+                                            <div>
+                                                <label>Extra Image :# [[${status.index+1}]]:[[${extraImage.getName()}]]</label>
+                                                <a name="linkRemoveExtraImage"
+                                                   class="btn   fa-2x  float-right" title="Remove this image">
+                                                    <i class="fa-sharp fa-solid fa-xmark text-danger" ></i>
+                                                </a>
+                                            </div>
+
+
+                                            <div class="m-4">
+                                                <img th:id="'extrathumbnail'+${status.index}" alt="Extra Image #[[${status.index}]] Preview" style="width: 120px;" class="img-thumbnail"
+                                                     th:src="@{${extraImage.getImagePath()}}">
+                                            </div>
+                                            <div class="mt-2">
+                                                <input type="file" th:required="${extraImage==null}" id='extraImage' name="extrapic" accept="image/jpeg,image/png">
+                                            </div>
+                                        </div>
+
+                                    </th:block>
+                                    <!--New extra images-->
+                                    <div class="col border m-3 p-2" th:id="'divExtraImage'+${numberOfExistingExtraImages}">
+                                        <div th:id="'ExtraImageHeader'+${numberOfExistingExtraImages}">
+                                            <label>Extra Image: #[[${numberOfExistingExtraImages}+1]] </label></div>
+
+                                        <div class="m-2">
+                                            <img th:id="'extrathumbnail'+${numberOfExistingExtraImages}" alt="Extra Image #[[${numberOExistingExtraImages+1}]] Preview" style="width: 120px;" class="img-thumbnail"
+                                                 th:src="@{/image/default.jpeg}">
+                                        </div>
+
+                                        <div class="mt-2">
+                                            <input type="file"  name="extrapic" accept="image/jpeg,image/png">
+                                        </div>
+                                    </div>
+
+
+
+
+
+
+                                </div>
+                            </div>
+                            <div class="tab-pane p-3 fade" id="details" role="tabpanel">
+
+                                <!--existed product_details-->
+                                    <th:block th:each="dlist,status:${detailList}" >
+                                             <div class="form-inline" th:id="'detail'+${status.index}">
+                                                <label class="m-3">Name:</label>
+                                                <input type="hidden" name="did" th:value="${dlist.id}">
+                                                 <input type="hidden" name="pid" th:value="${dlist.productId}">
+                                                <input type="text" class="form-control w-25" name="detailNames" maxlength="255" th:value="${dlist.name}">
+                                                <label class=" m-3">Value:</label>
+                                                <input type="text" class="form-control w-25" name="detailValues" maxlength="255" th:value="${dlist.value}">
+                                                 <a name="linkRemoveDetail"class="btn   fa-2x  float-right" title="Remove this image">
+                                                     <i class="fa-sharp fa-solid fa-xmark text-danger" ></i>
+                                                 </a>
+                                             </div>
+                                    </th:block>
+                                <!--Create new product_details-->
+                                 <div id="ExtraDetails">
+                                    <div class="form-inline" th:id="'detail'+${#lists.size(detailList)}">
+                                        <label class="m-3">Name:</label>
+                                        <input type="hidden" name="did" value="0">
+                                        <input type="text" class="form-control w-25" name="detailNames" maxlength="255">
+                                        <label class=" m-3">Value:</label>
+                                        <input type="text" class="form-control w-25" name="detailValues" maxlength="255">
+                                    </div>
+                                 </div>
+
+
+
+                                <div class="mt-2">
+                                    <input type="button"  class="btn btn-success" onclick="addExtraDetails()" value="Add More Details">
+                                </div>
+                            </div>
+                            <div class="tab-pane fade p-3" id="shipping" role="tabpanel">
+                                <div class="form-group row">
+                                    The following information is important to calculate accurately shipping cost for the product.
+                                    The dimensions (L X W X H) is for the box that is used to pack the product- not the product's dimensions.
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="row">
+                                        <label class="col-sm-2">Length(inch):</label>
+                                        <div class="col-sm-10">
+                                            <input type="number" step='0.01' class="form-control" th:field="*{length}">
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group row">
+                                    <div class="row">
+                                        <label class="col-sm-2">Width(inch):</label>
+                                        <div class="col-sm-10">
+                                            <input type="number" class="form-control" th:field="*{width}">
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="row">
+                                        <label class="col-sm-2">Height(inch):</label>
+                                        <div class="col-sm-10">
+                                            <input type="number" class="form-control" th:field="*{height}">
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group row">
+                                    <div class="row">
+                                        <label class="col-sm-2">Weight(pounds):</label>
+                                        <div class="col-sm-10">
+                                            <input type="number" class="form-control" th:field="*{weight}">
+                                        </div>
+
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <input type="submit" value="save" class="btn btn-primary" id="button"/>
+                            <a th:href="@{/products}">
+                                <input type="button" value="cancel" class="btn btn-danger"/>
+                            </a>
+
+                           </div>
+                        </form>
+                    </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <script type="text/javascript">
+        var ExtraImageCount=0;
+        var Url = "[[@{/products}]]";
+        var modelUrl = "[[@{/brands}]]";
+        var dropdownBrand = $('#brand');
+        var dropdownCategory = $('#category');
+        var defaultThumbnailSrc="[[@{/image/thumbnail.jpeg}]]";
+
+        $(document).ready(function () {
+
+            $("#shortDescrption").richText();
+
+            $("#fullDescrption").richText();
+
+            dropdownBrand.change(function () {
+                dropdownCategory.empty();
+                getCategory();
+
+            });
+
+            getCategoryForNewForm();
+
+
+            $("input[name=extrapic]").each(function (index) {
+                ExtraImageCount++;
+                $(this).change(function(){
+
+                    showExtraImage(this,index);
+                });
+
+            });
+
+            $("a[name=linkRemoveExtraImage]").each(function (index) {
+                $(this).click(function () {
+                    removeExtraImage(index);
+                })
+            })
+
+
+            $("a[name=linkRemoveDetail]").each(function (index){
+                $(this).click(function () {
+                    var did=$('input[name=did]').attr("value");
+                    var pid=$('input[name=pid]').attr("value");
+                    $.ajax({
+                        type: 'POST',
+                        url: '/getremoveid',
+                        data: JSON.stringify({id: did,productId:pid}),
+                        dataType: 'text',
+                        contentType: 'application/json',
+
+                    });
+                    removeDetailSectionByIndex(index);
+
+                });
+            });
+
+        });
+
+
+
+
+        //addExtraImage
+        function showExtraImage(result,index) {
+            var file=result.files[0];
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                $("#extrathumbnail" + index).attr("src",event.target.result);
+
+
+            };
+
+            reader.readAsDataURL(file);
+            if(index>=ExtraImageCount-1){
+                addExtraImageSection(index+1);
+            }
+
+
+
+        };
+
+        function getCategoryForNewForm(){
+            catIdField=$('#categoryId');
+            editMode=false;
+            if(catIdField.length){
+                editMode=true;
+            }
+            if(!editMode) {getCategory()};
+
+        }
+
+
+        function getCategory() {
+            brandId = dropdownBrand.val();
+            url = modelUrl + "/" + brandId + "/categories";
+            //ajax http get request
+            $.get(url, function (responseJson) {
+                $.each(responseJson, function (index, category) {
+                    $('<option>').val(category.id).text(category.name).appendTo(dropdownCategory);
+                })
+            });
+        };
+
+
+        function removeExtraImage(index){
+            $("#divExtraImage"+index).remove();
+            ExtraImageCount--;
+        }
+
+
+
+
+        function addExtraImageSection(index) {
+            html = `<div class="col border m-3 p-2" id="divExtraImage${index}">
+                 <div id="ExtraImageHeader${index}"><label>Extra Image# ${index+1}:</label></div>
+                   <div>
+                  <img id="extrathumbnail${index}" alt="Extra Image ${index+1} Preview " style="width: 120px;" class="img-thumbnail"
+                  src="/image/default.jpeg">
+                    </div>
+                  <div  class="mt-2">
+                 <input type="file"  name="extrapic" accept="image/jpeg,image/png"
+                onchange="showExtraImage(this,${index})">
+                    </div>
+                  </div>`;
+
+            htmlLinkRemove=`<a class="btn   fa-2x  float-right" title="Remove this image"  href="javascript:removeExtraImage(${index-1})">
+                                      <i class="fa-sharp fa-solid fa-xmark text-danger" ></i>
+                                 </a>`;
+
+
+
+
+            $('#divProductImages').append(html);
+
+            $("#ExtraImageHeader"+(index-1)).append(htmlLinkRemove);
+            ExtraImageCount++;
+
+
+
+
+        };
+
+        function addExtraDetails(){
+            divdetail=$("[id^='detail']");
+            detailCount=divdetail.length;
+            htmlDetailSection=`<div class="form-inline" id="detail${detailCount}">
+                                    <input type="hidden" name="did" value="0">
+                                     <label class="m-3">Name:</label>
+                                      <input type="text" class="form-control w-25" name="detailNames" maxlength="255">
+                                     <label class=" m-3">Value:</label>
+                                     <input type="text" class="form-control w-25" name="detailValues" maxlength="255">
+                                    </div>`;
+            $('#ExtraDetails').append(htmlDetailSection);
+            previousDetailsSection=divdetail.last();
+            previosDetailId=previousDetailsSection.attr("id");
+
+            htmlRemoveDetailSection=`<a class="btn   fa-2x  float-right" title="Remove this image"  href="javascript:removeDetailSectionById('${previosDetailId}')">
+                                      <i class="fa-sharp fa-solid fa-xmark text-danger" ></i>
+                                 </a>`;
+
+            previousDetailsSection.append(htmlRemoveDetailSection);
+            $("input [name=detailNames]").last().focus();
+
+
+        }
+       function removeDetailSectionById(id){
+             $('#'+id).remove();
+       }
+
+        function removeDetailSectionByIndex(index){
+           $('#detail'+index).remove();
+        }
+
+    </script>
+
+    <script th:src="@{/Js/common.js}"></script>
+
+
+
+</body>
+</html>
+
+
+

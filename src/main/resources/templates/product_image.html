@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>product_image</title>
+</head>
+<body>
+   <div th:fragment="content">
+       <div class="row" id="divProductImages">
+           <div class="col border m-3 p-2">
+               <div><label>Main Image</label></div>
+               <div class="m-4">
+                  <img id="de"  alt="Main Image Preview" style="width: 120px;" class="img-thumbnail"
+                  th:src="@{/image/default.jpeg}">
+               </div>
+               <div>
+                   <input type="file" id="fileImage" name="fileImage"  accept="image/jpeg,image/png">
+               </div>
+           </div>
+
+
+           <div class="col border m-3 p-2" id="divExtraImage0">
+               <div id="ExtraImageHeader0"><label>Extra Image #1:</label></div>
+               <div class="m-4">
+                   <img id="extrathumbnail0" alt="Extra Image #1 Preview" style="width: 120px;" class="img-thumbnail"
+                        th:src="@{/image/default.jpeg}">
+               </div>
+               <div class="mt-2">
+                   <input type="file"  id='extraImage' name="extrapic" accept="image/jpeg,image/png">
+               </div>
+           </div>
+
+       </div>
+   </div>
+</body>
+</html>

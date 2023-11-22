@@ -1,0 +1,46 @@
+@charset "UTF-8";
+.fa.cg1 {
+    color: black
+}
+
+.fa.cg3 {
+    color: green
+}
+
+.fa.cg2 {
+    color: darkblue
+}
+
+.fa.cg4 {
+    color: darkred
+}
+
+@media screen and (max-width: 768px) {
+    /*small screen*/
+    div.full-details {
+        display: none;
+    }
+
+    div.less-details {
+        display: inline-block;
+    }
+
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    /*medium screen*/
+    div.full-details {
+        display: none;
+    }
+
+    div.test {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    /*large screen*/
+    div.test {
+        display: none;
+    }
+}

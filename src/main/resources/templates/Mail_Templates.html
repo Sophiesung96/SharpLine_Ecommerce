@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mail Templates</title>
+</head>
+<body>
+<div th:fragment="content">
+    <form th:action="@{/settings/save_mail_templates}" method="post">
+        <div>
+            <ul class="nav nav-tabs" id="MailTemplate" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#CustomerVerification" role="tab">Customer Verification</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#OrderConfirmation" role="tab">Order Confirmation</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="CustomerVerification" role="tabpanel">
+                    <div th:replace="~{Customer_verification::content}"></div>
+                </div>
+                <div class="tab-pane p-3 fade" id="OrderConfirmation" role="tabpanel">
+                    <h2>Order Confirmation Email Template:</h2>
+                </div>
+
+            </div>
+
+
+
+        </div>
+        <div class="text-center">
+            <input type="submit" value="Save" class="btn btn-primary m-3">
+
+        </div>
+    </form>
+
+</div>
+
+</body>
+</html>

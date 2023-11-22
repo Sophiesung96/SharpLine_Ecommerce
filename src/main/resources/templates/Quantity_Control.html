@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quantity Control</title>
+</head>
+<body>
+  <div  class="m-2" th:fragment="quantity_control(quantityValue,productId)">
+      <nav>
+          <ul class="pagination">
+             <li class="page-item change">
+                  <!--th:pid is a custom attribute to store the productId value-->
+                  <a class="page-link LinkMinus" th:pid="${productId}"><b>-</b></a>
+              </li>
+
+              <li>
+                  <input type="text" th:value="${quantityValue}" onkeydown="return false;"
+                         class="form-control text-center" th:id="'quantity'+${productId}" style="width: 55px;"/>
+              </li>
+              <li class="page-item">
+                  <!--th:pid is a custom attribute to store the productId value-->
+                  <a class="page-link  LinkPlus" th:pid="${productId}"><b>+</b></a>
+              </li>
+          </ul>
+      </nav>
+  </div>
+</body>
+</html>

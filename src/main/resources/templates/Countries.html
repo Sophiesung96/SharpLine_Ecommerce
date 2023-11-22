@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+
+<meta charset="UTF-8">
+    <title>Countries</title>
+    <link rel="icon" type="image/x-icon"th:href="@{/image/background.png}">
+</head>
+<body>
+<div th:fragment="content">
+    <div>
+     <p>Use this page to manage Countries which will be displayed in customer registration form.</p>
+        Click Load Country List first.
+    </div>
+    <div class="mt-2">
+        <input type="button" value="Load Country List" id="buttonLoadCountries"class="btn btn-outline-success m-2">
+    </div>
+
+    <div>
+        <select class="form-control m-2" style="height:300px;" size="3" id="dropDownCountries" onscroll="getscroll()">
+
+        </select>
+    </div>
+
+    <form id="CForm">
+        <div class="form-group row m-lg-2">
+            <label class="col-form-label mt-2" id="LabelCountryName">Country Name:</label>
+            <div class="col-md-5">
+                <input type="text" class="form-control mt-2 " id="fieldCountryName" required minlength="3" maxlength="45">
+            </div>
+
+            <label class="col-form-label mt-2">Code:</label>
+            <div class="col-md-5">
+                <input type="text" class="form-control mt-2 " id="fieldCountryCode"  required minlength="3" maxlength="45">
+            </div>
+            <div class="col-lg-4 mt-2">
+                <input type="button" value="New" id="buttonAddCountry" class="btn btn-secondary mr-2">
+                <input type="button" value="Update" id="buttonUpdateCountry" class="btn btn-secondary mr-2" disabled=true>
+                <input type="button" value="Delete" id="buttonDeleteCountry" class="btn btn-secondary mr-2" disabled="true">
+            </div>
+        </div>
+    </form>
+</div>
+<script th:src="@{/Js/countries.js}"></script>
+
+
+</body>
+</html>

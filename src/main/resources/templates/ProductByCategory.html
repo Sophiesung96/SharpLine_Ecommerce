@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+    <title>ProductByCategory</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <!-- Latest compiled and minified CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Latest compiled JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="navbar navbar-expand-lg bg-dark navbar-dark">
+            <a class="navbar-brand" th:href="@{/home}">
+                <img th:src="@{/image/logo.png}" style="width:100px;height:50px">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarToggleExternalContent,#searchNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggleExternalContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/users/1}">Careers</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/categories/1}">Payments</a>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/brands/1}">Shipping &amp; Delivery</a>
+                    </li>
+
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/products/1}">Login</a>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/questions}">Register</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/customers}">Contact</a>
+                    </li>
+                </ul>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md">
+            <nav class="navbar navbar-expand-sm bg-light">
+                <div class="collapse navbar-collapse" id="searchNavbar">
+                    <div class="input-group-sm" style="width:35%">
+                        <form class="d-flex" method="get" th:action="@{'/p'+'/keyword/'+1}">
+                            <input class="form-control me-1" type="search" placeholder="Search" name="keyword">
+                            <button class="btn btn-success" type="submit">Search</button>
+                        </form>
+                    </div>
+
+
+
+                </div>
+            </nav>
+        </div>
+    </div>
+
+   <div th:if="${category}!=null">
+       <div class="row">
+         <div class="col">
+             <nav>
+                 <ol class="breadcrumb">
+                   <li class="breadcrumb-item">
+                     <a th:href="@{/index}">Home</a>
+                   </li>
+                     <li class="breadcrumb-item"> <a th:href="@{'/c/'+${category.nickname}+'/'+1}">[[${category.nickname}]]</a></li>
+
+                 </ol>
+             </nav>
+
+
+         </div>
+       </div>
+    </div>
+
+
+
+    <div class="row mt-2">
+        <th:block th:each="product:${plist}">
+            <div class="col-md-3 mt-2">
+                <div>
+                    <a th:href="@{'/p/'+${product.alias}+'/'+1}">
+                        <img th:src="@{${product.getMainImagePath()}}" width="150">
+                        <br/>
+                        <b>[[${product.name}]]</b>
+                    </a>
+
+                </div>
+                <div th:if="${product.discountPercent<=0}">
+                    <span th:if="${#httpServletRequest.getAttribute('CURRENCY_SYMBOL_POSITION')=='Before_Price'}">[[${CURRENCY_SYMBOL}]]</span>
+                    [[${product.price}]]
+                    <span th:if="${#httpServletRequest.getAttribute('CURRENCY_SYMBOL_POSITION')=='After_Price'}">[[${CURRENCY_SYMBOL}]]</span>
+                </div>
+                <div th:if="${product.discountPercent>0}">
+                    <span style="font-size: larger ;color: darkred;">
+                          <span th:if="${#httpServletRequest.getAttribute('CURRENCY_SYMBOL_POSITION')=='Before_Price'}">[[${CURRENCY_SYMBOL}]]</span>
+                            [[${product.getDetailPrice()}]]
+                       <span th:if="${#httpServletRequest.getAttribute('CURRENCY_SYMBOL_POSITION')=='After_Price'}">[[${CURRENCY_SYMBOL}]]</span>
+                    </span>
+                    <del th:if="${product.discountPercent>0}" >
+                    <span>
+                         <span th:if="${#httpServletRequest.getAttribute('CURRENCY_SYMBOL_POSITION')=='Before_Price'}">[[${CURRENCY_SYMBOL}]]</span>
+                           [[${product.getPrice()}]]
+                        <span th:if="${#httpServletRequest.getAttribute('CURRENCY_SYMBOL_POSITION')=='After_Price'}">[[${CURRENCY_SYMBOL}]]</span>
+                    </span>
+
+                    </del>
+                </div>
+            </div>
+        </th:block>
+
+    </div>
+  </div>
+
+
+<div class="container">
+  <div class="row">
+    <div class="navbar navbar-expand-lg bg-dark navbar-dark">
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarFooter">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarFooter">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/1}">About Us</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/categories/1}">Privacy Notice</a>
+                </li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/brands/1}">Returns &amp; Refunds</a>
+                </li>
+
+
+
+            </ul>
+
+
+        </div>
+       </div>
+    </div>
+
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item"><a class="page-link" th:href="@{'/c/'+${nickname}+'/'+1}">First</a></li>
+            <li class="page-item"><a class="page-link" th:href="@{'/c/'+${nickname}+'/'+${currentpage -1}}">Previous</a>
+            </li>
+            <th:block th:each="num:${pagelist}">
+
+                <li class="page-item"><a class="page-link" th:href="@{'/c/'+${nickname}+'/'+${num}}"
+                                         th:text="${num}">1</a></li>
+            </th:block>
+         <li class="page-item"><a class="page-link" th:href="@{'/c/'+${nickname}+'/'+${currentpage+1}}">Next</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="container text-center">
+        <p class="mt-5 ">[[${COPYRIGHT}]] All Rights Reserved</p>&nbsp;
+    </div>
+  </div>
+</body>
+</html>
