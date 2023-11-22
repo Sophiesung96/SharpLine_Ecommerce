@@ -1,12 +1,12 @@
 package com.example.demo01.src.Controller;
 
-import com.example.demo01.src.main.Configuration.MailConfiguration;
-import com.example.springboot_ecommerce.Exception.CustomerNotFoundException;
-import com.example.springboot_ecommerce.Pojo.CartItem;
-import com.example.springboot_ecommerce.Pojo.CartItemPName;
-import com.example.springboot_ecommerce.Pojo.Customer;
-import com.example.springboot_ecommerce.Service.CustomerService;
-import com.example.springboot_ecommerce.Service.ShoppingCartService;
+import com.example.demo01.src.Configuration.MailConfiguration;
+import com.example.demo01.src.Exception.CustomerNotFoundException;
+import com.example.demo01.src.Pojo.CartItem;
+import com.example.demo01.src.Pojo.CartItemPName;
+import com.example.demo01.src.Pojo.Customer;
+import com.example.demo01.src.Service.CustomerService;
+import com.example.demo01.src.Service.ShoppingCartService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,12 +29,17 @@ public class ShoppingCartController {
         Customer customer=getAuthenticatedCustomer(request);
         List<CartItem> list=shoppingCartService.listAllCartItem(customer);
         List<CartItemPName>cartItemPNameList=shoppingCartService.getJoinedProductnCustomer(customer);
+        float estimatedTotal=0.0f;
         if(list!=null||cartItemPNameList!=null){
             for(CartItem cartItem:list){
                 cartItem.setList(cartItemPNameList);
-
             }
-        }        model.addAttribute("cartItemlist",list);
+            for(CartItemPName detail:cartItemPNameList){
+               estimatedTotal+= detail.getSubTotal();
+            }
+        }
+        model.addAttribute("cartItemlist",list);
+        model.addAttribute("EstimatedTotal",estimatedTotal);
         return "Shopping_cart";
     }
 

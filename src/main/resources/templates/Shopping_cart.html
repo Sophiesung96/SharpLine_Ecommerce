@@ -200,7 +200,7 @@
                                 <div>
                                     <span>=&nbsp;</span>
                                     <span th:if="${CURRENCY_SYMBOL_POSITION} == 'Before_Price'" >[[${CURRENCY_SYMBOL}]]</span>
-                                         <span class="h4">[[${cartDetail.getDetailPrice()}]]</span>
+                                         <span class="h4">[[${cartDetail.getSubTotal()}]]</span>
                                     <span th:if="${CURRENCY_SYMBOL_POSITION} == 'After_Price'">[[${CURRENCY_SYMBOL}]]</span>
                                 </div>
                             </div>
@@ -213,18 +213,19 @@
                     <div>
                         <span class="h3">Estimated Total:</span>
                     </div>
+                   <!--EstimatedTotal-->
                     <div>
-
+                        <span>[[${EstimatedTotal}]]</span>
                     </div>
                 </div>
             </div>
 
         </div>
 
-       <div class="row m-1" th:if="${#lists.isEmpty(cartItemlist)}">
+       <div class="row m-1 text-center" th:if="${#lists.isEmpty(cartItemlist)}">
            <div>
                <h3>Oops! You have not chosen any products yet</h3>
-               <img th:src="@{/image/empty_cart.png}"/>
+               <img style="width: 80px;" th:src="@{/image/empty_cart.png}"/>
            </div>
        </div>
 

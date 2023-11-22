@@ -1,19 +1,13 @@
-package com.example.demo01.src.test.java.com.example.springboot_ecommerce.DAO;
+package com.example.demo01.DAO;
 
-import com.example.springboot_ecommerce.Pojo.Address;
-import com.example.springboot_ecommerce.Pojo.Customer;
-import com.example.springboot_ecommerce.Pojo.PageNumber;
-import com.example.springboot_ecommerce.Pojo.ProductCBName;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
+import com.example.demo01.src.DAO.AddressDAO;
+import com.example.demo01.src.Pojo.Address;
+import com.example.demo01.src.Pojo.Customer;
+import com.example.demo01.src.Pojo.PageNumber;
+import com.example.demo01.src.Pojo.ProductCBName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.transaction.annotation.Transactional;
 

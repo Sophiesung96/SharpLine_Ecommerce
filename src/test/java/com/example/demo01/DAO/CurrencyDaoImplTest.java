@@ -1,6 +1,7 @@
-package com.example.demo01.src.test.java.com.example.springboot_ecommerce.DAO;
+package com.example.demo01.DAO;
 
-import com.example.springboot_ecommerce.Pojo.Currency;
+import com.example.demo01.src.DAO.CurrencyDao;
+import com.example.demo01.src.Pojo.Currency;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

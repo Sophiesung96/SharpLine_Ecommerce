@@ -1,11 +1,11 @@
 package com.example.demo01.src.Controller;
 
-import com.example.demo01.src.main.Configuration.MailConfiguration;
-import com.example.springboot_ecommerce.Exception.CustomerNotFoundException;
-import com.example.springboot_ecommerce.Exception.ShoppingCartException;
-import com.example.springboot_ecommerce.Pojo.Customer;
-import com.example.springboot_ecommerce.Service.CustomerService;
-import com.example.springboot_ecommerce.Service.ShoppingCartService;
+import com.example.demo01.src.Configuration.MailConfiguration;
+import com.example.demo01.src.Exception.CustomerNotFoundException;
+import com.example.demo01.src.Exception.ShoppingCartException;
+import com.example.demo01.src.Pojo.Customer;
+import com.example.demo01.src.Service.CustomerService;
+import com.example.demo01.src.Service.ShoppingCartService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 public class ShoppingCartRestController {
     @Autowired
     private ShoppingCartService shoppingCartService;
+
     @Autowired
     private CustomerService customerService;
 
