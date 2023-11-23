@@ -1,7 +1,7 @@
 package com.example.demo01.src.Service;
 
-import com.example.springboot_ecommerce.Pojo.Address;
-import com.example.springboot_ecommerce.Pojo.Customer;
+import com.example.demo01.src.Pojo.Address;
+import com.example.demo01.src.Pojo.Customer;
 
 import java.util.List;
 

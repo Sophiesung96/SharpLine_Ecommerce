@@ -1,13 +1,19 @@
 package com.example.demo01.src.Controller;
 
-import com.example.demo01.src.main.Configuration.MailConfiguration;
-import com.example.springboot_ecommerce.Exception.CustomerNotFoundException;
-import com.example.springboot_ecommerce.Pojo.Address;
-import com.example.springboot_ecommerce.Pojo.Country;
-import com.example.springboot_ecommerce.Pojo.Customer;
-import com.example.springboot_ecommerce.Service.AddressService;
-import com.example.springboot_ecommerce.Service.CountryService;
-import com.example.springboot_ecommerce.Service.CustomerService;
+import com.example.demo01.src.Configuration.MailConfiguration;
+import com.example.demo01.src.Exception.CustomerNotFoundException;
+import com.example.demo01.src.Pojo.Address;
+import com.example.demo01.src.Pojo.Country;
+import com.example.demo01.src.Pojo.Customer;
+import com.example.demo01.src.Service.AddressService;
+import com.example.demo01.src.Service.CountryService;
+import com.example.demo01.src.Service.CustomerService;
+import com.example.demo01.src.Pojo.Address;
+import com.example.demo01.src.Pojo.Country;
+import com.example.demo01.src.Pojo.Customer;
+import com.example.demo01.src.Service.AddressService;
+import com.example.demo01.src.Service.CountryService;
+import com.example.demo01.src.Service.CustomerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

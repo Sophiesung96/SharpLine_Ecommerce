@@ -8,8 +8,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <!-- Latest compiled and minified CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Include jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <!-- Latest compiled JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
 </head>
 <body>
 <div class="container">
@@ -200,7 +204,7 @@
                                 <div>
                                     <span>=&nbsp;</span>
                                     <span th:if="${CURRENCY_SYMBOL_POSITION} == 'Before_Price'" >[[${CURRENCY_SYMBOL}]]</span>
-                                         <span class="h4">[[${cartDetail.getSubTotal()}]]</span>
+                                         <span th:id="'subtotal'+${cartItem.product}" class="h4 subTotal">[[${cartDetail.getSubTotal()}]]</span>
                                     <span th:if="${CURRENCY_SYMBOL_POSITION} == 'After_Price'">[[${CURRENCY_SYMBOL}]]</span>
                                 </div>
                             </div>
@@ -215,7 +219,11 @@
                     </div>
                    <!--EstimatedTotal-->
                     <div>
-                        <span>[[${EstimatedTotal}]]</span>
+                        <span class="h2" id="total">[[${EstimatedTotal}]]</span>
+                    </div>
+                    <!--Checkout Button-->
+                    <div>
+                        <button class="btn btn-danger p-3 mt-2">Checkout</button>
                     </div>
                 </div>
             </div>
@@ -273,6 +281,9 @@
     <p class="mt-5 ">Copyright &copy SharpLine. All Rights Reserved</p>&nbsp;
 
 </div>
+
+<script type="text/javascript" th:src="@{/Js/Shopping_Cart.js}"></script>
+
 
 </body>
 

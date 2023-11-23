@@ -1,6 +1,4 @@
-package com.example.springboot_ecommerce.Configuration;
-
-import com.example.springboot_ecommerce.Pojo.Users;
+package com.example.demo01.src.Configuration;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;

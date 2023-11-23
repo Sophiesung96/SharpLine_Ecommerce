@@ -1,6 +1,6 @@
 package com.example.demo01.src.Service;
 
-import com.example.springboot_ecommerce.Pojo.*;
+import com.example.demo01.src.Pojo.*;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
