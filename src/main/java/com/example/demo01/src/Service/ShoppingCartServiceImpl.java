@@ -1,11 +1,12 @@
 package com.example.demo01.src.Service;
 
-import com.example.springboot_ecommerce.DAO.CartItemDao;
+import com.example.demo01.src.DAO.CartItemDao;
+import com.example.demo01.src.DAO.ProductDAO;
 import com.example.demo01.src.Exception.ShoppingCartException;
-import com.example.springboot_ecommerce.Pojo.CartItem;
-import com.example.springboot_ecommerce.Pojo.CartItemPName;
-import com.example.springboot_ecommerce.Pojo.Customer;
-import com.example.springboot_ecommerce.Pojo.Product;
+import com.example.demo01.src.Pojo.CartItem;
+import com.example.demo01.src.Pojo.CartItemPName;
+import com.example.demo01.src.Pojo.Customer;
+import com.example.demo01.src.Pojo.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,9 @@ import java.util.List;
 public class ShoppingCartServiceImpl implements ShoppingCartService{
     @Autowired
     CartItemDao cartItemDao;
+
+    @Autowired
+    ProductDAO productDAO;
 
     public Integer addProduct(Integer productId, Integer quantity, Customer customer){
         Integer updateQuantity=quantity;
@@ -29,7 +33,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService{
                         "item(s) in your shopping cart"+
                         "Maximum allowed quantity is 5!");
 
-            }        }else{
+            }
+        }else{
             cartItem=new CartItem();
             cartItem.setProduct(productId);
             cartItem.setCustomer(customer.getId());
@@ -54,5 +59,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService{
     public List<CartItem> listAllCartItem(Customer customer) {
         List<CartItem> list=cartItemDao.findByCustomer(customer);
         return list;
+    }
+
+    @Override
+    public float updateQuantity(Integer productId, Integer quantity, Customer customer) {
+        cartItemDao.updateQuantity(quantity,productId,customer.getId());
+        Product product=productDAO.findById(productId);
+        float subtotal=product.getDetailPrice()*quantity;
+        return subtotal;
     }
 }
