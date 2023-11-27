@@ -170,7 +170,6 @@
                              <span class="text-danger" th:text="${param.redirect!=null && param.redirect[0]=='checkout'}?'[Currently Selected]':'[Default]'"></span>
                          </th:block>
                          <th:block th:unless="${userPrimaryDefault}==1">
-                             <j1></j1>
                              <!--Redirecting from shoppingCart Page-->
                              <a  th:if="${param.redirect!=null && param.redirect[0]=='cart'}" class="px-2" th:href="@{'/address/default/0?redirect=cart'}">[Set as Default]</a>
                              <!--Redirecting from CheckOut Page-->
