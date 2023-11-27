@@ -152,14 +152,14 @@
 
     <div class="row m-2">
         <div class="card">
-            <div class="card-body">
-                <div class="col-sm-8">
+            <div class="card-body hiddenContent">
+                <div class="col-sm-8 ">
                     <th:block th:each="cartItem,status:${cartItemlist}" th:with="cartDetail=${cartItem.getList().get(status.index)}">
-                        <div class="row border rounded p-1">
+                        <div class="row border rounded p-1" th:id="'row'+${status.count}">
                             <div class="col-1">
-                                <div>[[${status.count}]]</div>
+                                <div class="div-Count">[[${status.count}]]</div>
                                 <div>
-                                    <a><i class="fa-solid fa-trash-can"></i></a>
+                                    <a class="link-remove" th:href="@{'/cart/remove/'+${cartItem.product}}" th:rowNumber="${status.count}"><i class="fa-solid fa-trash-can" style="color: #999999"></i></a>
                                 </div>
                             </div>
                             <div class="col-3">
@@ -213,7 +213,7 @@
                         </div>
                         <div class="row m-1">&nbsp;</div>
                 </div>
-                <div class="col-sm-4" th:unless="${#lists.isEmpty(cartItemlist)}">
+                <div class="col-sm-4" th:unless="${#lists.isEmpty(cartItemlist)}" id="sectionTotal">
                     <div>
                         <span class="h3">Estimated Total:</span>
                     </div>
@@ -222,20 +222,37 @@
                         <span class="h2" id="total">[[${EstimatedTotal}]]</span>
                     </div>
                     <!--Checkout Button-->
-                    <div>
-                        <button class="btn btn-danger p-3 mt-2">Checkout</button>
+                    <!--support Shipping-->
+                    <div th:if="${ShippingSupported}==true">
+                        <a th:href="@{/checkout}" class="btn btn-danger p-3 mt-2">Checkout</a>
+                    </div>
+                    <!--Not support Shipping-->
+                    <div th:if="${ShippingSupported}==false">
+                        <div><span class=" h5 text-warning">No Shipping Available for Your Location</span></div>
+                        <div th:if="${usePrimaryAddressAsDefault}">
+                            <a class="h6" th:href="@{/account_details(redirect=cart)}">Update your Address</a>
+                        </div>
+                        <div th:unless="${usePrimaryAddressAsDefault}">
+                            <a class="h6" th:href="@{/addressBook(redirect=cart)}">Use another shipping Address</a>
+                        </div>
                     </div>
                 </div>
             </div>
 
         </div>
 
-       <div class="row m-1 text-center" th:if="${#lists.isEmpty(cartItemlist)}">
-           <div>
-               <h3>Oops! You have not chosen any products yet</h3>
-               <img style="width: 80px;" th:src="@{/image/empty_cart.png}"/>
+
+           <div id='noShoppingContent' th:class="'text-center ' + (${#lists.isEmpty(cartItemlist)} ? '' : 'd-none')">
+               <h3>Oops! You have not chosen any products Yet</h3>
+               <div>
+                   <img style="width: 150px;" th:src="@{/image/empty_cart.png}"/>
+               </div>
+               <div class="mt-2">
+                   <a  class="h4 " th:href="@{/index}">DO You Want To Explore More of Our Products?</a>
+               </div>
+
            </div>
-       </div>
+
 
 
 

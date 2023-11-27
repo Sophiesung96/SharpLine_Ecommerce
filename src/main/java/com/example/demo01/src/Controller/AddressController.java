@@ -116,10 +116,18 @@ public class AddressController {
     }
 
     @GetMapping("/address/default/{id}")
-    public String setDefaultAddress(@PathVariable int id,HttpServletRequest request){
+    public String setDefaultAddress(@PathVariable int id,HttpServletRequest request,
+                                    @RequestParam(required = false,name = "redirect") String redirect){
         Customer customer=getAuthenticatedCustomer(request);
-       int primary= addressService.setDefaultAddress(id,customer.getId());
-        return "redirect:/addressBook";
+        addressService.setDefaultAddress(id,customer.getId());
+       String redirectOption=redirect;
+        log.info("redirectOption:{}",redirectOption);
+        String redirectURL="redirect:/addressBook";
+        if("cart".equals(redirectOption)){
+            redirectURL="redirect:/cart";
+        }
+        return redirectURL;
+
     }
 
 

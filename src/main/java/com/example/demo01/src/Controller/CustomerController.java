@@ -1,12 +1,12 @@
 package com.example.demo01.src.Controller;
 
-import com.example.demo01.src.main.Configuration.MailConfiguration;
-import com.example.springboot_ecommerce.Pojo.*;
-import com.example.springboot_ecommerce.Security.CustomerOAuth2User;
-import com.example.springboot_ecommerce.Service.CountryService;
-import com.example.springboot_ecommerce.Service.CustomerService;
-import com.example.springboot_ecommerce.Service.SettingService;
-import com.example.springboot_ecommerce.Service.StateService;
+import com.example.demo01.src.Configuration.MailConfiguration;
+import com.example.demo01.src.Pojo.*;
+import com.example.demo01.src.Security.CustomerOAuth2User;
+import com.example.demo01.src.Service.CountryService;
+import com.example.demo01.src.Service.CustomerService;
+import com.example.demo01.src.Service.SettingService;
+import com.example.demo01.src.Service.StateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -229,26 +229,19 @@ public class CustomerController {
     public String updateAccountDetails(Model model,@ModelAttribute Customer customer,RedirectAttributes rs,HttpServletRequest request){
         customerService.updateCustomer(customer);
         rs.addFlashAttribute("message","Your Account Details Has been Updated!");
-        return "redirect:/account_details";
-    }
+        String redirectOption=request.getParameter("redirect");
+        String redirectURL="redirect:/account_details";
+        if("addressBook".equals(redirectOption)){
+            redirectURL="redirect:/addressBook";
+        }else if("cart".equals(redirectOption)) {
+            redirectURL="redirect:/cart";
 
-
-
-
-    @GetMapping("/login/oauth2/code/google")
-    public String handleGoogleOAuth2Callback(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.getPrincipal() instanceof OAuth2User) {
-            OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
-            String username = oauth2User.getAttribute("username"); // Replace with your attribute name
-
-            model.addAttribute("username", username);
-            return "redirect:/index";
         }
-
-        return "error";
+        return redirectURL;
     }
+
+
+
 
 
 }

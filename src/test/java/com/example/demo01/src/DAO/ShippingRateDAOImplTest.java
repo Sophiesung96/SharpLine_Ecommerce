@@ -1,13 +1,12 @@
-package com.example.demo01.src.test.java.com.example.springboot_ecommerce.DAO;
+package com.example.demo01.src.DAO;
 
-import com.example.springboot_ecommerce.Pojo.Customer;
-import com.example.springboot_ecommerce.Pojo.ShippingRate;
+import com.example.demo01.src.Pojo.Customer;
+import com.example.demo01.src.Pojo.ShippingRate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
-import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class ShippingRateDAOImplTest {
 
