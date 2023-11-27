@@ -12,7 +12,7 @@ public interface AddressService {
     public Address ShowCustomerforedit(int addressid,int customerId);
     public void updateAddress(Address address);
     public void deleteAddress(int addressid,int customerId);
-    public int setDefaultAddress(int addressid,int customerId);
+    public void setDefaultAddress(int addressid,int customerId);
     public Address findefaultAddressById(Integer customerid);
 }
 

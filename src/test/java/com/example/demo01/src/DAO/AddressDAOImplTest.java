@@ -90,7 +90,7 @@ class AddressDAOImplTest {
 
     @Test
     public void testFindDefault(){
-        List<Address> address= addressDAO.findefaultAddressById(2);
+        Address address= addressDAO.findefaultAddressById(2);
        assertNull(address);
     }
 

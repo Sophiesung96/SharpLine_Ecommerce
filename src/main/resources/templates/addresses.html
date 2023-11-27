@@ -151,7 +151,8 @@
     </div>
 
     <div class="text-center mt-4" id="Title-hide">
-        <h2 style="font-family: Menlo">Address Book</h2>
+        <h2 th:text="${param.redirect!=null && param.redirect[0]=='checkout'}?'Choose a Shipping Address':'Your Address Book'"
+            style="font-family: Menlo"></h2>
         <h4 style="font-family: Menlo">
             <a th:href="@{/add/customer/address}">Add New Address</a>
         </h4>
@@ -166,10 +167,14 @@
                      <div class="col text-center">
                          <b>Your Primary Address</b>
                          <th:block th:if="${userPrimaryDefault}==1">
-                             <span class="text-danger">[Default]</span>
+                             <span class="text-danger" th:text="${param.redirect!=null && param.redirect[0]=='checkout'}?'[Currently Selected]':'[Default]'"></span>
                          </th:block>
                          <th:block th:unless="${userPrimaryDefault}==1">
-                             <a  class="px-2" th:href="@{/address/default/0}">[Set as Default]</a>
+                             <!--Redirecting from shoppingCart Page-->
+                             <a  th:if="${param.redirect!=null && param.redirect[0]=='cart'}" class="px-2" th:href="@{'/address/default/0?redirect=cart'}">[Set as Default]</a>
+                             <!--Redirecting from CheckOut Page-->
+                             <a  th:if="${param.redirect!=null && param.redirect[0]=='checkout'}" class="px-2" th:href="@{'/address/default/0?redirect=checkout'}">[Choose]</a>
+                             <a  th:unless="${param.redirect}" class="px-2" th:href="@{'/address/default/0'}">[Set as Default]</a>
                          </th:block>
                      </div>
 
@@ -194,10 +199,14 @@
                             <div class="col text-center">
                                 <b>Address [[${status.count}+1]]</b>
                                 <th:block th:if="${address.isDefaultforShopping()}==1">
-                                    <span class="text-danger">[Default]</span>
+                                    <span class="text-danger" th:text="${param.redirect!=null && param.redirect[0]=='checkout'}?'[Currently Selected]':'[Default]'"></span>
                                 </th:block>
                                 <th:block th:unless="${address.isDefaultforShopping()}==1">
-                                    <a  class="px-2" th:href="@{'/address/default/'+${address.id}}">[Set as Default]</a>
+                                    <!--Redirecting from shoppingCart Page-->
+                                    <a  th:if="${param.redirect!=null&& param.redirect[0]=='cart'}" class="px-2" th:href="@{'/address/default/'+${address.id}+'?redirect=cart'}">[Set as Default]</a>
+                                    <!--Redirecting from CheckOut Page-->
+                                    <a  th:if="${param.redirect!=null&& param.redirect[0]=='checkout'}" class="px-2" th:href="@{'/address/default/'+${address.id}+'?redirect=checkout'}">[Choose]</a>
+                                    <a  th:unless="${param.redirect}" class="px-2" th:href="@{'/address/default/'+${address.id}}">[Set as Default]</a>
                                 </th:block>
                             </div>
                             <div class="col ">

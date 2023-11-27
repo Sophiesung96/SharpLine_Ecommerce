@@ -143,13 +143,13 @@ public class AddressDAOImpl implements AddressDAO {
     }
 
     @Override
-    public  List<Address> findefaultAddressById(Integer customerid) {
+    public  Address findefaultAddressById(Integer customerid) {
         String sql = "select * from address where  default_address =1 and customer_id=:customerid";
         Map<String, Object> map = new HashMap<>();
         map.put("customerid",customerid);
         List<Address>list=namedParameterJdbcTemplate.query(sql,map,new AddressMapper());
         if(list.size()>0){
-            return list;
+            return list.get(0);
         }
         return null;
     }

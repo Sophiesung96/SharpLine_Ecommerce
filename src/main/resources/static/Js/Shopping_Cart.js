@@ -9,28 +9,14 @@ $(document).ready(function () {
        decreaseProductQuantity($(this));
     });
 
-    $('#buttonAdd2Cart').click(function (event) {
+
+    $('.link-remove').click(function (event) {
         event.preventDefault();
-        addToCart();
+          removeProduct($(this));
     });
 });
 
-function addToCart(){
-    var productId =$('.LinkPlus').attr('pid');
-    var Productquantity=$("#quantity"+productId).val();
-   var  Url="/cart/add/"+productId+"/"+Productquantity;
-    $.ajax({
-        type:"POST",
-        url:Url,
-        beforeSend:function (xhr) {
-            xhr.setRequestHeader("_csrf.headerName","_csrf.token");
-        }
-    }).done(function (response) {
-        alert(response);
-    }).fail(function () {
-        alert("Error while adding product to shopping cart.");
-    });
-};
+
 
 //increase product quantity from shopping cart
 function increaseProductQuantity(link) {
@@ -82,13 +68,69 @@ function updateSubTotal(UpdatedSubtotal, productId){
     $('#subtotal'+productId).text(UpdatedSubtotal);
 }
 
-function updateTotal(){
- total=0.0;
- $('.subTotal').each(function (index,element) {
-     total+=parseFloat(element.innerHTML);
- })
-    $('#total').text(total);
+function updateTotal() {
+    total = 0.0;
+    productCount = 0;
+
+    $('.subTotal').each(function (index, element) {
+        productCount++;
+        total += parseFloat(element.innerHTML);
+    });
+
+    if (productCount < 1) {
+        showEmptyCart();
+    } else {
+        $('#total').text(total);
+    }
+
+    console.log("Total updated to: ", total);
+    console.log("ProductCount: ", productCount);// Add this line for debugging
 }
+
+
+
+function removeProduct(link){
+    link = $(link);
+    removeURL = link.attr("href");
+    rowNumber = link.attr("rowNumber");
+    $.ajax({
+        type:"DELETE",
+        url:removeURL,
+        beforeSend:function (xhr) {
+            xhr.setRequestHeader("_csrf.headerName","_csrf.token");
+        }
+    }).done(function (response) {
+        removeProductHTML(rowNumber);
+        updateTotal();
+        updateCountNumber();
+        alert(response);
+    }).fail(function () {
+        alert("Error while removing product from shopping cart.");
+    });
+}
+
+function removeProductHTML(rowNumber){
+    $('#row'+rowNumber).remove();
+}
+
+function updateCountNumber(){
+    $('.div-Count').each(function (index,element) {
+        element.innerHTML=' '+(index+1);
+    })
+}
+
+function showEmptyCart() {
+    var cartItemCount = $('.subTotal').length;
+    console.log("Number of items in the cart:", cartItemCount);
+    if (cartItemCount < 1) {
+        console.log("Hiding cart elements");
+        $('#sectionTotal').hide();
+        $('#noShoppingContent').removeClass('d-none')
+        $('.hiddenContent').hide();
+    }
+}
+
+
 
 
 

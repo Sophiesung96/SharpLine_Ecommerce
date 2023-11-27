@@ -16,6 +16,6 @@ public interface AddressDAO {
     public void deleteAddress(Integer addressid,Integer customerId);
     public void setDefaultAddress(Integer addressidpublic,Integer customerId);
     public void setNonDefaultForOther(Integer addressid,Integer customerId);
-    public  List<Address> findefaultAddressById(Integer customerid);
+    public  Address findefaultAddressById(Integer customerid);
     public void setDefaultAddress4Primary(Integer addressid,Integer customerId);
 }

@@ -142,7 +142,7 @@ public class CheckOutController {
             orderService.createorder(customer, Defaultaddress, list, paymentMethod, checkOutInfo);
             //clean shopping cart after placing an order
             for (int product : productId) {
-                shoppingCartService.deleteByCustomer(customer, product);
+                shoppingCartService.removeProduct(customer.getId(), product);
             }
         }
 

@@ -1,9 +1,9 @@
 package com.example.demo01.src.Controller;
 
-import com.example.springboot_ecommerce.Pojo.Customer;
-import com.example.springboot_ecommerce.Pojo.State;
-import com.example.springboot_ecommerce.Service.CustomerService;
-import com.example.springboot_ecommerce.Service.StateService;
+import com.example.demo01.src.Pojo.Customer;
+import com.example.demo01.src.Pojo.State;
+import com.example.demo01.src.Service.CustomerService;
+import com.example.demo01.src.Service.StateService;
 
 import io.swagger.v3.oas.annotations.Operation;
 
