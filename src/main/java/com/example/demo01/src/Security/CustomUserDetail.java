@@ -1,9 +1,10 @@
 package com.example.demo01.src.Security;
 
-import com.example.springboot_ecommerce.Pojo.Customer;
+import com.example.demo01.src.Pojo.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collection;
 

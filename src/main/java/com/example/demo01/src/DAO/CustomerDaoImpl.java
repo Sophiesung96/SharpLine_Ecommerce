@@ -291,4 +291,13 @@ public class CustomerDaoImpl implements CustomerDao{
         }
         return null;
     }
+
+    @Override
+    public void encodePasswordByCustomerId(int customerId, String encodedPassword) {
+        String sql="update customers set password=:password where id=:customerid";
+        Map<String,Object>map=new HashMap<>();
+        map.put("password",encodedPassword);
+        map.put("customerid",customerId);
+        namedParameterJdbcTemplate.update(sql,map);
+    }
 }
