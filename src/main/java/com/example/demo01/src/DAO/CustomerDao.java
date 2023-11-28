@@ -39,7 +39,7 @@ public interface CustomerDao {
     public void updateCustomerNewPasswordByToken(String token,String newPassword);
 
     public Customer getCustomerByfullName(String fullName);
-
+    public void encodePasswordByCustomerId(int customerId,String encodedPassword);
 
 
 

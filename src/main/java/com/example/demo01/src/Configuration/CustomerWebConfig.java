@@ -1,21 +1,22 @@
-package com.example.springboot_ecommerce.Configuration;
+package com.example.demo01.src.Configuration;
 
-import com.example.springboot_ecommerce.Security.CustomerOAuth2UserService;
-import com.example.springboot_ecommerce.Security.DatabaseLoginSuccessHandler;
-import com.example.springboot_ecommerce.Security.OAuth2LoginSuccessHandler;
+import com.example.demo01.src.Security.CustomUserDetailsService;
+import com.example.demo01.src.Security.CustomerOAuth2UserService;
+import com.example.demo01.src.Security.DatabaseLoginSuccessHandler;
+import com.example.demo01.src.Security.OAuth2LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +37,9 @@ public class CustomerWebConfig extends WebSecurityConfigurerAdapter {
     private CustomerOAuth2UserService oAuth2UserService;
 
     @Autowired
+    CustomUserDetailsService customUserDetailsService;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -46,19 +50,17 @@ public class CustomerWebConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors()
-                .and()
+                 http
+
                 .csrf() // There is no csrf vulnerability if we don't use cookie and session.
                 .disable()
                 .authorizeRequests()
                 .antMatchers("/oauth2/**").permitAll()
-                .antMatchers("/customer/**","/checkout","placeOrder","/addressBook","/cart").authenticated()
-                .antMatchers("/processlogin").permitAll()
+                .antMatchers("/customer/**","/checkout","placeOrder","/addressBook","/cart/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/customerLogin")
-                .loginProcessingUrl("/processlogin")
                 .successHandler(databaseLoginSuccessHandler)
                 .permitAll()
                 .and()
@@ -81,8 +83,11 @@ public class CustomerWebConfig extends WebSecurityConfigurerAdapter {
 
     @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(customUserDetailsService)
+                .passwordEncoder(passwordEncoder);
 
-            //create a password
+
+         /*   //create a password
             String rawpassword = "sanyatesting";
             String encodepassword = passwordEncoder.encode(rawpassword);
             //Update the original password in database as an encoded password
@@ -98,7 +103,7 @@ public class CustomerWebConfig extends WebSecurityConfigurerAdapter {
                     .dataSource(dataSource)
                     .passwordEncoder(passwordEncoder)
                     .usersByUsernameQuery("SELECT CONCAT(first_name, ' ', last_name) AS username,password,enabled from customers where first_name=?")
-                    .authoritiesByUsernameQuery("SELECT ?, 'ROLE_USER' UNION SELECT NULL, 'ROLE_USER'");
+                    .authoritiesByUsernameQuery("SELECT ?, 'ROLE_USER' UNION SELECT NULL, 'ROLE_USER'");*/
         }
 
 
