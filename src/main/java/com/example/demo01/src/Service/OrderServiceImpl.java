@@ -1,10 +1,15 @@
-package com.example.springboot_ecommerce.Service;
+package com.example.demo01.src.Service;
 
-import com.example.springboot_ecommerce.DAO.AddressDAO;
-import com.example.springboot_ecommerce.DAO.CountryDao;
-import com.example.springboot_ecommerce.DAO.CustomerDao;
-import com.example.springboot_ecommerce.DAO.OrderDAO;
-import com.example.springboot_ecommerce.Pojo.*;
+import com.example.demo01.src.DAO.AddressDAO;
+import com.example.demo01.src.DAO.CountryDao;
+import com.example.demo01.src.DAO.CustomerDao;
+import com.example.demo01.src.DAO.OrderDAO;
+import com.example.demo01.src.Pojo.*;
+import com.example.demo01.src.DAO.AddressDAO;
+import com.example.demo01.src.DAO.CountryDao;
+import com.example.demo01.src.DAO.CustomerDao;
+import com.example.demo01.src.DAO.OrderDAO;
+import com.example.demo01.src.Pojo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 @Service
 @Slf4j
 public class OrderServiceImpl implements OrderService{
@@ -66,7 +72,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public void createorder(Customer customer, Address address, List<CartItem> list, PaymentMethod paymentMethod, CheckOutInfo checkOutInfo) {
+    public OrderDetailForm createorder(Customer customer, Address address, List<CartItem> list, PaymentMethod paymentMethod, CheckOutInfo checkOutInfo) {
         Order order=new Order();
         order.setCustomerId(customer.getId());
         //if the customer did not offer address
@@ -106,7 +112,9 @@ public class OrderServiceImpl implements OrderService{
         }
         orderDAO.createOrderDetail(order,detailListlist,customer);
 
+        OrderDetailForm orderDetailForm=orderDAO.getOrderDetailById(orderId);
 
+        return orderDetailForm;
 
     }
 
@@ -132,7 +140,7 @@ public class OrderServiceImpl implements OrderService{
         Country countryforAddress=new Country();
         countryforAddress.setId(address.getCountryId());
         Country country=countryDao.getByCountryId(countryforAddress);
-        log.info("customer's firstNAme:{}, PhoneNUmber:{},country:{}",address.getFirstName(),address.getPhoneNumber(),address.getCountryId());
+        log.info("customer's firstNAme:{}, PhoneNUmber:{},country:{}",address.getFirstName(),address.getPhoneNumber(),country.getName());
         order.setFirstName(address.getFirstName());
         order.setLastName(address.getLastName());
         order.setPhoneNumber(address.getPhoneNumber());

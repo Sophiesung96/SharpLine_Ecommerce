@@ -1,16 +1,15 @@
-package com.example.demo01.src.test.java.com.example.springboot_ecommerce.DAO;
+package com.example.demo01.src.DAO;
 
-import com.example.springboot_ecommerce.Pojo.Setting;
-import com.example.springboot_ecommerce.Pojo.SettingCategory;
+import com.example.demo01.src.Pojo.Setting;
+import com.example.demo01.src.Pojo.SettingCategory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 class SettingDAOImplTest {
 

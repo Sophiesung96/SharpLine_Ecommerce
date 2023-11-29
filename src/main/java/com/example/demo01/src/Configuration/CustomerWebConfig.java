@@ -83,11 +83,10 @@ public class CustomerWebConfig extends WebSecurityConfigurerAdapter {
 
     @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(customUserDetailsService)
-                .passwordEncoder(passwordEncoder);
 
 
-         /*   //create a password
+
+           //create a password
             String rawpassword = "sanyatesting";
             String encodepassword = passwordEncoder.encode(rawpassword);
             //Update the original password in database as an encoded password
@@ -103,7 +102,7 @@ public class CustomerWebConfig extends WebSecurityConfigurerAdapter {
                     .dataSource(dataSource)
                     .passwordEncoder(passwordEncoder)
                     .usersByUsernameQuery("SELECT CONCAT(first_name, ' ', last_name) AS username,password,enabled from customers where first_name=?")
-                    .authoritiesByUsernameQuery("SELECT ?, 'ROLE_USER' UNION SELECT NULL, 'ROLE_USER'");*/
+                    .authoritiesByUsernameQuery("SELECT ?, 'ROLE_USER' UNION SELECT NULL, 'ROLE_USER'");
         }
 
 

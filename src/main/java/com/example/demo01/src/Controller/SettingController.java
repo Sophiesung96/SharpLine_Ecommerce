@@ -1,12 +1,12 @@
 package com.example.demo01.src.Controller;
 
-import com.example.springboot_ecommerce.DAO.CurrencyDao;
+import com.example.demo01.src.DAO.CurrencyDao;
 import com.example.demo01.src.FileUploadUtil;
-import com.example.springboot_ecommerce.Pojo.Currency;
-import com.example.springboot_ecommerce.Pojo.GeneralSettingBag;
-import com.example.springboot_ecommerce.Pojo.Setting;
-import com.example.springboot_ecommerce.Service.CurrencyService;
-import com.example.springboot_ecommerce.Service.SettingService;
+import com.example.demo01.src.Pojo.Currency;
+import com.example.demo01.src.Pojo.GeneralSettingBag;
+import com.example.demo01.src.Pojo.Setting;
+import com.example.demo01.src.Service.CurrencyService;
+import com.example.demo01.src.Service.SettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,12 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-public class
-
-
-
-
-SettingController {
+public class SettingController {
 
     @Autowired
     SettingService settingService;

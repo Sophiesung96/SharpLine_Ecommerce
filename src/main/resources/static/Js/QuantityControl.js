@@ -23,4 +23,27 @@ $(document).ready(function () {
             alert("Maximum amount is 5");
         }
     });
+
+    $('#buttonAdd2Cart').click(function (event) {
+        event.preventDefault();
+        addToCart();
+    });
 });
+
+
+function addToCart(){
+    var productId =$('.LinkPlus').attr('pid');
+    var Productquantity=$("#quantity"+productId).val();
+    var  Url="/cart/add/"+productId+"/"+Productquantity;
+    $.ajax({
+        type:"POST",
+        url:Url,
+        beforeSend:function (xhr) {
+            xhr.setRequestHeader("_csrf.headerName","_csrf.token");
+        }
+    }).done(function (response) {
+        alert(response);
+    }).fail(function () {
+        alert("Error while adding product to shopping cart.");
+    });
+};

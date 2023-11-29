@@ -1,6 +1,6 @@
 package com.example.demo01.src.DAO;
 
-import com.example.springboot_ecommerce.Pojo.*;
+import com.example.demo01.src.Pojo.*;
 
 import java.util.List;
 
@@ -17,4 +17,5 @@ public interface OrderDAO {
     public Order getOrderByCustomerId(int customerid);
     void updatePaymentMethod(String method,int id);
      public void DeleteOrderById(int orderId);
+
 }

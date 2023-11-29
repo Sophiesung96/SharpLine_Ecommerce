@@ -1,11 +1,11 @@
 package com.example.demo01.src.Service;
 
-import com.example.springboot_ecommerce.DAO.CountryDao;
-import com.example.springboot_ecommerce.DAO.CustomerDao;
+import com.example.demo01.src.DAO.CountryDao;
+import com.example.demo01.src.DAO.CustomerDao;
 import com.example.demo01.src.Exception.CustomerNotFoundException;
-import com.example.springboot_ecommerce.Pojo.AuthenticationType;
-import com.example.springboot_ecommerce.Pojo.Country;
-import com.example.springboot_ecommerce.Pojo.Customer;
+import com.example.demo01.src.Pojo.AuthenticationType;
+import com.example.demo01.src.Pojo.Country;
+import com.example.demo01.src.Pojo.Customer;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
