@@ -154,7 +154,10 @@
         <h2 th:text="${param.redirect!=null && param.redirect[0]=='checkout'}?'Choose a Shipping Address':'Your Address Book'"
             style="font-family: Menlo"></h2>
         <h4 style="font-family: Menlo">
-            <a th:href="@{/add/customer/address}">Add New Address</a>
+            <a th:if="${param.redirect!=null&&param.redirect[0]=='checkout'}"
+               th:href="@{/add/customer/address(redirect=checkout)}">Add New Address</a>
+            <a th:unless="${param.redirect}"
+                th:href="@{/add/customer/address}">Add New Address</a>
         </h4>
 
     </div>
@@ -177,6 +180,22 @@
                              <a  th:unless="${param.redirect}" class="px-2" th:href="@{'/address/default/0'}">[Set as Default]</a>
                          </th:block>
                      </div>
+
+                     <div class="col">
+                         <div class="float-right">
+                             <!--Redirecting from CheckOut Page-->
+                             <a th:if="${param.redirect!=null && param.redirect[0]=='checkout'}"
+                                title="Edit your primary Address" th:href="@{/account_details(redirect=addressBook)}">
+                                 <i class="fa-regular fa-pen-to-square"></i>
+                             </a>
+                             <a th:unless="${param.redirect}"
+                                title="Edit your primary Address" th:href="@{/account_details(redirect=addressBook)}">
+                                 <i class="fa-regular fa-pen-to-square"></i>
+                             </a>
+                         </div>
+
+                     </div>
+
 
                  </div>
               </div>
@@ -211,7 +230,11 @@
                             </div>
                             <div class="col ">
                                 <div class=" float-right">
-                                    <a th:href="@{'/edit/'+${address.id}+'/'+${address.customerId}}">
+                                    <a th:if="${param.redirect!=null&& param.redirect[0]=='checkout'}"
+                                       th:href="@{'/edit/'+${address.id}+'/'+${address.customerId}+'?redirect=checkout'}">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <a th:unless="${param.redirect!=null&& param.redirect[0]=='checkout'}"th:href="@{'/edit/'+${address.id}+'/'+${address.customerId}}">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </a>
                                     <a style="text-decoration: none;" class=" "

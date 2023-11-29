@@ -37,7 +37,9 @@ public class AddressServiceImpl implements AddressService{
 
     @Override
     public Address ShowCustomerforedit(int addressid, int customerId) {
-        Address address=addressDAO.ShowCustomerforedit(addressid,customerId);
+
+            Address address=addressDAO.ShowCustomerforedit(addressid,customerId);
+
         return address;
     }
 
@@ -48,7 +50,7 @@ public class AddressServiceImpl implements AddressService{
 
     @Override
     public void deleteAddress(int addressid, int customerId) {
-        addressDAO.deleteAddress(addressid,customerId);
+            addressDAO.deleteAddress(addressid,customerId);
     }
 
 
@@ -77,7 +79,8 @@ public class AddressServiceImpl implements AddressService{
         }else{
            addressDAO.setDefaultAddress4Primary(addressid,customerId);
 
-        }    }
+        }
+    }
 
 
     @Override
@@ -86,7 +89,6 @@ public class AddressServiceImpl implements AddressService{
         address= addressDAO.findefaultAddressById(customerid);
         return address;
     }
-
 
 
 }

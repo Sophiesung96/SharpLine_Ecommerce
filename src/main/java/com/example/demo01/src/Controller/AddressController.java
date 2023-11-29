@@ -14,6 +14,8 @@ import com.example.demo01.src.Pojo.Customer;
 import com.example.demo01.src.Service.AddressService;
 import com.example.demo01.src.Service.CountryService;
 import com.example.demo01.src.Service.CustomerService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +28,7 @@ import java.util.List;
 
 @Controller
 @Slf4j
+@Tag(name = "AddressController")
 public class AddressController {
 
     @Autowired
@@ -38,6 +41,7 @@ public class AddressController {
     CountryService countryService;
 
     @GetMapping("/addressBook")
+    @Operation(summary = "Show all addresses page", description = "Show all addresses page")
     public String showAddressBook(Model model, HttpServletRequest request){
         Customer customer=getAuthenticatedCustomer(request);
         List<Address> list=addressService.findByCustomer(customer);
@@ -76,6 +80,7 @@ public class AddressController {
     }
 
     @GetMapping("/add/customer/address")
+    @Operation(summary = "Show create new address page", description = "Show create new address page")
     public String showAddingaddress(Model model,HttpServletRequest request){
         Address address=new Address();
         model.addAttribute("address",address);
@@ -87,12 +92,23 @@ public class AddressController {
     }
 
     @PostMapping("/create/customer/address")
-    public String CreateNewaddress(@ModelAttribute Address address, RedirectAttributes rs){
+    @Operation(summary = "Create new address", description = "Create new customer address")
+    public String CreateNewaddress(@ModelAttribute Address address, RedirectAttributes rs, @RequestParam(required = false,name = "redirect") String redirect){
         addressService.CreateNewCustomer(address,address.getCustomerId());
+        String redirectOption=redirect;
+        log.info("redirectOption:{}",redirectOption);
+        String redirectURL="redirect:/addressBook";
+        if("checkout".equals(redirectOption)){
+            redirectURL+="?redirect=checkout";
+        }
         rs.addFlashAttribute("message","You have successfully added a new address!");
-        return "redirect:/addressBook";
+        return redirectURL;
+
+
     }
+
     @GetMapping("/edit/{id}/{customerId}")
+    @Operation(summary = "show edit address page", description = "Display edit address page")
     public String ShoweditAddressForm(@PathVariable int id, @PathVariable int customerId,Model model){
         Address address=addressService.ShowCustomerforedit(id,customerId);
         model.addAttribute("address",address);
@@ -101,7 +117,9 @@ public class AddressController {
         return "address_edit";
     }
 
+
     @PostMapping("/update/customer/address")
+    @Operation(summary = "Update edit address page", description = "Update newly edited address")
     public String editAddress(@ModelAttribute Address address,RedirectAttributes rs){
           addressService.updateAddress(address);
         rs.addFlashAttribute("message","You have successfully edited a new address!");
@@ -109,6 +127,7 @@ public class AddressController {
     }
 
     @GetMapping("/address/delete/{id}/{customerId}")
+    @Operation(summary = "Delete an address", description = "Delete an address by AddressId and CustomerId")
     public String deleteAddress(@PathVariable int id, @PathVariable int customerId,RedirectAttributes rs){
         addressService.deleteAddress(id,customerId);
         rs.addFlashAttribute("message","You have successfully deleted address"+id+" !");
@@ -116,6 +135,7 @@ public class AddressController {
     }
 
     @GetMapping("/address/default/{id}")
+    @Operation(summary = "Set an address as default", description = "Set an address as default")
     public String setDefaultAddress(@PathVariable int id,HttpServletRequest request,
                                     @RequestParam(required = false,name = "redirect") String redirect){
         Customer customer=getAuthenticatedCustomer(request);
@@ -125,6 +145,8 @@ public class AddressController {
         String redirectURL="redirect:/addressBook";
         if("cart".equals(redirectOption)){
             redirectURL="redirect:/cart";
+        }else if ("checkout".equals(redirectOption)){
+            redirectURL="redirect:/checkout";
         }
         return redirectURL;
 
