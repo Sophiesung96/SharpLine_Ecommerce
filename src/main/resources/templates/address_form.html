@@ -70,6 +70,7 @@
         <h2 class="mt-2">New Address Form</h2>
         <form th:action="@{/create/customer/address}" method="post" th:object="${address}" style="max-width: 600px; margin: 0 auto" onsubmit=" return checkEmailUnique(this);">
             <input type="hidden" name='customerId'th:value="${customer.id}">
+            <input type="hidden" name="redirect" th:value="${param.redirect}"/>
             <div class="border border-secondary rounded p-3">
                 <div class="form-group row">
                     <label class="col-sm-4 form-control-label">First Name:</label>

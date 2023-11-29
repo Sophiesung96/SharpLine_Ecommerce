@@ -1,8 +1,8 @@
 package com.example.demo01.src.Security;
 
-import com.example.springboot_ecommerce.Pojo.AuthenticationType;
-import com.example.springboot_ecommerce.Pojo.Customer;
-import com.example.springboot_ecommerce.Service.CustomerService;
+import com.example.demo01.src.Pojo.AuthenticationType;
+import com.example.demo01.src.Pojo.Customer;
+import com.example.demo01.src.Service.CustomerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
