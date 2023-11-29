@@ -1,10 +1,10 @@
 package com.example.demo01.src.Controller;
 
-import com.example.springboot_ecommerce.Pojo.Order;
-import com.example.springboot_ecommerce.Pojo.OrderDetailForm;
-import com.example.springboot_ecommerce.Pojo.OrderDetails;
-import com.example.springboot_ecommerce.Pojo.PageNumber;
-import com.example.springboot_ecommerce.Service.OrderService;
+import com.example.demo01.src.Pojo.Order;
+import com.example.demo01.src.Pojo.OrderDetailForm;
+import com.example.demo01.src.Pojo.OrderDetails;
+import com.example.demo01.src.Pojo.PageNumber;
+import com.example.demo01.src.Service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

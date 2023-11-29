@@ -15,6 +15,7 @@ public class OrderDetailForm {
     private int customerId;
     private int TotalPage;
     private int enabled;
+    private String email;
     private String orderTime;
     private String paymentMethod;
     private String Customeremail;
@@ -46,4 +47,31 @@ public class OrderDetailForm {
     }
 
 
+    public String getShippingAddress() {
+        StringBuilder addressBuilder = new StringBuilder();
+        addressBuilder.append(this.firstName);
+
+        if (this.lastName != null && !this.lastName.isEmpty()) {
+            addressBuilder.append(" ").append(this.lastName);
+        }
+        if (this.addressline1 != null &&!this.addressline1.isEmpty()) {
+            addressBuilder.append(", ").append(this.addressline1);
+        }
+        if (this.addressline2 != null && !this.addressline2.isEmpty()) {
+            addressBuilder.append(" ").append(this.addressline2);
+        }
+        if (this.city!= null && !this.city.isEmpty()) {
+            addressBuilder.append(", ").append(this.city);
+        }
+        if (this.state!=null && !this.state.isEmpty()) {
+            addressBuilder.append(", ").append(this.state);
+        }
+        if (this.postalCode !=null &&!this.postalCode.isEmpty()) {
+            addressBuilder.append(". Postal Code: ").append(this.postalCode);
+        }
+        if (this.phoneNumber!=null &&!this.phoneNumber.isEmpty()) {
+            addressBuilder.append(". Phone Number: ").append(this.phoneNumber);
+        }
+        return addressBuilder.toString();
+    }
 }

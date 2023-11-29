@@ -1,6 +1,6 @@
 package com.example.demo01.src.Mapper;
 
-import com.example.springboot_ecommerce.Pojo.OrderDetailForm;
+import com.example.demo01.src.Pojo.OrderDetailForm;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -18,6 +18,8 @@ public class OrderDetailFormMapper implements RowMapper<OrderDetailForm> {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formattedDate = sdf.format(resultSet.getTimestamp("orderTime"));
         order.setOrderTime(formattedDate);
+        order.setTotal(resultSet.getFloat("total"));
+        order.setEmail(resultSet.getString("email"));
         order.setCity(resultSet.getString("city"));
         order.setState(resultSet.getString("state"));
         order.setCountry(resultSet.getString("country"));

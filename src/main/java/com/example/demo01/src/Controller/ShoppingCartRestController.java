@@ -8,9 +8,7 @@ import com.example.demo01.src.Service.CustomerService;
 import com.example.demo01.src.Service.ShoppingCartService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -66,6 +64,19 @@ public class ShoppingCartRestController {
         catch(CustomerNotFoundException exception){
             return "You must login to change quantity of product!";
         }
+    }
+
+    @DeleteMapping("/cart/remove/{productId}")
+    public String RemoveProduct( @PathVariable int productId,HttpServletRequest request){
+        try{
+            Customer customer=getAuthenticatedCustomer(request);
+            shoppingCartService.removeProduct(customer.getId(),productId);
+            return "The product has been removed from your shopping cart";
+        }
+        catch(CustomerNotFoundException exception){
+            return "You must login to remove product";
+        }
+
     }
 
 }

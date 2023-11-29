@@ -9,7 +9,7 @@ import java.util.List;
 public interface ShoppingCartService {
 
     public Integer addProduct(Integer productId, Integer quantity, Customer customer);
-    public void  deleteByCustomer(Customer customer,int productId);
+    public void removeProduct(int customerId,int productId);
     List<CartItemPName> getJoinedProductnCustomer(Customer customer);
     List<CartItem> listAllCartItem(Customer customer);
 

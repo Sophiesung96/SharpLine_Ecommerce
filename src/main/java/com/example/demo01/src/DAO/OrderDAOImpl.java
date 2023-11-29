@@ -3,7 +3,7 @@ package com.example.demo01.src.DAO;
 import com.example.demo01.src.Mapper.OrderDetailFormMapper;
 import com.example.demo01.src.Mapper.OrderMapper;
 import com.example.demo01.src.Mapper.PageNumberMapper;
-import com.example.springboot_ecommerce.Pojo.*;
+import com.example.demo01.src.Pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -67,10 +67,10 @@ public class OrderDAOImpl implements OrderDAO {
 
     @Override
     public OrderDetailForm getOrderDetailById(int orderId) {
-        String sql="select o.id as id,o.order_time as orderTime,o.customer_id as customerId, " +
+        String sql="select o.id as id,o.order_time as orderTime,o.customer_id as customerId,c.email as email," +
                 "o.address_line1 as addressline1,o.address_line2 as addressline2," +
-                "o.first_name as firstName, o.last_name as lastName,o.phone_number as phoneNUmber," +
-                "o.city as city, o.state as state,o.postal_code as postalCode,o.payment_method as paymentmethod,o.country as country," +
+                "o.first_name as firstName, o.last_name as lastName,o.phone_number as phoneNumber," +
+                "o.city as city, o.state as state,o.total as total,o.postal_code as postalCode,o.payment_method as paymentmethod,o.country as country," +
                 "c.enabled as enabled from `Order` o inner join customers c on o.customer_id=c.id where o.id=:orderid";
         Map<String,Object> map=new HashMap<>();
         map.put("orderid",orderId);
@@ -81,6 +81,8 @@ public class OrderDAOImpl implements OrderDAO {
 
         }        return null;
     }
+
+
 
     @Override
     public void DeleteOrderById(int orderId) {

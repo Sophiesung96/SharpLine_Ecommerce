@@ -1,10 +1,7 @@
 package com.example.demo01.src.Service;
 
-import com.example.springboot_ecommerce.DAO.SettingDAO;
-import com.example.springboot_ecommerce.Pojo.EmailSettingBag;
-import com.example.springboot_ecommerce.Pojo.GeneralSettingBag;
-import com.example.springboot_ecommerce.Pojo.Setting;
-import com.example.springboot_ecommerce.Pojo.SettingCategory;
+import com.example.demo01.src.DAO.SettingDAO;
+import com.example.demo01.src.Pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,5 +58,11 @@ public class SettingServiceImpl implements SettingService{
     public List<Setting> getMailTEMPLATESetting() {
         List<Setting>list=settingDAO.findByCategory(SettingCategory.MAILTEMPLATE);
         return list;
+    }
+
+    @Override
+    public CurrencySettingBag getCurrencySetting() {
+        List<Setting>list=settingDAO.findByCategory(SettingCategory.CURRENCY);
+        return new CurrencySettingBag(list);
     }
 }

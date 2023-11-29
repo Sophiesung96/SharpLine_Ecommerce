@@ -1,10 +1,8 @@
-package com.example.demo01.DAO;
+package com.example.demo01.src.DAO;
 
-import com.example.demo01.src.DAO.OrderDAO;
 import com.example.demo01.src.Pojo.Customer;
 import com.example.demo01.src.Pojo.Order;
 import com.example.demo01.src.Pojo.OrderDetailForm;
-import com.example.demo01.src.Pojo.OrderDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 class OrderDAOImplTest {
     @SpyBean
