@@ -56,7 +56,13 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public OrderDetailForm getOrderById(int orderId) {
+    public Order getOrderById(int orderId) {
+        Order order=orderDAO.getOrderById(orderId);
+        return order;
+    }
+
+    @Override
+    public OrderDetailForm getOrderDetailById(int orderId) {
         OrderDetailForm order=orderDAO.getOrderDetailById(orderId);
         return order;
     }
@@ -86,7 +92,11 @@ public class OrderServiceImpl implements OrderService{
         SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date=dateFormat.format(new Date());
         order.setOrderTime(date);
-        order.setStatus(OrderStatus.NEW.name());
+        if(paymentMethod.equals(PaymentMethod.PAYPAL)){
+            order.setStatus(OrderStatus.PAID.name());
+        }else{
+            order.setStatus(OrderStatus.NEW.name());
+        }
         order.setDeliverDays(checkOutInfo.getDeliverDays());
         order.setDeliverDate(checkOutInfo.getDeliverDate());
         order.setPostalCode(address.getPostalCode());
@@ -139,7 +149,7 @@ public class OrderServiceImpl implements OrderService{
     public void copyShippingAddress(Order order,Address address,Customer customer) {
         Country countryforAddress=new Country();
         countryforAddress.setId(address.getCountryId());
-        Country country=countryDao.getByCountryId(countryforAddress);
+        Country country=countryDao.getByCountryId(countryforAddress.getId());
         log.info("customer's firstNAme:{}, PhoneNUmber:{},country:{}",address.getFirstName(),address.getPhoneNumber(),country.getName());
         order.setFirstName(address.getFirstName());
         order.setLastName(address.getLastName());

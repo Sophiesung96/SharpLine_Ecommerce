@@ -154,7 +154,7 @@
         <h2 th:text="${param.redirect!=null && param.redirect[0]=='checkout'}?'Choose a Shipping Address':'Your Address Book'"
             style="font-family: Menlo"></h2>
         <h4 style="font-family: Menlo">
-            <a th:if="${param.redirect!=null&&param.redirect[0]=='checkout'}"
+            <a th:if="${param.redirect!=null && param.redirect[0]=='checkout'}"
                th:href="@{/add/customer/address(redirect=checkout)}">Add New Address</a>
             <a th:unless="${param.redirect}"
                 th:href="@{/add/customer/address}">Add New Address</a>

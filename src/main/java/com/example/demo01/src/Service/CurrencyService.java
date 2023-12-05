@@ -1,6 +1,6 @@
 package com.example.demo01.src.Service;
 
-import com.example.springboot_ecommerce.Pojo.Currency;
+import com.example.demo01.src.Pojo.Currency;
 
 import java.util.List;
 import java.util.Optional;

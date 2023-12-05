@@ -18,6 +18,10 @@ public class OrderDetailFormMapper implements RowMapper<OrderDetailForm> {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formattedDate = sdf.format(resultSet.getTimestamp("orderTime"));
         order.setOrderTime(formattedDate);
+        order.setProductCost(resultSet.getFloat("productCost"));
+        order.setShippingCost(resultSet.getFloat("shippingCost"));
+        order.setTax(resultSet.getFloat("tax"));
+        order.setStatus(resultSet.getString("status"));
         order.setTotal(resultSet.getFloat("total"));
         order.setEmail(resultSet.getString("email"));
         order.setCity(resultSet.getString("city"));

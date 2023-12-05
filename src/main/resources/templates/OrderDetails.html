@@ -13,33 +13,33 @@
 </head>
 <body>
 <div class="modal-header">
-    <h4 class="modal-title" id="modal-Title">Customer Details:</h4>
+    <h4 class="modal-title" id="modal-Title">Order Details:</h4>
     <button type="button" class="close" data-bs-dismiss="modal">&times</button>
 </div>
 
 <div>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" data-bs-toggle="tab" href="#general" role="tab">General</a>
+            <a class="nav-link active" data-bs-toggle="tab" href="#overview" role="tab">Overview</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#address" role="tab">Address</a>
+            <a class="nav-link" data-bs-toggle="tab" href="#products" role="tab">Products</a>
         </li>
 
     </ul>
     <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active p-3" id="general" role="tabpanel">
+        <div class="tab-pane fade show active p-3" id="overview" role="tabpanel">
             <!--product overview-->
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Customer ID:</label>
+                <label class="col-sm-2 col-form-label">Order ID:</label>
                 <div class="col-sm-10">
-                    <input type="text"  class="form-control" th:value="${order.customerId}" readonly="readonly"
+                    <input type="text"  class="form-control" th:value="${order.id}" readonly="readonly"
                     >
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Full Name:</label>
+                <label class="col-sm-2 col-form-label">Customer:</label>
                 <div class="col-sm-10">
                     <input class="form-control" type="text" th:value="${order.getCustomerFullName()}"
                            readonly="readonly">
@@ -48,34 +48,58 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label">E-mail:</label>
+                <label class="col-sm-2 col-form-label">Product Cost:</label>
                 <div class="col-sm-10">
-                    <input class="form-control" type="text" th:value="${order.customeremail}"
+                    <input class="form-control" type="text" th:value="${order.productCost}"
                            readonly>
                 </div>
             </div>
 
 
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Phone Number:</label>
+                <label class="col-sm-2 col-form-label">Shipping Cost:</label>
                 <div class="col-sm-10">
-                    <input class="form-control" type="text" th:value="${order.phoneNumber}"
+                    <input class="form-control" type="text" th:value="${order.shippingCost}"
                            readonly>
                 </div>
             </div>
-
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Enabled</label>
+                <label class="col-sm-2 col-form-label">Tax</label>
                 <div class="col-sm-10 mt-2">
-                    <input name="enabled"  type="checkbox" th:checked="${order.enabled==1}" onclick="return false;">
+                    <input class="form-control"  type="text"  th:value="${order.tax}" readonly>
                 </div>
 
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Total:</label>
+                <div class="col-sm-10 mt-2">
+                    <input class="form-control"  type="text"  th:value="'$ '+${order.total}" readonly>
+                    <div class="m-2">TOTAL=SubTotal+ Shipping Cost+ Tax</div>
+                </div>
+
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Payment Method:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" th:value="${order.paymentMethod}"
+                           readonly>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Status:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" th:value="${order.Status}"
+                           readonly>
+                </div>
             </div>
 
 
 
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Created Time</label>
+                <label class="col-sm-2 col-form-label">Order Date:</label>
                 <div class="col-sm-10 mt-2">
                     <span th:text="${order.orderTime}"></span>
 
@@ -89,7 +113,7 @@
 
         </div>
 
-            <div class="tab-pane fade show active p-3" id="address" role="tabpanel">
+            <div class="tab-pane fade show active p-3" id="products" role="tabpanel">
                 <!--product overview-->
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label">AddressLine 1:</label>

@@ -148,7 +148,7 @@
 
 
     <div class="text-center mt-4" id="Title-hide">
-        <h2 style="font-family: Menlo">Check Out</h2>
+        <h2 style="font-family: Menlo">[[${pageTitle}]]</h2>
 
     </div>
 
@@ -174,6 +174,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5>Payment Method</h5>
+                   <span th:text="${customer.addressline1}"></span>
                 </div>
                 <div class="card-body">
                     <div th:if="${checkOutInfo.isCodSupported()}">
@@ -185,6 +186,12 @@
                         </form>
 
                     </div>
+
+                    <div id="paypal-button-container"></div>
+                    <form th:action="@{/process_paypal_order}" method="post" id="paypalForm">
+                        <input type="hidden" name="orderId" id="orderId"/>
+                        <input type="hidden" name="paymentMethod" value="PAYPAL"/>
+                    </form>
                 </div>
             </div>
         </div>
@@ -274,14 +281,74 @@
 
     </div>
 </div>
-
+<script  type="text/javascript"th:src="@{https://www.paypal.com/sdk/js(client-id=${paypalClientID},currency=${currencyCode})}"></script>
 <script type="text/javascript" th:src="@{/Js/shopping_cart.js}"></script>
-</body>
 <script type="text/javascript">
     $(document).ready(function () {
         $('#radioCOD').on('click',function () {
-           $('#buttonSubmit').removeClass('d-none');
-        })
+            $('#buttonSubmit').removeClass('d-none');
+        });
+        
+
     })
+    function validateOrder(orderId) {
+        $('#orderId').val(orderId);
+        $('#paypalForm').submit();
+    }
+    paypal.Buttons({
+       createOrder:function (data,action) {
+           //set up a transaction
+           return action.order.create({
+               intent:"CAPTURE",
+               payer:{
+                   name:{ given_time:"[[${customer.firstName}]]",
+                       surname:"[[${customer.LastName}]]"},
+                   addreses:{
+                       address_line_1:"[[${customer.addressline1}]]",
+                       address_line_2:"[[${customer.addressline2}]]",
+                       admin_area_1:"[[${customer.state}]]",
+                       admin_area_2:"[[${customer.city}]]",
+                       postal_code:"[[${customer.postalCode}]]",
+                       country_code:"[[${customer.countryCode}]]"
+                   },
+                   email_address:"[[${customer.email}]]",
+                   phone:{
+                       phone_type:"MOBILE",
+                       phone_number:{
+                           national_number:"[[${customer.phoneNumber}]]",
+                       }
+                   }
+
+               },
+               purchase_units:[{
+                   amount:{
+                       value:"[[${checkOutInfo.paymentTotal}]]",
+                       currency_code:"[[${currencyCode}]]"
+                   }
+
+               }]
+
+
+           });
+       },
+        onApprove:function (data,action) {
+          //buyer approved payment
+          return  action.order.capture().then(function (details) {
+              console.log(details);
+              orderId=details.id;
+              validateOrder(orderId);
+
+              
+          })
+        },
+        onCancel:function (data,action) {
+            //buy canceled payment
+        },
+        onError:function (data,action) {
+           //error that prevents buyer from  doing checkout
+        }
+    }).render("#paypal-button-container")
 </script>
+</body>
+
 </html>

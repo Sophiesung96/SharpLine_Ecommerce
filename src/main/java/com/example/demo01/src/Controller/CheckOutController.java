@@ -6,12 +6,22 @@ import com.example.demo01.src.Pojo.*;
 import com.example.demo01.src.Service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.datetime.DateFormatter;
+import org.springframework.http.HttpStatus;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +43,16 @@ public class CheckOutController {
 
     @Autowired
     OrderService orderService;
+
+    @Autowired
+    SettingService settingService;
+    @Autowired
+    JavaMailSender javaMailSender;
+    @Autowired
+    CountryService countryService;
+
+    @Autowired
+    PayPalService payPalService;
 
 
     @GetMapping("/checkout")
@@ -72,10 +92,22 @@ public class CheckOutController {
 
             }
             CheckOutInfo checkOutInfo = checkOutService.preparecheckOut(pList, shippingRate);
+            String currencyCode=settingService.getCurrencyCode();
             log.info("deliver days:{}", checkOutInfo.getDeliverDays());
             log.info("Shipping Rate:{}",shippingRate);
+            model.addAttribute("pageTitle","Check Out");
+            model.addAttribute("currencyCode", currencyCode);
             model.addAttribute("checkOutInfo", checkOutInfo);
             model.addAttribute("cartItemlist", list);
+            //for customers using paypal paymentgateaway
+            Customer PaypalCustomer=new Customer();
+             Country country=countryService.getByCountryId(customer.getCountryId());
+              customer.setCountryCode(country.getCode());
+            model.addAttribute("customer", customer);
+            PaymentSettingBag paymentSettingBag=settingService.getPaymentSetting();
+            String paypalClientID=paymentSettingBag.getClientID();
+            model.addAttribute("paypalClientID",paypalClientID);
+
         } else {
 
             model.addAttribute("cartItemlist", null);
@@ -105,7 +137,7 @@ public class CheckOutController {
     }
 
     @PostMapping("/placeOrder")
-    public String placeOrder(HttpServletRequest request) {
+    public String placeOrder(HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
         String paymentType = request.getParameter("paymentMethod");
         PaymentMethod paymentMethod = PaymentMethod.valueOf(paymentType);
         Customer customer = getAuthenticatedCustomer(request);
@@ -122,7 +154,7 @@ public class CheckOutController {
             }
             Address Defaultaddress = new Address();
             Defaultaddress = addressService.findefaultAddressById(customer.getId());
-            log.info("default address is existed or nah:{}", Defaultaddress != null);
+            log.info("customer:{}, customer's default address is existed or nah:{}",customer.getId(), Defaultaddress != null);
             ShippingRate shippingRate = new ShippingRate();
             if (Defaultaddress != null) {
                 // this means that the shipping address is set to be primary address
@@ -139,20 +171,67 @@ public class CheckOutController {
                 shippingRate = shippingRateService.getShippingRateforCustomer(customer);
             }
             CheckOutInfo checkOutInfo = checkOutService.preparecheckOut(pList, shippingRate);
-            orderService.createorder(customer, Defaultaddress, list, paymentMethod, checkOutInfo);
+            OrderDetailForm orderDetailForm=orderService.createorder(customer, Defaultaddress, list, paymentMethod, checkOutInfo);
             //clean shopping cart after placing an order
             for (int product : productId) {
                 shoppingCartService.removeProduct(customer.getId(), product);
             }
+            log.info("Order Total:{}",orderDetailForm.getTotal());
+            sendOrderConfirmationEmail(request,orderDetailForm);
+
         }
 
             return "Order_completed";
 
         }
 
+    private void sendOrderConfirmationEmail(HttpServletRequest request, OrderDetailForm order) throws MessagingException, UnsupportedEncodingException {
+        EmailSettingBag emailSettingBag=settingService.getEmailSettings();
+        String toAddress=order.getEmail();
+        String subject=emailSettingBag.getOrderConfirmationSubject();
+        subject=subject.replace("[orderId]",String.valueOf(order.getId()));
+        String content=emailSettingBag.gettOrderConfirmationContent();
+        MimeMessage mimeMessage=javaMailSender.createMimeMessage();
+        MimeMessageHelper helper=new MimeMessageHelper(mimeMessage);
+        helper.setFrom(emailSettingBag.getFromAddress(),emailSettingBag.getSenderName());
+        helper.setTo(toAddress);
+        helper.setSubject(subject);
+        CurrencySettingBag currencySettingBag=settingService.getCurrencySetting();
+        String totalAmount=MailConfiguration.formatCurrency(order.getTotal(),currencySettingBag);
+        content=content.replace("[[name]]",order.getCustomerFullName());
+        content=content.replace("[[orderId]]",String.valueOf(order.getId()));
+        content=content.replace("[orderTime]",order.getOrderTime());
+        content=content.replace("[[shippingAddress]]",order.getShippingAddress());
+        content=content.replace("[[total]]",totalAmount);
+        content=content.replace("[[paymentMethod]]",order.getPaymentMethod());
+        helper.setText(content,true);
+        javaMailSender.send(mimeMessage);
 
+    }
 
+    @PostMapping("/process_paypal_order")
+    public String processPayPalOrder(HttpServletRequest request,Model model){
+        String orderId=request.getParameter("orderId");
+        String pageTitle=null;
+        String message=null;
+            try {
+                if(payPalService.ValidateApi(orderId)){
+                return placeOrder(request);
+                }else{
+                    pageTitle="Check Out Failure";
+                    message="ERROR: Transaction could not be completed because order information" +
+                            "is invalid";
+                }
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+               message="ERROR:Transaction failed due to error: "+ e.getMessage();
+            }
+             model.addAttribute("pageTitle",pageTitle);
+             model.addAttribute("message",message);
 
+        return message;
+    }
 
 
 }

@@ -70,7 +70,8 @@ public class OrderDAOImpl implements OrderDAO {
         String sql="select o.id as id,o.order_time as orderTime,o.customer_id as customerId,c.email as email," +
                 "o.address_line1 as addressline1,o.address_line2 as addressline2," +
                 "o.first_name as firstName, o.last_name as lastName,o.phone_number as phoneNumber," +
-                "o.city as city, o.state as state,o.total as total,o.postal_code as postalCode,o.payment_method as paymentmethod,o.country as country," +
+                "o.city as city,o.status as status,o.product_cost as productCost, o.shipping_cost as shippingCost" +
+                ",o.tax as tax, o.state as state,o.total as total,o.postal_code as postalCode,o.payment_method as paymentmethod,o.country as country," +
                 "c.enabled as enabled from `Order` o inner join customers c on o.customer_id=c.id where o.id=:orderid";
         Map<String,Object> map=new HashMap<>();
         map.put("orderid",orderId);
@@ -82,7 +83,13 @@ public class OrderDAOImpl implements OrderDAO {
         }        return null;
     }
 
-
+    @Override
+    public void EditOrder(Order order) {
+        String sql="update `Order` set customer_id=:customerid,   where id=:orderid";
+        Map<String,Object> map=new HashMap<>();
+        map.put("orderid",order.getId());
+        namedParameterJdbcTemplate.update(sql,map);
+    }
 
     @Override
     public void DeleteOrderById(int orderId) {

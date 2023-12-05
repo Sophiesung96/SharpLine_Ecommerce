@@ -104,11 +104,10 @@ public class CartItemDaoImpl implements  CartItemDao{
     }
 
     @Override
-    public void deleteByCustomer(Customer customer,int productId) {
+    public void removeProduct(int customerId,int productId) {
         String sql="delete from Cartitem where customer_id=:customerid and product_id=:productid ";
-        List<CartItem> list=new ArrayList<>();
         Map<String,Object> map=new HashMap<>();
-        map.put("customerid",customer.getId());
+        map.put("customerid",customerId);
         map.put("productid",productId);
         namedParameterJdbcTemplate.update(sql,map);
 

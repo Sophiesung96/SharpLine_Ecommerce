@@ -1,7 +1,7 @@
 package com.example.demo01.src.Service;
 
-import com.example.springboot_ecommerce.DAO.CurrencyDao;
-import com.example.springboot_ecommerce.Pojo.Currency;
+import com.example.demo01.src.DAO.CurrencyDao;
+import com.example.demo01.src.Pojo.Currency;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

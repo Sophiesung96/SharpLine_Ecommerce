@@ -64,7 +64,7 @@ public class Product {
         if(discountPercent>0){
             float newprice=this.price*((100-discountPercent)/100);
             BigDecimal bd = new BigDecimal(newprice);
-            BigDecimal roundOff = bd.setScale(2, RoundingMode.FLOOR);
+            BigDecimal roundOff = bd.setScale(2, RoundingMode.HALF_UP);
           return  roundOff.floatValue();
         }
         return this.discountPercent;
