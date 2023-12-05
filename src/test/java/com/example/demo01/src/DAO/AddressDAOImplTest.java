@@ -10,9 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 class AddressDAOImplTest {
  @SpyBean
@@ -102,7 +103,25 @@ class AddressDAOImplTest {
        List<Address>list= addressDAO.findByCustomer(new Customer(2));
        list.forEach(address -> assertEquals(0,address.getDefaultAddress()));
     }
+    public String getMyDefault() {
+        System.out.println("Getting Default Value");
+        return "Default Value";
+    }
 
+
+    @Test
+    public void whenOrElseGetAndOrElseDiffer_thenCorrect() {
+        String text = "Text present";
+
+        System.out.println("Using orElseGet:");
+        String defaultText
+                = Optional.ofNullable(text).orElseGet(this::getMyDefault);
+        assertEquals("Text present", defaultText);
+
+        System.out.println("Using orElse:");
+        defaultText = Optional.ofNullable(text).orElse(getMyDefault());
+        assertEquals("Text present", defaultText);
+    }
 
 
 

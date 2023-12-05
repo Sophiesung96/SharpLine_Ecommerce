@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -18,6 +19,7 @@ public class CheckOutInfo {
     private int   deliverDays;
     private Date  deliverDate;
     private boolean codSupported;
+    private String PaymentTotal4PAyPal;
 
 
     public void setDeliverDate(int deliverDays) {
@@ -34,5 +36,12 @@ public class CheckOutInfo {
         calendar.add(Calendar.DATE,deliverDays);
         return calendar.getTime();
     }
+
+    public String getPaymentTotal4PAyPal(){
+        DecimalFormat decimalFormat=new DecimalFormat("###.###.##");
+        return decimalFormat.format(paymentTotal);
+    }
+
+
 
 }

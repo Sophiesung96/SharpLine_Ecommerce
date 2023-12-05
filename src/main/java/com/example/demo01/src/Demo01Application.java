@@ -7,11 +7,11 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 
 @SpringBootApplication
 @EnableOpenApi
-public class SpringbootEcommerceApplication {
+public class Demo01Application {
 
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringbootEcommerceApplication.class, args);
+        SpringApplication.run(Demo01Application.class, args);
 
     }
 

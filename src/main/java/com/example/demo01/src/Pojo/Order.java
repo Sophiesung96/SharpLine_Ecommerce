@@ -33,7 +33,36 @@ public class Order {
     private int DeliverDays;
     private Date DeliverDate;
 
+    public String getCustomerFullName(){
+        return this.FirstName+" "+this.LastName;
+    }
 
+    public String getAddress() {
+        StringBuilder addressBuilder = new StringBuilder();
+        addressBuilder.append(this.FirstName);
 
+        if (this.LastName != null && !this.LastName.isEmpty()) {
+            addressBuilder.append(" ").append(this.LastName);
+        }
+        if (this.Addressline1 != null &&!this.Addressline1.isEmpty()) {
+            addressBuilder.append(", ").append(this.Addressline1);
+        }
+        if (this.Addressline2 != null && !this.Addressline2.isEmpty()) {
+            addressBuilder.append(" ").append(this.Addressline2);
+        }
+        if (this.City!= null && !this.City.isEmpty()) {
+            addressBuilder.append(", ").append(this.City);
+        }
+        if (this.State!=null && !this.State.isEmpty()) {
+            addressBuilder.append(", ").append(this.State);
+        }
+        if (this.PostalCode !=null &&!this.PostalCode.isEmpty()) {
+            addressBuilder.append(". Postal Code: ").append(this.PostalCode);
+        }
+        if (this.PhoneNumber!=null &&!this.PhoneNumber.isEmpty()) {
+            addressBuilder.append(". Phone Number: ").append(this.PhoneNumber);
+        }
+        return addressBuilder.toString();
+    }
 
 }

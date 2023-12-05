@@ -17,5 +17,5 @@ CartItem findByCustomerAndProduct(Customer customer, Product product);
     void DeleteByCustomerAndProduct(int customerId, int productId);
     void updateQuantity(int quantity,int customerId, int productId);
     List<CartItemPName> getJoinedProductnCustomer(Customer customer);
-    void deleteByCustomer(Customer customer,int productId);
+    void removeProduct(int customerId,int productId);
 }

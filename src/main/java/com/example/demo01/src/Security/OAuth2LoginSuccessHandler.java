@@ -1,8 +1,10 @@
 package com.example.demo01.src.Security;
 
+import com.example.demo01.src.Configuration.JWTUtil;
 import com.example.demo01.src.Pojo.AuthenticationType;
 import com.example.demo01.src.Pojo.Customer;
 import com.example.demo01.src.Service.CustomerService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +19,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
+@Slf4j
 //this class is to update or renew customer info who logged in by Google
 public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-  private static final Logger log=LoggerFactory.getLogger(OAuth2LoginSuccessHandler.class);
+
 
   @Autowired
     CustomerService customerService;
+
+  @Autowired
+    JWTUtil jwtUtil;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
@@ -43,6 +50,14 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                customer.setAuthenticationType("GOOGLE");
          }
                customerService.updateAuthenticationType(customer, AuthenticationType.GOOGLE);}
+        // Generate JWT token
+        String jwtToken = jwtUtil.generateToken(customerOAuth2User.getName());
+        jwtToken+="Bearer";
+        // Respond with JWT token
+        response.addHeader("Authorization",jwtToken);
+        log.info("jwtToken: {}", jwtToken);
+        // Redirect to /index or respond with success message
+        response.sendRedirect("/index");
         response.sendRedirect("/index");
           //once the user is authenticated by google, he will be led to the /index
         super.onAuthenticationSuccess(request, response, authentication);
