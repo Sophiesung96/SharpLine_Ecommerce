@@ -1,7 +1,7 @@
 package com.example.demo01.src.Service;
 
-import com.example.springboot_ecommerce.Pojo.Category;
-import com.example.springboot_ecommerce.Pojo.PageNumber;
+import com.example.demo01.src.Pojo.Category;
+import com.example.demo01.src.Pojo.PageNumber;
 
 import java.util.List;
 

@@ -19,4 +19,8 @@ public class Country {
     public Country(@NonNull String name) {
         this.name = name;
     }
+
+    public Country(int id) {
+        this.id = id;
+    }
 }

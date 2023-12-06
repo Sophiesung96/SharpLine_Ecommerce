@@ -1,7 +1,7 @@
 package com.example.demo01.src.Service;
 
-import com.example.springboot_ecommerce.Pojo.Brand;
-import com.example.springboot_ecommerce.Pojo.BrandCategoryName;
+import com.example.demo01.src.Pojo.Brand;
+import com.example.demo01.src.Pojo.BrandCategoryName;
 
 import java.util.List;
 

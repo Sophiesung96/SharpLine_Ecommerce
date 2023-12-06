@@ -1,8 +1,8 @@
 package com.example.demo01.src.Controller;
 
-import com.example.springboot_ecommerce.Pojo.Brand;
-import com.example.springboot_ecommerce.Pojo.BrandCategoryName;
-import com.example.springboot_ecommerce.Service.BrandService;
+import com.example.demo01.src.Pojo.Brand;
+import com.example.demo01.src.Pojo.BrandCategoryName;
+import com.example.demo01.src.Service.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

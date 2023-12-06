@@ -1,6 +1,6 @@
 package com.example.demo01.src.Mapper;
 
-import com.example.springboot_ecommerce.Pojo.CartItemPName;
+import com.example.demo01.src.Pojo.CartItemPName;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

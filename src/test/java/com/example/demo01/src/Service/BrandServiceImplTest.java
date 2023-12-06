@@ -1,9 +1,9 @@
-package com.example.demo01.src.test.java.com.example.springboot_ecommerce.Service;
+package com.example.demo01.src.Service;
 
-import com.example.springboot_ecommerce.DAO.BrandDAO;
-import com.example.springboot_ecommerce.Pojo.Brand;
+import com.example.demo01.src.DAO.BrandDAO;
+import com.example.demo01.src.Pojo.Brand;
+import com.example.demo01.src.Service.BrandService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

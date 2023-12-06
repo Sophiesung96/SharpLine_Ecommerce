@@ -1,6 +1,6 @@
 package com.example.demo01.src.Service;
 
-import com.example.springboot_ecommerce.Pojo.CartItem;
+import com.example.demo01.src.Pojo.CartItem;
 import org.springframework.stereotype.Service;
 
 @Service
