@@ -1,11 +1,12 @@
-package com.example.demo01.DAO;
+package com.example.demo01.src.DAO;
 
-import com.example.demo01.src.DAO.CategoryDAO;
 import com.example.demo01.src.Pojo.Category;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 class CategoryDAOImplTest {
 

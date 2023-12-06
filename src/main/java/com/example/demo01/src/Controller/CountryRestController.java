@@ -1,7 +1,7 @@
 package com.example.demo01.src.Controller;
 
-import com.example.springboot_ecommerce.Pojo.Country;
-import com.example.springboot_ecommerce.Service.CountryService;
+import com.example.demo01.src.Pojo.Country;
+import com.example.demo01.src.Service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,14 +25,14 @@ public class CountryRestController {
     @PostMapping("/countries/save")
     public  String save(@RequestBody Country country){
         countryService.saveCountry(country);
-       Country country1= countryService.getByCountryId(country);
+       Country country1= countryService.getByCountryId(country.getId());
      return String.valueOf(country1.getId());
     }
 
     @PostMapping("/countries/update")
     public  String update(@RequestBody Country country){
         countryService.updateCountry(country);
-        Country country1= countryService.getByCountryId(country);
+        Country country1= countryService.getByCountryId(country.getId());
         return String.valueOf(country1.getId());
     }
 

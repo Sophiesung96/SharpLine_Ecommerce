@@ -1,11 +1,11 @@
 package com.example.demo01.src.Controller;
 
 import com.example.demo01.src.FileUploadUtil;
-import com.example.springboot_ecommerce.Pojo.Brand;
-import com.example.springboot_ecommerce.Pojo.BrandCategoryName;
-import com.example.springboot_ecommerce.Pojo.Category;
-import com.example.springboot_ecommerce.Service.BrandService;
-import com.example.springboot_ecommerce.Service.CategoryService;
+import com.example.demo01.src.Pojo.Brand;
+import com.example.demo01.src.Pojo.BrandCategoryName;
+import com.example.demo01.src.Pojo.Category;
+import com.example.demo01.src.Service.BrandService;
+import com.example.demo01.src.Service.CategoryService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

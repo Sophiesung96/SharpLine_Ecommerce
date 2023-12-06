@@ -8,7 +8,7 @@ public interface CountryDao {
 
     public List<Country> findAllByOrderByNameAsc();
     public void saveCountry(Country country);
-    public Country getByCountryId(Country country);
+    public Country getByCountryId(int countryId);
     public void DeleteById(Integer id);
     public void updateCountry(Country country);
 

@@ -1,9 +1,9 @@
 package com.example.demo01.src.Controller;
 
-import com.example.demo01.src.main.Configuration.CategoryCsvExporter;
+import com.example.demo01.src.Configuration.CategoryCsvExporter;
 import com.example.demo01.src.FileUploadUtil;
-import com.example.springboot_ecommerce.Pojo.Category;
-import com.example.springboot_ecommerce.Service.CategoryService;
+import com.example.demo01.src.Pojo.Category;
+import com.example.demo01.src.Service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

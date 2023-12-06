@@ -1,8 +1,8 @@
 package com.example.demo01.src.Service;
 
-import com.example.springboot_ecommerce.DAO.CategoryDAO;
-import com.example.springboot_ecommerce.Pojo.PageNumber;
-import com.example.springboot_ecommerce.Pojo.Category;
+import com.example.demo01.src.DAO.CategoryDAO;
+import com.example.demo01.src.Pojo.PageNumber;
+import com.example.demo01.src.Pojo.Category;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -43,11 +43,11 @@ public class CountryDaoImpl implements CountryDao{
     }
 
     @Override
-    public Country getByCountryId(Country country) {
+    public Country getByCountryId(int countryId) {
         List<Country> list=new ArrayList<>();
-        String sql="select * from countries where name=:name";
+        String sql="select * from countries where id=:id";
         Map<String,Object> map=new HashMap<>();
-        map.put("name",country.getName());
+        map.put("id",countryId);
         list=namedParameterJdbcTemplate.query(sql,map,new CountryMapper());
         if(list.size()>0){
             return list.get(0);

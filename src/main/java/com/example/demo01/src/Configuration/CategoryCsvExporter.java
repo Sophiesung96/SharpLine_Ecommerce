@@ -1,6 +1,6 @@
-package com.example.springboot_ecommerce.Configuration;
+package com.example.demo01.src.Configuration;
 
-import com.example.springboot_ecommerce.Pojo.Category;
+import com.example.demo01.src.Pojo.Category;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
