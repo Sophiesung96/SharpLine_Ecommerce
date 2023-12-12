@@ -3,6 +3,7 @@ package com.example.demo01.src.DAO;
 import com.example.demo01.src.Pojo.Customer;
 import com.example.demo01.src.Pojo.Order;
 import com.example.demo01.src.Pojo.OrderDetailForm;
+import com.example.demo01.src.Service.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ class OrderDAOImplTest {
     OrderDAO orderDAO;
     @Autowired
     ObjectMapper objectMapper;
+
+    @Autowired
+    OrderService orderService;
 
 
     @Test
@@ -91,6 +95,7 @@ class OrderDAOImplTest {
     assertEquals(testOrder.getFirstName(),order.getFirstName());
     assertEquals(testOrder.getLastName(),order.getLastName());
     }
+
 
 
 

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div id="productList">
+
+        <th:block th:each="detail,status:${orderDetailFormList}">
+            <div class="border rounded p-1">
+                <div class="row">
+                    <div class="col-1">
+                        [[${status.count}]]
+                    </div>
+                    <div class="col-3">
+                        <img th:src="@{${detail.getMainImagePath()}}" class="img-fluid"/>
+                    </div>
+                </div>
+                <div class="row m-2">
+                    <b>[[${detail.Productname}]]</b>
+                </div>
+
+                <div class="row">
+                    <table>
+                        <tr>
+                            <td>Product Cost:</td>
+                            <td>
+                                <input type="text" required class="form-control"
+                                       th:value="${detail.productCost}" style="max-width: 140px;"/>
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <td>Quantity:</td>
+                            <td>
+                                <input type="number" step="1" min="1" max="5" required class="form-control"
+                                       th:value="${detail.quantity}" style="max-width: 140px;"/>
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <td>SubTotal:</td>
+                            <td>
+                                <input type="text"  required class="form-control"
+                                       th:value="${detail.subTotal}" style="max-width: 140px;"/>
+                            </td>
+
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+        </th:block>
+
+
+    </div>
+
+
+
+
+</div>
+</body>
+</html>

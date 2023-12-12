@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+    <title>Product Edit</title>
+    <link rel="icon" type="image/x-icon"th:href="@{/image/logo.png}">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <!-- Latest compiled JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.js"></script>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="navbar navbar-expand-lg bg-dark navbar-dark">
+            <a class="navbar-brand" th:href="@{/home}">
+                <img th:src="@{/image/logo.png}" style="width:100px;height:50px">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggle"
+                    aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggle">
+                <ul class="navbar-nav">
+                    <li class="nav-item" sec:authorize="hasAuthority('Admin')">
+                        <a class="nav-link" th:href="@{/users/1}">Users</a>
+                    </li>
+                    <th:block sec:authorize="hasAnyAuthority('Admin','Editor')">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/categories/1}">Categories</a>
+                        </li>
+                    </th:block>
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','Editor')">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/brands/1}">Brands</a>
+                        </li>
+                    </th:block>
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','Editor','SalesPerson','Shipper')">
+
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/products/1}">Products</a>
+                        </li>
+                    </th:block>
+
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','Assistant')">
+
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/questions}">Questions</a>
+                        </li>
+                    </th:block>
+                    <th:block sec:authorize="hasAnyAuthority('Admin','SalesPerson')">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/customers}">Customers</a>
+                        </li>
+                    </th:block>
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','SalesPerson')">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/shipping}">Shipping</a>
+                        </li>
+                    </th:block>
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','Editor','Shipper')">
+
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/orders/1}">Orders</a>
+                        </li>
+                    </th:block>
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','SalesPerson')">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/report}">Sales Report</a>
+                        </li>
+                    </th:block>
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','Editor')">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/article}">Articles</a>
+                        </li>
+                    </th:block>
+
+                    <th:block>
+                        <li class="nav-item" sec:authorize="hasAuthority('Admin')">
+                            <a class="nav-link" th:href="@{/settings}">Settings</a>
+                        </li>
+                    </th:block>
+
+
+                    <li class="nav-item">
+                        <img th:src="@{/image/thumbnail.jpeg}" alt="" width="30" height="30" class="d-inline-block align-text-top">
+                    </li>
+                    <li class="nav-item  mx-2">
+
+                        <div class="dropdown">
+                            <a class="nav-link text-warning btn btn-outline- dropdown-toggle"data-bs-toggle="dropdown" aria-expanded="false" sec:authentication="principal.username"></a>
+
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+
+                </ul>
+            </div>
+
+        </div>
+        <div class="container mt-3">
+            <div class="row">
+                <div class="col-12">
+                    <h2>Manage Order | [[${pageTitle}]]</h2>
+                </div>
+
+
+            </div>
+
+
+            <div class="row mt-3 justify-content-center">
+                <form th:action="@{/order/update}" method="post"  th:object="${order}">
+                    <input type="hidden" th:field="*{id}">
+                    <div>
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#overview" type="button" role="tab">Overview</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#products"  type="button"role="tab">Products</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#shipping" type="button" role="tab">Shipping</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#track" type="button" role="tab">Track</button>
+                            </li>
+
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#shipping" type="button" role="tab">Shipping</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active " id="overview" role="tabpanel">
+                                <div th:replace="~{order_editForm_overview::content}"></div>
+                            </div>
+                            <div class="tab-pane fade" id="products" role="tabpanel">
+                                <div th:replace="~{order_editForm_product::content}"></div>
+                            </div>
+                            <div class="tab-pane p-3 fade" id="shipping" role="tabpanel">
+                                <div th:replace="~{order_editForm_shipping::content}"></div>
+                            </div>
+                            <div class="tab-pane fade p-3" id="track" role="tabpanel">
+                                <h2>track</h2>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <input type="submit" value="save" class="btn btn-primary" id="button"/>
+                        <a th:href="@{/orders/1}">
+                            <input type="button" value="cancel" class="btn btn-danger"/>
+                        </a>
+
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+    var selectCountry =$('#selectCountry');
+    var StateSelected =$('#selectState');
+    $(document).ready(function () {
+
+       selectCountry.on('click',function () {
+           loadCountries();
+        });
+        selectCountry.change(function () {
+           loadStates4Country();
+       })
+    })
+
+    function loadStates4Country(){
+        ShippingState=$('#selectCountry option:selected');
+        countryID=ShippingState.val().split("-")[0];
+        var url='/states/list_by_country/'+countryID;
+        $.get(url,function (responseJson) {
+            StateSelected.empty();
+            $.each(responseJson,function (index,state) {
+                $('<option>').text(state.name).val(state.name).appendTo(StateSelected);
+            })
+        });
+    }
+
+    function loadCountries(){
+        url="/countries/list";
+        $.get(url,function (responseJson) {
+            selectCountry.empty();
+            $.each(responseJson,function (index,country) {
+                optionvalue=country.id+"-"+country.code;
+
+                $('<option>').val(optionvalue).text(country.name).appendTo(selectCountry);
+            });
+            //done() executes after GET request has been accomplished
+        })
+    }
+</script>
+
+
+
+
+</body>
+</html>
+
+
+
