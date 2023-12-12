@@ -18,6 +18,11 @@ public class OrderDetailFormMapper implements RowMapper<OrderDetailForm> {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formattedDate = sdf.format(resultSet.getTimestamp("orderTime"));
         order.setOrderTime(formattedDate);
+        order.setDeliverDays(resultSet.getInt("deliverDays"));
+        String deliverDate= sdf.format(resultSet.getDate("deliverDate"));
+        order.setDeliverDate(deliverDate);
+        order.setProductname(resultSet.getString("Productname"));
+        order.setProductname(resultSet.getString("ProductmainImage"));
         order.setProductCost(resultSet.getFloat("productCost"));
         order.setShippingCost(resultSet.getFloat("shippingCost"));
         order.setTax(resultSet.getFloat("tax"));
@@ -33,6 +38,8 @@ public class OrderDetailFormMapper implements RowMapper<OrderDetailForm> {
         order.setPhoneNumber(resultSet.getString("phoneNumber"));
         order.setEnabled(resultSet.getInt("enabled"));
         order.setPaymentMethod(resultSet.getString("paymentmethod"));
+        order.setQuantity(resultSet.getInt("quantity"));
+        order.setUnitPrice(resultSet.getFloat("unitPrice"));
         return order;
     }
 }

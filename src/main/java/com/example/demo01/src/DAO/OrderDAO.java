@@ -17,5 +17,9 @@ public interface OrderDAO {
     public Order getOrderByCustomerId(int customerid);
     void updatePaymentMethod(String method,int id);
      public void DeleteOrderById(int orderId);
+     public void EditOrder(Order order);
+     List<OrderDetailForm> getOrderDetailsList(int orderId);
+     List<Country> listAllCountries();
+
 
 }

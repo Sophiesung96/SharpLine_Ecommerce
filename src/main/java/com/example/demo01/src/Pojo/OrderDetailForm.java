@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Calendar;
 import java.util.Date;
 
 @Data
@@ -17,8 +18,11 @@ public class OrderDetailForm {
     private int enabled;
     private String email;
     private String orderTime;
+    private String Productname;
+    private String ProductmainImage;
     private String paymentMethod;
     private String Customeremail;
+    private float unitPrice;
     private float productCost;
     private float shippingCost;
     private float subTotal;
@@ -35,7 +39,8 @@ public class OrderDetailForm {
     private String postalCode;
     private String country;
     private int deliverDays;
-    private Date deliverDate;
+    private int quantity;
+    private String deliverDate;
     private String paymentmethod;
 
 
@@ -73,5 +78,24 @@ public class OrderDetailForm {
             addressBuilder.append(". Phone Number: ").append(this.phoneNumber);
         }
         return addressBuilder.toString();
+    }
+
+
+
+    public Date getDeliverDate(){
+        Calendar calendar=Calendar.getInstance();
+        calendar.add(Calendar.DATE,deliverDays);
+        return calendar.getTime();
+    }
+
+
+    public String getMainImagePath(){
+        if( this.ProductmainImage==null){
+            return "/image/default.jpeg";
+        }
+        else{
+
+            return"/product-images/"+this.id+"/"+this.ProductmainImage;
+        }
     }
 }

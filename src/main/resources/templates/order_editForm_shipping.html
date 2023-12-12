@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Deliver Days:</label>
+        <div class="col-sm-10">
+            <input type="text"  class="form-control" th:value="${order.DeliverDays}" readonly>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Expected Deliver Date:</label>
+        <div class="col-sm-10">
+            <input class="form-control" type="date" th:field="*{DeliverDate}">
+        </div>
+
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">First Name:</label>
+        <div class="col-sm-10">
+            <input type="text" th:field="*{FirstName}" class="form-control" required>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Last Name:</label>
+        <div class="col-sm-10">
+            <input type="text" th:field="*{LastName}" class="form-control" required>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Phone Number:</label>
+        <div class="col-sm-10">
+            <input type="text" th:field="*{PhoneNumber}" class="form-control" required>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Address Line1:</label>
+        <div class="col-sm-10">
+            <input type="text" th:field="*{Addressline1}" class="form-control" required>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Address Line2:</label>
+        <div class="col-sm-10">
+            <input type="text" th:field="*{Addressline2}" class="form-control" required>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">City:</label>
+        <div class="col-sm-10">
+            <input type="text" th:field="*{City}" class="form-control" required>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Country:</label>
+        <div class="col-sm-10">
+            <select th:field="*{Country}" id="selectCountry">
+                <option value="1">[Default Country]</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">State:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" required="required"  th:field="*{State}" maxlength="45" minlength="3"
+                   list='selectState'>
+            <datalist id="selectState"></datalist>
+        </div>
+
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Postal Code:</label>
+        <div class="col-sm-10">
+            <input type="text" th:field="*{PostalCode}" class="form-control" required>
+        </div>
+    </div>
+
+
+
+
+</div>
+</body>
+</html>

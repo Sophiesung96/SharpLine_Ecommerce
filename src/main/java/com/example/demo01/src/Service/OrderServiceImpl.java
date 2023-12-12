@@ -49,10 +49,14 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public Integer getTotalPage() {
+    public List<Integer> getTotalPage() {
        int total=orderDAO.getTotalPage();
         int page=(total/10)+1;
-        return page;
+        List<Integer>list=new ArrayList<>();
+        for(int i=1;i<=page;i++){
+            list.add(i);
+        }
+        return list;
     }
 
     @Override
@@ -117,6 +121,7 @@ public class OrderServiceImpl implements OrderService{
             orderDetails.setProductId(cartItemPNameLIst.get(i).getProductId());
             orderDetails.setQuantity(cartItemPNameLIst.get(i).getQuantity());
             orderDetails.setUnitPrice(cartItemPNameLIst.get(i).getDetailPrice());
+            orderDetails.setProductCost(checkOutInfo.getProductCost());
             orderDetails.setShippingCost(checkOutInfo.getShippingCostTotal());
             detailListlist.add(orderDetails);
         }
@@ -161,5 +166,18 @@ public class OrderServiceImpl implements OrderService{
         order.setPostalCode(address.getPostalCode());
         order.setState(address.getState());
 
+    }
+
+    @Override
+    public List<Country> listAllCountries() {
+        List<Country> list=orderDAO.listAllCountries();
+        return list;
+    }
+
+
+    @Override
+    public List<OrderDetailForm> getOrderDetailsList(int orderId) {
+        List<OrderDetailForm> list=orderDAO.getOrderDetailsList(orderId);
+        return list;
     }
 }
