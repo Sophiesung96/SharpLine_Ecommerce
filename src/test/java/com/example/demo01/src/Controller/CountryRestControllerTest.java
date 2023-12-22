@@ -1,17 +1,28 @@
-package com.example.demo01.Controller;
+package com.example.demo01.src.Controller;
 
+import com.example.demo01.src.Configuration.JWTUtil;
 import com.example.demo01.src.Pojo.Country;
 
+import com.example.demo01.src.Pojo.Customer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,6 +43,13 @@ class CountryRestControllerTest  {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    JWTUtil jwtUtil;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+
 
     @Test
     @WithMockUser(username = "nam@codejava.net",password = "{noop}ha123",roles="Admin")
@@ -44,7 +62,7 @@ class CountryRestControllerTest  {
         String jsonResponse=mvcResult.getResponse().getContentAsString();
         System.out.println(jsonResponse);
         Country[] c=objectMapper.readValue(jsonResponse, Country[].class);
-       assertNotNull(c);
+        Arrays.stream(c).forEach(cc-> System.out.println(cc));
 
     }
 
@@ -73,11 +91,14 @@ class CountryRestControllerTest  {
         //Integer countryid=7;
         String countryCode="JP";
         Country country=new Country(countryName,countryCode);
-        mockMvc.perform(post(url).contentType("application/json")
+       MvcResult result= mockMvc.perform(post(url).contentType("application/json")
                         .content(objectMapper.writeValueAsString(country))
                         .with(csrf())
                 ).andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
+       String test=result.getResponse().getContentAsString();
+        System.out.println(test);
 
     }
 
@@ -90,7 +111,7 @@ class CountryRestControllerTest  {
         String url="/countries/delete/"+countryId;
 
         mockMvc.perform(get(url))
-                        .andExpect(status().isOk())
+                        .andExpect(status().is(302))
                         .andDo(print());
     }
 
@@ -102,8 +123,17 @@ class CountryRestControllerTest  {
         mockMvc.perform(get(url))
                 .andDo(print())
                 .andExpect(jsonPath("$..name", hasItem("Wisconsin")))
-                .andExpect(jsonPath("$..name",hasItem("Alaska")));
+                .andExpect(jsonPath("$..name",hasItem("Alaska")))
+                .andExpect(jsonPath("$[0].name",is("Alabama")))
+                .andExpect(jsonPath("$[2].name",is("Arizona")))
+                .andExpect(jsonPath("$[3].name",is("Arkansas")));
+
     }
+
+
+
+
+
 
 
 

@@ -1,10 +1,10 @@
 package com.example.demo01.src.Controller;
 
-import com.example.springboot_ecommerce.Pojo.Country;
-import com.example.springboot_ecommerce.Pojo.Currency;
-import com.example.springboot_ecommerce.Pojo.State;
-import com.example.springboot_ecommerce.Service.SettingService;
-import com.example.springboot_ecommerce.Service.StateService;
+import com.example.demo01.src.Pojo.Country;
+import com.example.demo01.src.Pojo.Currency;
+import com.example.demo01.src.Pojo.State;
+import com.example.demo01.src.Service.SettingService;
+import com.example.demo01.src.Service.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

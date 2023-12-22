@@ -247,8 +247,6 @@
             if (filesize > 1048576) {
                 //html5 customize validation message
                 this.setCustomValidity('You must choose an image less than 1 MB!');
-                //browser will prevent the form from being submitted to the server
-                this.reportValidity();
             } else {
                 showImage(this);
             }

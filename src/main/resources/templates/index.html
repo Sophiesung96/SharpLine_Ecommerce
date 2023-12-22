@@ -28,7 +28,7 @@
 
                     <li class="nav-item">
                         <b><a class="nav-link" th:href="@{/customer}">
-                            <span th:text="${#authentication.isAuthenticated() ? #authentication.name : 'Guest'}"></span>
+                            <span th:text="${#authentication.isAuthenticated() ? 'Hello!' : 'Guest'}"></span>
                         </a></b>
                     </li>
 

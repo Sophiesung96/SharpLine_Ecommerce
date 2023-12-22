@@ -10,7 +10,8 @@
 
         <th:block th:each="detail,status:${orderDetailFormList}">
             <div class="border rounded p-1">
-                <div class="row">
+                <input type="hidden" th:value="${detail.productId}" name="productId" class="hiddenProductId"/>
+                <div class="row" mt-2>
                     <div class="col-1">
                         [[${status.count}]]
                     </div>
@@ -18,40 +19,64 @@
                         <img th:src="@{${detail.getMainImagePath()}}" class="img-fluid"/>
                     </div>
                 </div>
+
                 <div class="row m-2">
                     <b>[[${detail.Productname}]]</b>
                 </div>
 
-                <div class="row">
-                    <table>
-                        <tr>
-                            <td>Product Cost:</td>
-                            <td>
-                                <input type="text" required class="form-control"
-                                       th:value="${detail.productCost}" style="max-width: 140px;"/>
-                            </td>
+                <div class="row mt-2">
+                    <div class="col mt-2">
+                        <table>
+                            <tr>
+                                <td>Product Cost:</td>
+                                <td>
+                                    <input type="text" required class="form-control cost-input"
+                                  th:rowNumber="${status.count}"   th:value="${detail.DetailproductCost}" style="max-width: 140px;"/>
+                                </td>
 
-                        </tr>
+                            </tr>
 
-                        <tr>
-                            <td>Quantity:</td>
-                            <td>
-                                <input type="number" step="1" min="1" max="5" required class="form-control"
-                                       th:value="${detail.quantity}" style="max-width: 140px;"/>
-                            </td>
+                            <tr>
+                                <td>Quantity:</td>
+                                <td>
+                                    <input type="number" step="1" min="1" max="5" required class="form-control quantity-input"
+                                   th:rowNumber="${status.count}"   th:id="'quantity'+${status.count}"     th:value="${detail.quantity}" style="max-width: 140px;"/>
+                                </td>
 
-                        </tr>
+                            </tr>
 
-                        <tr>
-                            <td>SubTotal:</td>
-                            <td>
-                                <input type="text"  required class="form-control"
-                                       th:value="${detail.subTotal}" style="max-width: 140px;"/>
-                            </td>
+                            <tr>
+                                <td>Unit Price:</td>
+                                <td>
+                                    <input type="text"  required class="form-control price-input"
+                                           th:id="'price'+${status.count}"  th:rowNumber="${status.count}" th:value="${detail.unitPrice}" style="max-width: 140px;"/>
+                                </td>
 
-                        </tr>
+                            </tr>
 
-                    </table>
+                            <tr>
+                                <td>SubTotal:</td>
+                                <td>
+                                    <input type="text"  readonly class="form-control subtotal-input"
+                                      th:id="'subtotal'+${status.count}"  th:value="${detail.subTotal}" style="max-width: 140px;"/>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td>Shipping Cost:</td>
+                                <td>
+                                    <input type="text"  required class="form-control ship-input"
+                                         th:value="${detail.shippingCost}" style="max-width: 140px;"/>
+                                </td>
+
+                            </tr>
+
+
+
+                        </table>
+                    </div>
+
                 </div>
             </div>
         </th:block>
@@ -59,9 +84,12 @@
 
     </div>
 
-
+<div class="m-3">
+    <a th:href="@{/orders/search_product}" id="linkAddProduct" class="btn btn-success">Add a Product</a>
+</div>
 
 
 </div>
+
 </body>
 </html>

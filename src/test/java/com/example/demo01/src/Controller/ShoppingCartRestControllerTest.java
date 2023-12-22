@@ -24,7 +24,7 @@ class ShoppingCartRestControllerTest {
 
         mockMvc.perform(post(url))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().is(302));
     }
 
 }

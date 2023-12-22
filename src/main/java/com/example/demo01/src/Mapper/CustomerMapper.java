@@ -1,7 +1,7 @@
 package com.example.demo01.src.Mapper;
 
-import com.example.springboot_ecommerce.Pojo.AuthenticationType;
-import com.example.springboot_ecommerce.Pojo.Customer;
+import com.example.demo01.src.Pojo.AuthenticationType;
+import com.example.demo01.src.Pojo.Customer;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

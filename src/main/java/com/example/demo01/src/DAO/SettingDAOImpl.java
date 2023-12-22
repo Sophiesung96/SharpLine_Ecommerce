@@ -77,4 +77,18 @@ public class SettingDAOImpl implements SettingDAO{
         }
         return null;
     }
+
+    @Override
+    public Setting findByKey(String key) {
+        String sql="select * from settings where `key`=:key";
+        Map<String,Object> map=new HashMap<>();
+        map.put("key",key);
+        List<Setting> list=new ArrayList<>();
+        list=namedParameterJdbcTemplate.query(sql,map,new SettingMapper());
+        if(list.size()>0){
+            return list.get(0);
+
+        }
+        return null;
+    }
 }

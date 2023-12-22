@@ -1,7 +1,7 @@
 package com.example.demo01.src.Service;
 
-import com.example.springboot_ecommerce.DAO.ProductDAO;
-import com.example.springboot_ecommerce.Pojo.*;
+import com.example.demo01.src.DAO.ProductDAO;
+import com.example.demo01.src.Pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -217,5 +217,26 @@ public class ProductServiceImpl implements ProductService {
             Plist.add(i);
         }
         return Plist;
+    }
+
+    public List<Integer> getFilteredPageCount4Order(String search) {
+        List<PageNumber> list=new ArrayList<>();
+        list=productDAO.getFilteredPageCount(search);
+        List<Integer>Plist=new ArrayList<>();
+        int pNumber=0;
+        for(PageNumber page:list){
+            pNumber=page.getPagenumber();
+        }
+        pNumber=(pNumber/5)+1;
+        for(int i=1;i<pNumber;i++){
+            Plist.add(i);
+        }
+        return Plist;
+    }
+
+    @Override
+    public List<Product> ProductSearchByKeywordforOrder(int pageno, String search) {
+        List<Product> list=productDAO.ProductSearchByKeywordforOrder(pageno, search);
+        return list;
     }
 }

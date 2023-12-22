@@ -32,21 +32,22 @@ public class ShoppingCartServiceImpl implements ShoppingCartService{
                 +" because there's already"+cartItem.getQuantity()+" "+
                         "item(s) in your shopping cart"+
                         "Maximum allowed quantity is 5!");
-
             }
+            cartItemDao.updateQuantity(updateQuantity,customer.getId(),productId);
         }else{
             cartItem=new CartItem();
             cartItem.setProduct(productId);
             cartItem.setCustomer(customer.getId());
+            cartItem.setQuantity(updateQuantity);
+            cartItemDao.SaveCartItem(cartItem);
         }
-        cartItem.setQuantity(updateQuantity);
-        cartItemDao.SaveCartItem(cartItem);
         return updateQuantity;
     }
 
     @Override
-    public void deleteByCustomer(Customer customer, int productId) {
-        cartItemDao.deleteByCustomer(customer,productId);
+    public void removeProduct(int customerId, int productId) {
+            cartItemDao.removeProduct(customerId, productId);
+
     }
 
     @Override

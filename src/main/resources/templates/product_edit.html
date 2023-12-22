@@ -558,13 +558,13 @@
         function addExtraDetails(){
             divdetail=$("[id^='detail']");
             detailCount=divdetail.length;
-            htmlDetailSection=`<div class="form-inline" id="detail${detailCount}">
-                                    <input type="hidden" name="did" value="0">
-                                     <label class="m-3">Name:</label>
-                                      <input type="text" class="form-control w-25" name="detailNames" maxlength="255">
-                                     <label class=" m-3">Value:</label>
-                                     <input type="text" class="form-control w-25" name="detailValues" maxlength="255">
-                                    </div>`;
+                    htmlDetailSection=` <div class="form-inline" id="detail${detailCount}">
+                                          <input type="hidden" name="did" value="0">
+                                           <label class="m-3">Name:</label>
+                                           <input type="text" class="form-control w-25" name="detailNames" maxlength="255">
+                                           <label class=" m-3">Value:</label>
+                                           <input type="text" class="form-control w-25" name="detailValues" maxlength="255">
+                                        </div>`;
             $('#ExtraDetails').append(htmlDetailSection);
             previousDetailsSection=divdetail.last();
             previosDetailId=previousDetailsSection.attr("id");

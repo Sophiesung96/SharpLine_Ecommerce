@@ -12,4 +12,5 @@ public interface SettingDAO {
     public List<Setting> findByCategory(SettingCategory category);
     public List<Setting> findByTwoCategory(SettingCategory category1,SettingCategory category2 );
     public void saveIterable(Iterable<Setting> iterable);
+    public Setting findByKey(String key);
 }

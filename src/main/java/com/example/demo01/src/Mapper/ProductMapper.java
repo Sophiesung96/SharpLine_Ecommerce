@@ -1,8 +1,8 @@
 package com.example.demo01.src.Mapper;
 
-import com.example.springboot_ecommerce.Pojo.Brand;
-import com.example.springboot_ecommerce.Pojo.Category;
-import com.example.springboot_ecommerce.Pojo.Product;
+import com.example.demo01.src.Pojo.Brand;
+import com.example.demo01.src.Pojo.Category;
+import com.example.demo01.src.Pojo.Product;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

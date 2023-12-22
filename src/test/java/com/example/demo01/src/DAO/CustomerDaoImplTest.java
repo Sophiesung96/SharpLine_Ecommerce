@@ -1,29 +1,26 @@
-package com.example.demo01.src.test.java.com.example.springboot_ecommerce.DAO;
+package com.example.demo01.src.DAO;
 
-import com.example.springboot_ecommerce.Pojo.AuthenticationType;
-import com.example.springboot_ecommerce.Pojo.Customer;
+import com.example.demo01.src.Pojo.AuthenticationType;
+import com.example.demo01.src.Pojo.Customer;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 class CustomerDaoImplTest {
   @SpyBean
-    CustomerDao customerDao;
+  CustomerDao customerDao;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+   PasswordEncoder encoder;
 
     @Test
     public void getCustomerByEmail(){
@@ -82,7 +79,7 @@ class CustomerDaoImplTest {
         String rawPassword = "sanyatesting";
         String encodedPassword = "$2a$10$B1WC0ZXWutMIfCgeRcR.NOl0IgFvlPvQxQ5M2ash5zdqIazY8zOOe";
 
-        boolean matches = passwordEncoder.matches(rawPassword, encodedPassword);
+        boolean matches = encoder.matches(rawPassword, encodedPassword);
         System.out.println("Password matches: " + matches);
 
 

@@ -18,4 +18,13 @@ public class State {
     private int countryId;
     private Set<State> states;
 
+    public State(int id) {
+        this.id = id;
+    }
+
+
+
+
+
+
 }

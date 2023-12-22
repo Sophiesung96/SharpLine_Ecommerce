@@ -1,6 +1,7 @@
 package com.example.demo01.src.Service;
 
 import com.example.demo01.src.Pojo.*;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -56,6 +57,7 @@ public class CheckOutServiceImpl implements CheckOutService {
         for (CartItemPName cartItem : cartItems) {
             Total += cartItem.getSubTotal();
         }
+
         BigDecimal costBigDecimal = BigDecimal.valueOf(Total);
         // Rounding the cost to two decimal places
         BigDecimal roundedCost = costBigDecimal.setScale(2, RoundingMode.HALF_UP);

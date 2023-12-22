@@ -17,7 +17,7 @@ public class EmailSettingBag extends GeneralSettingBag{
     public String getOrderConfirmationSubject(){
         return super.getValue("ORDER_CONFIRMATION_SUBJECT");
     }
-    public String gettOrderConfirmationContent(){
+    public String getOrderConfirmationContent(){
         return super.getValue("ORDER_CONFIRMATION_CONTENT");
     }
     public String getFromAddress(){

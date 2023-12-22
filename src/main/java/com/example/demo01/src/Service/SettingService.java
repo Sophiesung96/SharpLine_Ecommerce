@@ -15,4 +15,6 @@ public interface SettingService {
     public List<Setting> findByTwoCategory(SettingCategory category1,SettingCategory category2 );
     public EmailSettingBag getEmailSettings();
     public CurrencySettingBag  getCurrencySetting();
+    public PaymentSettingBag  getPaymentSetting();
+    public String getCurrencyCode();
 }

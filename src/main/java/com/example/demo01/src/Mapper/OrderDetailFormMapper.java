@@ -12,12 +12,15 @@ public class OrderDetailFormMapper implements RowMapper<OrderDetailForm> {
     public OrderDetailForm mapRow(ResultSet resultSet, int i) throws SQLException {
         OrderDetailForm order=new OrderDetailForm();
         order.setCustomerId(resultSet.getInt("customerId"));
+        order.setProductId(resultSet.getInt("productId"));
         order.setId(resultSet.getInt("id"));
         order.setAddressline1(resultSet.getString("addressline1"));
         order.setAddressline2(resultSet.getString("addressline2"));
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formattedDate = sdf.format(resultSet.getTimestamp("orderTime"));
         order.setOrderTime(formattedDate);
+        order.setDetailproductCost(resultSet.getFloat("DetailproductCost"));
+        order.setSubTotal(resultSet.getFloat("subTotal"));
         order.setDeliverDays(resultSet.getInt("deliverDays"));
         String deliverDate= sdf.format(resultSet.getDate("deliverDate"));
         order.setDeliverDate(deliverDate);

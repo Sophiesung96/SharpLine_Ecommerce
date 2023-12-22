@@ -42,7 +42,7 @@ function addToCart(){
             xhr.setRequestHeader("_csrf.headerName","_csrf.token");
         }
     }).done(function (response) {
-        alert(response);
+      alert(response);
     }).fail(function () {
         alert("Error while adding product to shopping cart.");
     });

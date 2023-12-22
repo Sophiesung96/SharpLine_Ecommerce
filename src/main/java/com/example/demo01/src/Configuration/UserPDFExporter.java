@@ -1,9 +1,11 @@
-package com.example.springboot_ecommerce.Configuration;
+package com.example.demo01.src.Configuration;
 
-import com.example.springboot_ecommerce.Pojo.Users;
-import com.lowagie.text.*;
+import com.example.demo01.src.Pojo.Users;
 import com.lowagie.text.Font;
-import com.lowagie.text.pdf.*;
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
 
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;

@@ -7,6 +7,8 @@ import com.example.demo01.src.Service.CountryService;
 import com.example.demo01.src.Service.CustomerService;
 import com.example.demo01.src.Service.SettingService;
 import com.example.demo01.src.Service.StateService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -235,7 +237,8 @@ public class CustomerController {
             redirectURL="redirect:/addressBook";
         }else if("cart".equals(redirectOption)) {
             redirectURL="redirect:/cart";
-
+        }else if("checkout".equals(redirectOption)) {
+            redirectURL="redirect:/addressBook?redirect=checkout";
         }
         return redirectURL;
     }

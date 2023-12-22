@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -94,6 +95,16 @@ class OrderDAOImplTest {
         System.out.println(order);
     assertEquals(testOrder.getFirstName(),order.getFirstName());
     assertEquals(testOrder.getLastName(),order.getLastName());
+    }
+
+    @Test
+    public void testFindOrderDetailsList(){
+        int orderId=1;
+       List<OrderDetailForm> list=orderDAO.getOrderDetailsList(orderId);
+       list.stream().filter(orderDetailForm -> orderDetailForm.getCustomerId()==1&&orderDetailForm.getFirstName().equals("David")
+       && orderDetailForm.getLastName().equals("Fountaine")).collect(Collectors.toList());
+       list.forEach(detail->assertEquals(1,detail.getCustomerId()));
+
     }
 
 

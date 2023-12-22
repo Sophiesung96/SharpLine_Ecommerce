@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
@@ -100,9 +101,8 @@ public class CheckOutController {
             model.addAttribute("checkOutInfo", checkOutInfo);
             model.addAttribute("cartItemlist", list);
             //for customers using paypal paymentgateaway
-            Customer PaypalCustomer=new Customer();
              Country country=countryService.getByCountryId(customer.getCountryId());
-              customer.setCountryCode(country.getCode());
+             customer.setCountryCode(country.getCode());
             model.addAttribute("customer", customer);
             PaymentSettingBag paymentSettingBag=settingService.getPaymentSetting();
             String paypalClientID=paymentSettingBag.getClientID();
@@ -151,6 +151,7 @@ public class CheckOutController {
             for (CartItem cartItem : list) {
                 cartItem.setList(pList);
                 productId.add(cartItem.getProduct());
+
             }
             Address Defaultaddress = new Address();
             Defaultaddress = addressService.findefaultAddressById(customer.getId());
@@ -177,6 +178,7 @@ public class CheckOutController {
                 shoppingCartService.removeProduct(customer.getId(), product);
             }
             log.info("Order Total:{}",orderDetailForm.getTotal());
+            //send order confirmation email to customer
             sendOrderConfirmationEmail(request,orderDetailForm);
 
         }
@@ -190,7 +192,7 @@ public class CheckOutController {
         String toAddress=order.getEmail();
         String subject=emailSettingBag.getOrderConfirmationSubject();
         subject=subject.replace("[orderId]",String.valueOf(order.getId()));
-        String content=emailSettingBag.gettOrderConfirmationContent();
+        String content=emailSettingBag.getOrderConfirmationContent();
         MimeMessage mimeMessage=javaMailSender.createMimeMessage();
         MimeMessageHelper helper=new MimeMessageHelper(mimeMessage);
         helper.setFrom(emailSettingBag.getFromAddress(),emailSettingBag.getSenderName());

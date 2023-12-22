@@ -1,7 +1,6 @@
 package com.example.demo01.src.Controller;
 
-import com.example.demo01.src.DAO.CurrencyDao;
-import com.example.demo01.src.FileUploadUtil;
+import com.example.demo01.src.Configuration.FileUploadUtil;
 import com.example.demo01.src.Pojo.Currency;
 import com.example.demo01.src.Pojo.GeneralSettingBag;
 import com.example.demo01.src.Pojo.Setting;

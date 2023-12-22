@@ -1,7 +1,7 @@
 package com.example.demo01.src.Service;
 
-import com.example.springboot_ecommerce.DAO.CountryDao;
-import com.example.springboot_ecommerce.Pojo.Country;
+import com.example.demo01.src.DAO.CountryDao;
+import com.example.demo01.src.Pojo.Country;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +27,8 @@ public class CountryServiceImpl implements CountryService{
     }
 
     @Override
-    public Country getByCountryId(Country country) {
-        return countrydao.getByCountryId(country);
+    public Country getByCountryId(int countryId) {
+        return countrydao.getByCountryId(countryId);
     }
 
     @Override

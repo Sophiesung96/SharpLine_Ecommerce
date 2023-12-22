@@ -1,6 +1,5 @@
-package com.example.demo01.DAO;
+package com.example.demo01.src.DAO;
 
-import com.example.demo01.src.DAO.ProductDAO;
 import com.example.demo01.src.Pojo.Product;
 import com.example.demo01.src.Pojo.ProductDetail;
 import com.example.demo01.src.Pojo.ProductImage;
@@ -13,7 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 class ProductDAOImplTest {

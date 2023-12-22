@@ -14,7 +14,8 @@ public class SettingBag {
         if(index>0){
             return settingList.get(index);
 
-        }        return null;
+        }
+        return null;
     }
 
     public String getValue(String key){

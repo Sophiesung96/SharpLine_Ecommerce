@@ -1,12 +1,12 @@
 package com.example.demo01.src.Controller;
 
-import com.example.demo01.src.main.Configuration.MailConfiguration;
-import com.example.springboot_ecommerce.Exception.CustomerNotFoundException;
-import com.example.springboot_ecommerce.Pojo.BrandCategoryName;
-import com.example.springboot_ecommerce.Pojo.Customer;
-import com.example.springboot_ecommerce.Pojo.EmailSettingBag;
-import com.example.springboot_ecommerce.Service.CustomerService;
-import com.example.springboot_ecommerce.Service.SettingService;
+import com.example.demo01.src.Configuration.MailConfiguration;
+import com.example.demo01.src.Exception.CustomerNotFoundException;
+import com.example.demo01.src.Pojo.BrandCategoryName;
+import com.example.demo01.src.Pojo.Customer;
+import com.example.demo01.src.Pojo.EmailSettingBag;
+import com.example.demo01.src.Service.CustomerService;
+import com.example.demo01.src.Service.SettingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
