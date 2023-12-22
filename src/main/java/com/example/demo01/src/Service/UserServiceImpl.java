@@ -1,9 +1,9 @@
 package com.example.demo01.src.Service;
 
-import com.example.springboot_ecommerce.DAO.UserDao;
-import com.example.springboot_ecommerce.Pojo.Role;
-import com.example.springboot_ecommerce.Pojo.Users;
-import com.example.springboot_ecommerce.Pojo.UsersRole;
+import com.example.demo01.src.DAO.UserDao;
+import com.example.demo01.src.Pojo.Role;
+import com.example.demo01.src.Pojo.Users;
+import com.example.demo01.src.Pojo.UsersRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

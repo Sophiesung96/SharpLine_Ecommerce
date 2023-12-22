@@ -64,7 +64,7 @@ function loadStates4Country(){
     countryID=selectedCountry.val().split("-")[0];
     var url='/states/list_by_country/'+countryID;
     $.get(url,function (responseJson) {
-        dropDownStates2.empty();
+        $('#selectCountry').empty();
         $.each(responseJson,function (index,state) {
             $('<option>').text(state.name).val(state.id).appendTo(dropDownStates2);
         })

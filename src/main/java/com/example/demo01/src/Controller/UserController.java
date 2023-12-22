@@ -1,15 +1,15 @@
 package com.example.demo01.src.Controller;
 
-import com.example.demo01.src.main.Configuration.UserCsvExporter;
-import com.example.demo01.src.main.Configuration.UserExcelExporter;
-import com.example.demo01.src.main.Configuration.UserPDFExporter;
-import com.example.demo01.src.FileUploadUtil;
-import com.example.springboot_ecommerce.Pojo.Role;
-import com.example.springboot_ecommerce.Pojo.Users;
-import com.example.springboot_ecommerce.Pojo.UsersRole;
-import com.example.springboot_ecommerce.Service.RoleService;
-import com.example.springboot_ecommerce.Service.UserRoleService;
-import com.example.springboot_ecommerce.Service.UserService;
+import com.example.demo01.src.Configuration.UserCsvExporter;
+import com.example.demo01.src.Configuration.UserExcelExporter;
+import com.example.demo01.src.Configuration.UserPDFExporter;
+import com.example.demo01.src.Configuration.FileUploadUtil;
+import com.example.demo01.src.Pojo.Role;
+import com.example.demo01.src.Pojo.Users;
+import com.example.demo01.src.Pojo.UsersRole;
+import com.example.demo01.src.Service.RoleService;
+import com.example.demo01.src.Service.UserRoleService;
+import com.example.demo01.src.Service.UserService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -112,6 +112,7 @@ public class UserController {
         //Get user's photo and store it in local file in numerical order
         if (!multipartFile.isEmpty()) {
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+            user.setPhoto(fileName);
             String uploadDir = "user-pics" + File.separator + newuser.getId();
             try {
                 FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);

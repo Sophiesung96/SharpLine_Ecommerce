@@ -1,7 +1,7 @@
 package com.example.demo01.src.Controller;
 
-import com.example.springboot_ecommerce.Pojo.Product;
-import com.example.springboot_ecommerce.Service.ProductService;
+import com.example.demo01.src.Pojo.Product;
+import com.example.demo01.src.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

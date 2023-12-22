@@ -6,3 +6,4 @@ public interface ShippingRateDAO {
     public ShippingRate getShippingRateForAddress(String state, int  CountryId);
 
 }
+

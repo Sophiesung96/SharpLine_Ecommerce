@@ -1,7 +1,7 @@
 package com.example.demo01.src.DAO;
 
-import com.example.springboot_ecommerce.Mapper.*;
-import com.example.springboot_ecommerce.Pojo.*;
+import com.example.demo01.src.Mapper.*;
+import com.example.demo01.src.Pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -338,6 +338,32 @@ public class ProductDAOImpl implements ProductDAO {
         list=namedParameterJdbcTemplate.query(sql,map,new PageNumberMapper());
         if(list.size()>0){
             return  list;
+        }
+        return null;
+    }
+
+    @Override
+    public Product findById(int id) {
+        String sql="select * from products where id=:id";
+        Map<String,Object>map=new HashMap<>();
+        map.put("id",id);
+       List<Product>list= namedParameterJdbcTemplate.query(sql,map,new ProductMapper());
+        if(list.size()>0){
+            return list.get(0);
+
+        }
+        return null;
+    }
+
+    @Override
+    public List<Product> ProductSearchByKeywordforOrder(int pageno, String search) {
+        String sql= "SELECT * FROM products WHERE MATCH(name,short_description,full_context) AGAINST(:search) limit :pageno,5";
+        Map<String,Object>map=new HashMap<>();
+        map.put("search",search);
+        map.put("pageno",(pageno-1)*5);
+        List<Product> list=namedParameterJdbcTemplate.query(sql,map,new ProductMapper());
+        if(list.size()>0){
+            return list;
         }
         return null;
     }

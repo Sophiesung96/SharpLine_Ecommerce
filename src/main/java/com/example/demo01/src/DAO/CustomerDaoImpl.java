@@ -197,7 +197,7 @@ public class CustomerDaoImpl implements CustomerDao{
 
     @Override
     public Customer findCountryPerCustomerById(int id) {
-        String sql="select countries.name as countryName from  customers inner join countries on customers.country_id=countries.id where customers.id=:id";
+        String sql="select countries.name as countryName, countries.code as countryCode  from  customers inner join countries on customers.country_id=countries.id where customers.id=:id";
         Map<String,Object> map=new HashMap<>();
         map.put("id",id);
         List<Customer>list=new ArrayList<>();

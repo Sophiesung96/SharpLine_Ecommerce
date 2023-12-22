@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -32,6 +35,8 @@ public class Order {
     private String PostalCode;
     private int DeliverDays;
     private Date DeliverDate;
+    private List<OrderDetails> orderDetailList;
+    private List<OrderTrack> orderTrackList;
 
     public String getCustomerFullName(){
         return this.FirstName+" "+this.LastName;
@@ -64,5 +69,12 @@ public class Order {
         }
         return addressBuilder.toString();
     }
+
+    public String getDeliverDateonForm(){
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("YYYY-MM-dd");
+        String date=simpleDateFormat.format(this.DeliverDate);
+        return date;
+    }
+
 
 }

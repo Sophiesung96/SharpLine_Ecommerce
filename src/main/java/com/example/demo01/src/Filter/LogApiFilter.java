@@ -19,7 +19,7 @@ public class LogApiFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
+        log.info("Filter1 is processing the request");
         ContentCachingRequestWrapper contentCachingRequestWrapper = new ContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper contentCachingResponseWrapper = new ContentCachingResponseWrapper(response);
 

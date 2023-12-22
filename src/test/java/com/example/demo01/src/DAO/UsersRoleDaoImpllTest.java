@@ -1,25 +1,21 @@
-package com.example.demo01.src.test.java.com.example.springboot_ecommerce.DAO;
+package com.example.demo01.src.DAO;
 
-import com.example.springboot_ecommerce.Pojo.Brand;
-import com.example.springboot_ecommerce.Pojo.BrandCategoryName;
-import com.example.springboot_ecommerce.Pojo.Category;
-import com.example.springboot_ecommerce.Pojo.Users;
-import com.example.springboot_ecommerce.Service.CategoryService;
-import com.example.springboot_ecommerce.SpringbootEcommerceApplication;
+import com.example.demo01.src.Pojo.Brand;
+import com.example.demo01.src.Pojo.BrandCategoryName;
+import com.example.demo01.src.Pojo.Users;
+import com.example.demo01.src.Service.CategoryService;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.logging.Logger;
-import org.junit.platform.commons.logging.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest(classes = {SpringbootEcommerceApplication.class})
+@SpringBootTest
 class UsersRoleDaoImpllTest {
 
 

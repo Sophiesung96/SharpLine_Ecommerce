@@ -200,12 +200,13 @@ public class OrderDAOImpl implements OrderDAO {
     @Override
     public List<OrderDetailForm> getOrderDetailsList(int orderId) {
         String sql="select o.id as id,o.order_time as orderTime,o.customer_id as customerId,c.email as email,p.name as Productname, p.main_image as ProductmainImage," +
+                "p.id as productId," +
                 "o.address_line1 as addressline1,o.address_line2 as addressline2," +
                 "o.first_name as firstName, o.last_name as lastName,o.phone_number as phoneNumber," +
                 "o.city as city,o.status as status,o.product_cost as productCost, o.shipping_cost as shippingCost" +
                 ",o.tax as tax, o.state as state,o.total as total,o.postal_code as postalCode,o.payment_method as paymentmethod" +
                 ",o.country as country,o.deliver_days as deliverDays,o.deliver_Date as deliverDate," +
-                "c.enabled as enabled, details.quantity as quantity,details.unit_price as unitPrice from `Order` o inner join Order_details details on o.id=details.order_id inner join products p on p.id=details.product_id inner join customers c on o.customer_id=c.id where o.id=:orderid";
+                "c.enabled as enabled, details.quantity as quantity,details.unit_price as unitPrice,details.subtotal as subTotal,details.product_cost as DetailproductCost from `Order` o inner join Order_details details on o.id=details.order_id inner join products p on p.id=details.product_id inner join customers c on o.customer_id=c.id where o.id=:orderid";
         Map<String,Object> map=new HashMap<>();
         map.put("orderid",orderId);
         List<OrderDetailForm>list= namedParameterJdbcTemplate.query(sql,map,new OrderDetailFormMapper());

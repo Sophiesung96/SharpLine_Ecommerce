@@ -1,6 +1,6 @@
 package com.example.demo01.src.DAO;
 
-import com.example.springboot_ecommerce.Pojo.*;
+import com.example.demo01.src.Pojo.*;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public interface ProductDAO {
 
     public void UpdateEnabledStatus(int id, int enabled);
     public void deleteProductById(int id);
-
+    public Product findById(int id);
     public void saveProductDetails(ProductDetail detail,int Pid);
     public List<ProductDetail> selectProductDetailsById(int id);
     public List<Product> selectProductByPagination(int pageno);
@@ -37,5 +37,7 @@ public interface ProductDAO {
     public  List<Product> SearchByKeyword(int pageno,String search);
 
     public List<PageNumber> getFilteredPageCount(String search);
+
+    public List<Product> ProductSearchByKeywordforOrder(int pageno, String search);
 
 }

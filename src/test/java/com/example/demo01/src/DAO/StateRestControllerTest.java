@@ -1,31 +1,18 @@
-package com.example.demo01.src.test.java.com.example.springboot_ecommerce.Controller;
+package com.example.demo01.src.DAO;
 
-import com.example.springboot_ecommerce.DAO.StateDao;
-import com.example.springboot_ecommerce.Pojo.Brand;
-import com.example.springboot_ecommerce.Pojo.BrandCategoryName;
-import com.example.springboot_ecommerce.Pojo.Country;
-import com.example.springboot_ecommerce.Pojo.State;
-import com.example.springboot_ecommerce.Service.CountryService;
-import com.example.springboot_ecommerce.Service.StateService;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.example.demo01.src.Pojo.Country;
+import com.example.demo01.src.Pojo.State;
+import com.example.demo01.src.Service.CountryService;
+import com.example.demo01.src.Service.StateService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -68,7 +55,7 @@ class StateRestControllerTest {
         String url="/states/save";
         String countryName="Australia";
         Country country=new Country(countryName);
-       Country ccountry=countryService.getByCountryId(country);
+       Country ccountry=countryService.getByCountryId(country.getId());
        State state=new State();
        state.setName("Tavush");
        state.setCountryId(ccountry.getId());

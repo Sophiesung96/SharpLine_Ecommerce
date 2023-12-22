@@ -1,8 +1,8 @@
 package com.example.demo01.src.Service;
 
-import com.example.springboot_ecommerce.DAO.StateDao;
-import com.example.springboot_ecommerce.Pojo.Country;
-import com.example.springboot_ecommerce.Pojo.State;
+import com.example.demo01.src.DAO.StateDao;
+import com.example.demo01.src.Pojo.Country;
+import com.example.demo01.src.Pojo.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

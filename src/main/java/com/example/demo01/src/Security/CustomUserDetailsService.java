@@ -30,12 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (customer == null) {
             throw new UsernameNotFoundException("User not found");
         }
-        //if the customer's password is not encoded
-        if(!customer.getPassword().startsWith("$2")){
-            String encodedPassword= passwordEncoder.encode(customer.getPassword());
-            customerDao.encodePasswordByCustomerId(customer.getId(), encodedPassword);
-            customer.setPassword(encodedPassword);
-        }
+
 
         // Create a CustomUserDetails instance using your class
         CustomUserDetail userDetails = new CustomUserDetail(

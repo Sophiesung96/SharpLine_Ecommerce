@@ -14,6 +14,7 @@ public class OrderDetailForm {
 
     private int id;
     private int customerId;
+    private int productId;
     private int TotalPage;
     private int enabled;
     private String email;
@@ -25,6 +26,7 @@ public class OrderDetailForm {
     private float unitPrice;
     private float productCost;
     private float shippingCost;
+    private float DetailproductCost;
     private float subTotal;
     private float tax;
     private float total;

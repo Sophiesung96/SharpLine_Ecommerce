@@ -10,7 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.Locale;
 
 @SpringBootTest
 public class PAYPALApiTest {
@@ -41,7 +45,36 @@ public class PAYPALApiTest {
             System.out.println("Validated:"+ response.getBody().Validate(orderId));
         }
 
+        @Test
+        public void test(){
+            System.out.println( Math.max(1,2));
+            System.out.println(Math.min(0,10));
+            int[] height = {1, 2, 3, 4, 5, 6,7,8};
+          int i=0,j=height.length-1;
+            int maxwater=0;
+          while(i<j){
+              int x=height[i],y=height[j];
+              int water=Math.min(x,y)*(j-i);
+              maxwater=Math.max(maxwater,water);
+              if(height[i]<height[j]){
+                  i++;
+              }else{
+                  j--;
 
+              }
+          }
+            System.out.println(maxwater);
+
+
+        }
 
 
 }
+
+
+
+
+
+
+
+

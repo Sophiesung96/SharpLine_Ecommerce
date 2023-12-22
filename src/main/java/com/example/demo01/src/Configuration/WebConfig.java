@@ -20,7 +20,7 @@ import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
-@Order(1)
+@Order(-1)
 public class WebConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
@@ -60,7 +60,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                     .hasAnyAuthority("Admin", "Editor", "SalesPerson", "Shipper")
                     .antMatchers("/questions/**")
                     .hasAnyAuthority("Admin", "Shipper")
-                    .antMatchers("/customers/**")
+                    .antMatchers("/customers/**","/get_shipping_cost")
                     .hasAnyAuthority("Admin", "SalesPerson")
                     .antMatchers("/shipping/**")
                     .hasAnyAuthority("Admin", "SalesPerson")
@@ -91,6 +91,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                     .and()
                     .logout().permitAll();
 
+                     http.headers().frameOptions().sameOrigin();
 
         }
 

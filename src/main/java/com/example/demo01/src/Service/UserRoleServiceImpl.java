@@ -1,6 +1,6 @@
 package com.example.demo01.src.Service;
 
-import com.example.springboot_ecommerce.DAO.UsersRoleDao;
+import com.example.demo01.src.DAO.UsersRoleDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.example.demo01.src;
+package com.example.demo01.src.Configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,7 @@ public class FileUploadUtil {
         }
         try {
             InputStream inputStream = multipartFile.getInputStream();
-            //add path right after the uploadPath's initial absolute path
+            //add path right after the uploadPath's directory absolute path
             Path filePath = uploadPath.resolve(FileName);
             //copy inputStream into filePath
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);

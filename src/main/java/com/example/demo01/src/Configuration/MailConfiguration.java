@@ -9,6 +9,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.RememberMeAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 
@@ -46,20 +47,21 @@ public class MailConfiguration {
     }
 
     public static String getEmailOfAuthenticatedCustomer(HttpServletRequest request) {
-        Object principal=request.getUserPrincipal();
-        String customerEmail=null;
-        if(principal==null)return null;
-        if(principal instanceof UsernamePasswordAuthenticationToken ||
-              principal instanceof   RememberMeAuthenticationToken){
-             customerEmail=request.getUserPrincipal().getName();
-        }else if(principal instanceof OAuth2AuthenticationToken){
-            OAuth2AuthenticationToken oAuth2AuthenticationToken=((OAuth2AuthenticationToken) principal);
-            DefaultOidcUser defaultOidcUser= (DefaultOidcUser) oAuth2AuthenticationToken.getPrincipal();
+        Object principal = request.getUserPrincipal();
+        String customerEmail = null;
+        if (principal == null) return null;
+        if (principal instanceof UsernamePasswordAuthenticationToken ||
+                principal instanceof RememberMeAuthenticationToken) {
+            customerEmail = request.getUserPrincipal().getName();
+        } else if (principal instanceof OAuth2AuthenticationToken) {
+            OAuth2AuthenticationToken oAuth2AuthenticationToken = ((OAuth2AuthenticationToken) principal);
+            DefaultOidcUser defaultOidcUser = (DefaultOidcUser) oAuth2AuthenticationToken.getPrincipal();
             CustomerOAuth2User customerOAuth2User = new CustomerOAuth2User(defaultOidcUser);
-            customerEmail=customerOAuth2User.getEmail();
+            customerEmail = customerOAuth2User.getEmail();
+            return customerEmail;
         }
         return customerEmail;
-        }
+    }
 
 
     @Bean

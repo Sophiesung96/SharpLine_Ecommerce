@@ -1,10 +1,10 @@
-package com.example.demo01.src.test.java.com.example.springboot_ecommerce.DAO;
+package com.example.demo01.src.DAO;
 
-import com.example.springboot_ecommerce.Pojo.Category;
-import com.example.springboot_ecommerce.Pojo.Users;
-import com.example.springboot_ecommerce.Service.BrandService;
-import com.example.springboot_ecommerce.Service.CategoryService;
-import com.example.springboot_ecommerce.Service.UserService;
+import com.example.demo01.src.Pojo.Category;
+import com.example.demo01.src.Pojo.Users;
+import com.example.demo01.src.Service.BrandService;
+import com.example.demo01.src.Service.CategoryService;
+import com.example.demo01.src.Service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
@@ -12,14 +12,14 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 public class UserDaoTest {

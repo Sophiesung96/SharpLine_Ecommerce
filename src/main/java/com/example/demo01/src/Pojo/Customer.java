@@ -23,6 +23,7 @@ public class Customer {
     private Date  updatedTime;
     private Integer enabled;
     private String verificationCode;
+    private String countryCode;
     private String countryName;
     private String authenticationType;
     private String resetPasswordToken;
