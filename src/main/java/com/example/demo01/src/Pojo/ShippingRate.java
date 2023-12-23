@@ -26,4 +26,6 @@ public class ShippingRate {
     private int days;
     @ApiModelProperty(notes = "Support COD")
     private int CodSupported;
+
+    private int productId;
 }

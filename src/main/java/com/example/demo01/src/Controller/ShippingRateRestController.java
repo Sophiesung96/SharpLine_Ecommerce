@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -36,8 +37,8 @@ public class ShippingRateRestController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content =
                     { @Content(mediaType = "application/json", schema =
                     @Schema()) }) })
-    public ResponseEntity<String> getShippingCost(Integer productId, String state, Integer countryId){
-     float cost=shippingRateService.calculateShippingCost(productId, countryId, state);
+    public ResponseEntity<String> getShippingCost(@RequestBody ShippingRate shippingRate){
+     float cost=shippingRateService.calculateShippingCost(shippingRate.getProductId(), shippingRate.getCountry_id(), shippingRate.getState());
        return ResponseEntity.status(HttpStatus.ACCEPTED).body(String.valueOf(cost));
     }
 }
