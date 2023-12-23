@@ -55,7 +55,7 @@ public class ShippingRateServiceImpl implements  ShippingRateService{
         ShippingRate shippingRate=shippingRateDAO.getShippingRateForAddress(state,countryId);
         //calculate the shipping cost and set it manually
         if(shippingRate==null){
-            throw new ShippingRateNotFoundException("No shipping rate found for the given"+
+            throw new ShippingRateNotFoundException("No shipping rate found for the given"+" "+
                     "destination. You have to enter shipping cost manually");
         }
         Product product=productDAO.findById(productId);
