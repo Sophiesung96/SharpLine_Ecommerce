@@ -17,8 +17,6 @@ $(document).ready(function () {
         updateOrderAmount();
     });
 
-
-
 });
 
 
@@ -91,6 +89,8 @@ function updateOrderAmount() {
     orderTotal=Total.toFixed(2);
     $('#Total').val(orderTotal);
 };
+
+
 
 
 

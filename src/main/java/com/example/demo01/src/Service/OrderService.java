@@ -19,5 +19,9 @@ public interface OrderService {
     public void copyShippingAddress(Order order,Address address,Customer customer);
     public Order getOrderById(int orderId);
     List<Country> listAllCountries();
-    List<OrderDetailForm> getOrderDetailsList(int orderId);
+    List<TableOrderDetail> getOrderDetailsList(int orderId);
+    public List<OrderDetails> getOrderDetailsByOrderId(int orderId);
+    public void createOrderDetail(Order order,Iterable<OrderDetails> list, Customer customer);
+    public void updateOrderDetailsByOrderId(OrderDetails orderDetails);
+    public void updateOriginalOrderById(Order order);
 }

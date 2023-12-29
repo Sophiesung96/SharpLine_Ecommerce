@@ -16,7 +16,6 @@ $(document).ready(function () {
 function addProduct(productId,productName){
     var myModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('addProductModal'));
     myModal.hide();
-   // alert("The product is not added!")
     getshippingCost(productId);
 };
 
@@ -43,7 +42,7 @@ function getshippingCost(productId){
         alert(exception)
     });
 }
-
+//get product's info
 function getProductInfo(productId,shippingCost){
     url="/products/get/"+productId;
   $.get(url,function (productJson) {
@@ -53,24 +52,27 @@ function getProductInfo(productId,shippingCost){
      productCost=productJson.cost;
      productPrice=productJson.price;
     console.log(productName+" "+MainImage+productCost+productPrice+shippingCost);
-   html=insertnewProduct(productId,productName,MainImage,productCost,productPrice,shippingCost);
+   html=insertNewProduct(productId,productName,MainImage,productCost,productPrice,shippingCost);
    $('#productList').append(html);
-
+      updateOrderAmount();
   }).fail(function () {
       alert("The server has encountered an error! Please try again");
   })
 }
 
-function insertnewProduct(productId,productName,mainImagePath,productCost,productPrice,shippingCost){
+function insertNewProduct(productId,productName,mainImagePath,productCost,productPrice,shippingCost){
     nextcount=$('.hiddenProductId').length+1;
+    rowId='rowTrack'+nextcount;
     qunantityId='quantity'+nextcount;
     priceId='price'+nextcount;
     SubtotalId='subtotal'+nextcount;
-    htmlCode=`<div class="border rounded p-1">
+    htmlCode=`<div class="border rounded p-1" id="${rowId}">
                 <input type="hidden" value="${productId}" name="productId" class="hiddenProductId"/>
+                <input type="hidden" value="0" name="id"/>
                 <div class="row" mt-2>
-                    <div class="col-1">
+                    <div class="col-1 divCount">
                         ${nextcount}
+                         <div><a class="fas fa-trash icon-dark link-Remove" href="" rowNumber="${nextcount}"></a></div>
                     </div>
                     <div class="col-3">
                         <img src="${mainImagePath}" class="img-fluid"/>
@@ -87,8 +89,13 @@ function insertnewProduct(productId,productName,mainImagePath,productCost,produc
                             <tr>
                                 <td>Product Cost:</td>
                                 <td>
-                                    <input type="text" required class="form-control cost-input"
-                                    value="${productCost}"rowNumber="${nextcount}" style="max-width: 140px;"/>
+                                    <input type="text" 
+                                        required 
+                                        class="form-control cost-input"
+                                        value="${productCost}"
+                                        rowNumber="${nextcount}"
+                                         name="productCost"
+                                         style="max-width: 140px;"/>
                                 </td>
 
                             </tr>
@@ -96,8 +103,15 @@ function insertnewProduct(productId,productName,mainImagePath,productCost,produc
                             <tr>
                                 <td>Quantity:</td>
                                 <td>
-                                    <input type="number" step="1" min="1" max="5" required class="form-control quantity-input"
-                                    id="${qunantityId}" rowNumber="${nextcount}" value="1" style="max-width: 140px;"/>
+                                    <input type="number" 
+                                        step="1" 
+                                        min="1" max="5" 
+                                        required class="form-control quantity-input"
+                                        id="${qunantityId}"
+                                         rowNumber="${nextcount}" 
+                                         value="1" 
+                                         name="quantity"
+                                         style="max-width: 140px;"/>
                                 </td>
 
                             </tr>
@@ -105,8 +119,14 @@ function insertnewProduct(productId,productName,mainImagePath,productCost,produc
                             <tr>
                                 <td>Unit Price:</td>
                                 <td>
-                                    <input type="text"  required class="form-control price-input"
-                                        id="${priceId}" rowNumber="${nextcount}" value="${productPrice}" style="max-width: 140px;"/>
+                                    <input type="text"  
+                                        required 
+                                        class="form-control price-input"
+                                        id="${priceId}" 
+                                        rowNumber="${nextcount}" 
+                                        value="${productPrice}" 
+                                         name="productPrice"
+                                        style="max-width: 140px;"/>
                                 </td>
 
                             </tr>
@@ -114,8 +134,13 @@ function insertnewProduct(productId,productName,mainImagePath,productCost,produc
                             <tr>
                                 <td>SubTotal:</td>
                                 <td>
-                                    <input type="text"  readonly class="form-control subtotal-input"
-                                      id="${SubtotalId}" value="${productPrice}" style="max-width: 140px;"/>
+                                    <input type="text"  
+                                       readonly 
+                                       class="form-control subtotal-input"
+                                        id="${SubtotalId}" 
+                                        value="${productPrice}" 
+                                        name="productSubtotal"
+                                        style="max-width: 140px;"/>
                                 </td>
 
                             </tr>
@@ -123,8 +148,12 @@ function insertnewProduct(productId,productName,mainImagePath,productCost,produc
                             <tr>
                                 <td>Shipping Cost:</td>
                                 <td>
-                                    <input type="text"  required class="form-control ship-input"
-                                         value="${shippingCost}" style="max-width: 140px;"/>
+                                    <input type="text" 
+                                           required 
+                                           class="form-control ship-input"
+                                           value="${shippingCost}" 
+                                            name="productShipCost"
+                                           style="max-width: 140px;"/>
                                 </td>
 
                             </tr>
@@ -141,7 +170,7 @@ function insertnewProduct(productId,productName,mainImagePath,productCost,produc
 
 
 //check for the existence of a product
-//before it's being added
+//before it's being added into the list
 function  isProductAlreadyAdded(productId){
     ProductExits=false;
     $('.hiddenProductId').each(function (e) {

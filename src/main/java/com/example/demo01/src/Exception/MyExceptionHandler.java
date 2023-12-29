@@ -24,10 +24,10 @@ public class MyExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public  Map<String,String> handle(MethodArgumentNotValidException exception){
+    public  ResponseEntity<Map<String,String>> handle(MethodArgumentNotValidException exception){
         Map<String,String> errorMap=new HashMap<>();
         exception.getBindingResult().getFieldErrors()
                 .forEach(error->errorMap.put(error.getField(),error.getDefaultMessage()));
-       return errorMap;
+       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMap);
     }
 }

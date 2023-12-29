@@ -154,7 +154,7 @@
             </div>
 
         </div>
-        <div class="container mt-3">
+        <div class="container mt-3 text-center">
             <div class="row">
                 <div class="col-12">
                     <h2>Manage Orders</h2>
@@ -169,21 +169,15 @@
         <div>
 
         <div class="container">
-            <form th:action="@{/orders/1/keyword}" method="post" class=" form-inline m-3" style="width: 10%">
-                Filter:&nbsp;
-                <div class="input-group">
-                    <div class="form-outline">
-                        <input type="search" name="keyword" class="form-control"/>
+            <form th:action="@{/orders/1/keyword}" method="post" class="form-inline m-3" style="max-width: 20%;">
+                    <div class="input-group">
+                        <input type="search" class="form-control rounded" placeholder="Search" />
+                        <button type="button" class="btn btn-outline-primary" data-mdb-ripple-init>
+                            <i class="fas fa-search"></i>
+                        </button>
                     </div>
-                    <button type='submit' class=" mt-2 btn ">
-                        <i class="fas fa-search icon-dark"></i>
-                    </button>
-                        &nbsp;&nbsp;
-                    <button type='button'  class="btn btn-secondary" onclick="clearFilter()">
-                        <i class="fas fa-eraser"></i>
-                    </button>
-                </div>
             </form>
+
         </div>
 
 

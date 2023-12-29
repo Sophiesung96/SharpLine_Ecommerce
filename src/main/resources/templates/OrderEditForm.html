@@ -155,7 +155,7 @@
                                 <div th:replace="~{order_editForm_shipping::content}"></div>
                             </div>
                             <div class="tab-pane fade p-3" id="track" role="tabpanel">
-                                <h2>track</h2>
+                                <div th:replace="~{order_editForm_tracking ::content}"></div>
                             </div>
                         </div>
 
@@ -178,28 +178,15 @@
     </div>
     <div th:replace="~{order_add_product_modal::content}"></div>
 
+   <div th:replace="~{Order_warning_Modal::content}"></div>
 
 
-
-
-
-    <div class="modal fade "id="testModal">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-header">
-                <h4 class="modal-title" >Warning</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-content">
-                <span id="modalText"></span>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
 
 </div>
-
+<script th:src="@{/Js/code_overview_form_product.js}"></script>
+<script th:src="@{/Js/order_form_add_product.js}"></script>
+<script th:src="@{/Js/order_form_remove_product.js}"></script>
+<script th:src="@{/Js/orderTrack.js}"></script>
 
 <script type="text/javascript">
     var selectCountry =$('#selectCountry');
@@ -217,6 +204,9 @@
     function loadStates4Country(){
         ShippingState=$('#selectCountry option:selected');
         countryID=ShippingState.val().split("-")[0];
+        countryName=ShippingState.text();
+        //assign the countryName's text to the input hidden value
+       $('#countryName').val(countryName);
         var url='/states/list_by_country/'+countryID;
         $.get(url,function (responseJson) {
             StateSelected.empty();
@@ -224,6 +214,7 @@
                 $('<option>').text(state.name).val(state.name).appendTo(StateSelected);
             })
         });
+
     }
 
     function loadCountries(){
@@ -238,10 +229,10 @@
             //done() executes after GET request has been accomplished
         })
     }
+
+
 </script>
 
-<script th:src="@{/Js/code_overview_form_product.js}"></script>
-<script th:src="@{/Js/order_form_add_product.js}"></script>
 
 
 </body>

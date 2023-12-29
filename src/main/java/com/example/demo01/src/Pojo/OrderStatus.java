@@ -34,7 +34,7 @@ public  enum OrderStatus {
     ,PAID{
         @Override
         public String defaultdscription (){
-            return "Order was placed by the customer.";
+            return "Order was paid by the customer.";
         }
     }
 
@@ -61,6 +61,7 @@ public  enum OrderStatus {
         public String defaultdscription (){
             return "Shipper picked the package";
         }
+
     };
 
     public abstract String defaultdscription();

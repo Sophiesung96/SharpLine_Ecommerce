@@ -7,7 +7,7 @@ import java.util.List;
 public interface OrderDAO {
 
     public List<Order> findAllByKeyword(int pageNo, String keyword);
-
+     public List<OrderDetails> getOrderDetailsByOrderId(int orderId);
      public List<Order> findAll(int pageNo);
      public Integer getTotalPage();
      public int createorder(Customer customer,Order order);
@@ -18,8 +18,10 @@ public interface OrderDAO {
     void updatePaymentMethod(String method,int id);
      public void DeleteOrderById(int orderId);
      public void EditOrder(Order order);
-     List<OrderDetailForm> getOrderDetailsList(int orderId);
+     List<TableOrderDetail> getOrderDetailsList(int orderId);
      List<Country> listAllCountries();
+     public void updateOrderDetailsByOrderId(OrderDetails orderDetails);
+     public void updateOriginalOrderById(Order order);
 
 
 }

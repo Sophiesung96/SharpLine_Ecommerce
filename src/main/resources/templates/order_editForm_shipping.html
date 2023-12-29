@@ -16,7 +16,7 @@
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Expected Deliver Date:</label>
         <div class="col-sm-10">
-            <input class="form-control" type="date" th:field="*{DeliverDate}">
+            <input class="form-control" type="date"  required name="deliverdate">
         </div>
 
     </div>
@@ -64,6 +64,7 @@
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Country:</label>
         <div class="col-sm-10">
+            <input type="hidden" name="countryName" id="countryName" th:value="${order.country}"/>
             <select th:field="*{Country}" id="selectCountry">
                 <option value="1">[Default Country]</option>
             </select>

@@ -5,6 +5,7 @@ import com.example.demo01.src.Pojo.Country;
 
 import com.example.demo01.src.Pojo.Customer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,8 +18,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.WebApplicationContext;
 
 
 import java.util.Arrays;
@@ -49,7 +52,14 @@ class CountryRestControllerTest  {
     @Autowired
     AuthenticationManager authenticationManager;
 
+    @Autowired
+    private WebApplicationContext webApplicationContext;
 
+    @BeforeEach
+    public void setup() {
+        //Init MockMvc Object and build
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    }
 
     @Test
     @WithMockUser(username = "nam@codejava.net",password = "{noop}ha123",roles="Admin")

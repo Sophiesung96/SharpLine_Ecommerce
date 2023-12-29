@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -71,10 +72,21 @@ public class Order {
     }
 
     public String getDeliverDateonForm(){
-        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("YYYY-MM-dd");
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
         String date=simpleDateFormat.format(this.DeliverDate);
         return date;
     }
+
+    public void setDeliverDateonForm(String date){
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date deliverDate = simpleDateFormat.parse(date);
+            this.DeliverDate = deliverDate;
+        } catch(ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
 }

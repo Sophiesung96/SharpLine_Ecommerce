@@ -176,8 +176,30 @@ public class OrderServiceImpl implements OrderService{
 
 
     @Override
-    public List<OrderDetailForm> getOrderDetailsList(int orderId) {
-        List<OrderDetailForm> list=orderDAO.getOrderDetailsList(orderId);
+    public List<TableOrderDetail> getOrderDetailsList(int orderId) {
+        List<TableOrderDetail> list=orderDAO.getOrderDetailsList(orderId);
         return list;
+    }
+
+
+    @Override
+    public List<OrderDetails> getOrderDetailsByOrderId(int orderId) {
+        List<OrderDetails> list=orderDAO.getOrderDetailsByOrderId(orderId);
+        return list;
+    }
+
+    @Override
+    public void createOrderDetail(Order order, Iterable<OrderDetails> list, Customer customer) {
+        orderDAO.createOrderDetail(order,list,customer);
+    }
+
+    @Override
+    public void updateOrderDetailsByOrderId(OrderDetails orderDetails) {
+        orderDAO.updateOrderDetailsByOrderId(orderDetails);
+    }
+
+    @Override
+    public void updateOriginalOrderById(Order order) {
+        orderDAO.updateOriginalOrderById(order);
     }
 }
