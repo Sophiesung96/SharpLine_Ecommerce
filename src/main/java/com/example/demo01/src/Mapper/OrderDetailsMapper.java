@@ -10,8 +10,8 @@ public class OrderDetailsMapper implements RowMapper<OrderDetails> {
     public OrderDetails mapRow(ResultSet resultSet, int i) throws SQLException {
         OrderDetails orderdetails=new OrderDetails();
         orderdetails.setId(resultSet.getInt("id"));
-        orderdetails.setProductId(resultSet.getInt("customer_id"));
-        orderdetails.setOrderId(resultSet.getInt("product_id"));
+        orderdetails.setOrderId(resultSet.getInt("order_Id"));
+        orderdetails.setProductId(resultSet.getInt("product_id"));
         orderdetails.setProductCost(resultSet.getFloat("product_cost"));
         orderdetails.setQuantity(resultSet.getInt("quantity"));
         orderdetails.setUnitPrice(resultSet.getFloat("unit_price"));

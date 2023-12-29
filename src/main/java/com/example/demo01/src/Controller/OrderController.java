@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,13 +79,15 @@ public class OrderController {
             List<Country>list=orderService.listAllCountries();
             List<PaymentMethod> paymentMethodList = getPaymentMethods();
             List<OrderStatus>orderStatusList=getStatus();
-            List<OrderDetailForm> orderDetailFormList=orderService.getOrderDetailsList(order.getId());
+            List<TableOrderDetail> orderDetailFormList=orderService.getOrderDetailsList(order.getId());
+            List<OrderTrack> Tracklist=orderTrackService.findOrderTrackById(order.getId());
             model.addAttribute("pageTitle","Edit Order (ID:"+id+")");
             model.addAttribute("order",order);
             model.addAttribute("orderDetailFormList",orderDetailFormList);
             model.addAttribute("orderStatusList",orderStatusList);
             model.addAttribute("paymentMethodList",paymentMethodList);
             model.addAttribute("countries",list);
+            model.addAttribute("tracklist",Tracklist);
             return "OrderEditForm";
         }
         catch(OrderNotFoundExcption ex){
@@ -105,6 +109,7 @@ public class OrderController {
 
     private  List<OrderStatus> getStatus() {
         List<OrderStatus>orderStatusList=new ArrayList<>();
+
         orderStatusList.add(OrderStatus.NEW);
         orderStatusList.add(OrderStatus.PAID);
         orderStatusList.add(OrderStatus.CANCELED);
@@ -114,7 +119,6 @@ public class OrderController {
         orderStatusList.add(OrderStatus.SHIPPING);
         orderStatusList.add(OrderStatus.PROCESSING);
         orderStatusList.add(OrderStatus.DELIVERED);
-        orderStatusList.add(OrderStatus.REFUNDED);
         orderStatusList.add(OrderStatus.REFUNDED);
         return orderStatusList;
     }
@@ -149,5 +153,96 @@ public class OrderController {
 
     }
 
+    @PostMapping("/order/update")
+    public String SaveEditedOrderDetail(@ModelAttribute Order order,HttpServletRequest request,RedirectAttributes rs){
+        String countryName=request.getParameter("countryName");
+        String deliverDate=request.getParameter("deliverdate");
+        String customerId=request.getParameter("customerId");
+        String orderTime=request.getParameter("orderTime");
+        int orderId=Integer.parseInt(request.getParameter("orderId"));
+        order.setCountry(countryName);
+        order.setId(orderId);
+        order.setOrderTime(orderTime);
+        order.setCustomerId(Integer.parseInt(customerId));
+        order.setDeliverDateonForm(deliverDate);
+        orderService.updateOriginalOrderById(order);
+        //update or create a new orderDetail
+        updateProductDetails(order,request);
+        //update or create a new orderTrack
+        updateOrderTracks(order,request);
+        rs.addFlashAttribute("message","The order ID"+" "+order.getId()+" has been updated successfully");
+        return "redirect:/orders/1";
+    }
+
+    private void updateOrderTracks(Order order, HttpServletRequest request) {
+        String[] trackId = request.getParameterValues("trackId");
+        String[] trackStatuses = request.getParameterValues("trackStatus");
+        String[] trackNotes = request.getParameterValues("trackNotes");
+        String[] trackDates = request.getParameterValues("trackDate");
+        List<OrderTrack> orderTrackList = orderTrackService.findOrderTrackById(order.getId());
+        OrderTrack orderTrack = new OrderTrack();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+        for (int i = 0; i < trackId.length; i++) {
+            log.info("trackId:{}", trackId[i]);
+            log.info("trackStatuses:{}", trackStatuses[i]);
+            log.info("trackNotes:{}", trackNotes[i]);
+            log.info("trackDates:{}", trackDates[i]);
+            int Id = Integer.parseInt(trackId[i]);
+            orderTrack.setOrderId(order.getId());
+            try {
+                orderTrack.setUpdatedTime(dateFormat.parse(trackDates[i]));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            orderTrack.setStatus(trackStatuses[i]);
+            orderTrack.setNotes(trackNotes[i]);
+            //a new track has been added
+            if (Id > 0 && orderTrackList.get(i).getId() != Id) {
+                orderTrack.setId(Id);
+                orderTrackService.createOrderTrack(orderTrack);
+            }else{
+                orderTrackService.updateOrderTrackByOrderId(orderTrack,order.getId());
+            }
+        }
+    }
+
+
+    private void updateProductDetails(Order order, HttpServletRequest request) {
+        String [] detailsIds=request.getParameterValues("id");
+        String [] productIds=request.getParameterValues("productId");
+        String [] productCosts=request.getParameterValues("productCost");
+        String [] productShipCosts=request.getParameterValues("productShipCost");
+        String [] productSubtotals=request.getParameterValues("productSubtotal");
+        String [] productQuantities=request.getParameterValues("quantity");
+        String [] productPrices=request.getParameterValues("productPrice");
+        List<OrderDetails> orderDetailsList=orderService.getOrderDetailsByOrderId(order.getId());
+        for(int i=0;i<productIds.length;i++){
+            log.info("detailsId:{}",detailsIds[i]);
+            log.info("productIds:{}",productIds[i]);
+            log.info("productCosts:{}",productCosts[i]);
+            log.info("productShipCosts:{}",productShipCosts[i]);
+            log.info("productSubtotals:{}",productSubtotals[i]);
+            log.info("Quantity:{}",productQuantities[i]);
+            log.info("productPrices:{}",productPrices[i]);
+            OrderDetails orderDetails=new OrderDetails();
+            Integer detailsId=Integer.parseInt(detailsIds[i]);
+            Integer productId=Integer.parseInt(productIds[i]);
+            Integer quantity=Integer.parseInt(productQuantities[i]);
+            orderDetails.setId(order.getId());
+            orderDetails.setProductId(productId);
+            orderDetails.setQuantity(quantity);
+            orderDetails.setProductCost(Float.parseFloat(productCosts[i]));
+            orderDetails.setShippingCost(Float.parseFloat(productShipCosts[i]));
+            orderDetails.setSubTotal(Float.parseFloat(productSubtotals[i]));
+            orderDetails.setUnitPrice(Float.parseFloat(productPrices[i]));
+            //an OrderDetail has been added to the list
+            if(detailsId>0&&orderDetailsList.get(i).getId()!=detailsId){
+                orderDetails.setId(detailsId);
+                Customer customer=new Customer(order.getCustomerId());
+               orderService.createOrderDetail(order,orderDetailsList,customer);
+            }
+            orderService.updateOrderDetailsByOrderId(orderDetails);
+        }
+    }
 
 }

@@ -69,7 +69,7 @@ public class OrderDAOImpl implements OrderDAO {
                 "o.address_line1 as addressline1,o.address_line2 as addressline2," +
                 "o.first_name as firstName, o.last_name as lastName,o.phone_number as phoneNumber," +
                 "o.city as city,o.status as status,o.product_cost as productCost, o.shipping_cost as shippingCost" +
-                ",o.tax as tax, o.state as state,o.total as total,o.postal_code as postalCode,o.payment_method as paymentmethod" +
+                ",o.tax as tax, o.subtotal as subTotal,o.state as state,o.total as total,o.postal_code as postalCode,o.payment_method as paymentmethod" +
                 ",o.country as country,o.deliver_days as deliverDays,o.deliver_Date as deliverDate," +
                 "c.enabled as enabled from `Order` o inner join customers c on o.customer_id=c.id where o.id=:orderid";
         Map<String,Object> map=new HashMap<>();
@@ -198,7 +198,7 @@ public class OrderDAOImpl implements OrderDAO {
 
 
     @Override
-    public List<OrderDetailForm> getOrderDetailsList(int orderId) {
+    public List<TableOrderDetail> getOrderDetailsList(int orderId) {
         String sql="select o.id as id,o.order_time as orderTime,o.customer_id as customerId,c.email as email,p.name as Productname, p.main_image as ProductmainImage," +
                 "p.id as productId," +
                 "o.address_line1 as addressline1,o.address_line2 as addressline2," +
@@ -209,10 +209,72 @@ public class OrderDAOImpl implements OrderDAO {
                 "c.enabled as enabled, details.quantity as quantity,details.unit_price as unitPrice,details.subtotal as subTotal,details.product_cost as DetailproductCost from `Order` o inner join Order_details details on o.id=details.order_id inner join products p on p.id=details.product_id inner join customers c on o.customer_id=c.id where o.id=:orderid";
         Map<String,Object> map=new HashMap<>();
         map.put("orderid",orderId);
-        List<OrderDetailForm>list= namedParameterJdbcTemplate.query(sql,map,new OrderDetailFormMapper());
+        List<TableOrderDetail>list= namedParameterJdbcTemplate.query(sql,map,new TableOrderDetailMapper());
         if(list.size()>0){
             return list;
         }
         return null;
+    }
+
+    @Override
+    public List<OrderDetails> getOrderDetailsByOrderId(int orderId) {
+        String sql="select * from Order_details where order_Id=:orderid";
+        Map<String,Object> map=new HashMap<>();
+        map.put("orderid",orderId);
+        List<OrderDetails> list=namedParameterJdbcTemplate.query(sql,map,new OrderDetailsMapper());
+        if(list.size()>0){
+            return list;
+
+        }
+        return null;
+    }
+
+    @Override
+    public void updateOrderDetailsByOrderId(OrderDetails orderDetails) {
+        String sql = "update Order_details set order_Id=:orderId, product_id=:productid, quantity=:quantity, unit_price=:unitprice, " +
+                "subtotal=:subtotal, product_cost=:Productcost, shipping_cost=:shippingcost where id=:id";
+        Map<String,Object> map=new HashMap<>();
+        map.put("productid",orderDetails.getProductId());
+        map.put("quantity",orderDetails.getQuantity());
+        map.put("unitprice",orderDetails.getUnitPrice());
+        map.put("subtotal",orderDetails.getSubTotal());
+        map.put("Productcost",orderDetails.getProductCost());
+        map.put("shippingcost",orderDetails.getShippingCost());
+        map.put("orderId",orderDetails.getOrderId());
+        map.put("id",orderDetails.getId());
+        namedParameterJdbcTemplate.update(sql,map);
+
+    }
+
+    @Override
+    public void updateOriginalOrderById(Order order) {
+        String sql="update `Order`set customer_id=:customerid,order_time=:order_time,payment_method=:payment_method," +
+                "product_cost=:product_cost,shipping_cost=:shipping_cost,subtotal=:subtotal," +
+                "tax=:tax,total=:total,status=:status,first_name=:firstname," +
+                "last_name=:lastname,phone_number=:phonenumber,address_line1=:addressline1,address_line2=:addressline2,city=:city," +
+                "state=:state,postal_code=:postal_code,country=:country,deliver_days=:deliver_days,deliver_Date=:deliver_Date where id=:id";
+        Map<String,Object> map=new HashMap<>();
+        map.put("id",order.getId());
+        map.put("customerid",order.getCustomerId());
+        map.put("order_time",order.getOrderTime());
+        map.put("payment_method",order.getPaymentMethod());
+        map.put("tax",order.getTax());
+        map.put("total",order.getTotal());
+        map.put("status",order.getStatus());
+        map.put("firstname",order.getFirstName());
+        map.put("lastname",order.getLastName());
+        map.put("phonenumber",order.getPhoneNumber());
+        map.put("addressline1",order.getAddressline1());
+        map.put("addressline2",order.getAddressline2());
+        map.put("city",order.getCity());
+        map.put("product_cost",order.getProductCost());
+        map.put("shipping_cost",order.getShippingCost());
+        map.put("subtotal",order.getSubTotal());
+        map.put("state",order.getState());
+        map.put("postal_code",order.getPostalCode());
+        map.put("country",order.getCountry());
+        map.put("deliver_days",order.getDeliverDays());
+        map.put("deliver_Date",order.getDeliverDate());
+        namedParameterJdbcTemplate.update(sql,map);
     }
 }

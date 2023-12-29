@@ -1,8 +1,6 @@
 package com.example.demo01.src.DAO;
 
-import com.example.demo01.src.Pojo.Customer;
-import com.example.demo01.src.Pojo.Order;
-import com.example.demo01.src.Pojo.OrderDetailForm;
+import com.example.demo01.src.Pojo.*;
 import com.example.demo01.src.Service.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -15,8 +13,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 class OrderDAOImplTest {
     @SpyBean
@@ -100,11 +98,31 @@ class OrderDAOImplTest {
     @Test
     public void testFindOrderDetailsList(){
         int orderId=1;
-       List<OrderDetailForm> list=orderDAO.getOrderDetailsList(orderId);
+        List<TableOrderDetail> list=orderDAO.getOrderDetailsList(orderId);
        list.stream().filter(orderDetailForm -> orderDetailForm.getCustomerId()==1&&orderDetailForm.getFirstName().equals("David")
        && orderDetailForm.getLastName().equals("Fountaine")).collect(Collectors.toList());
        list.forEach(detail->assertEquals(1,detail.getCustomerId()));
 
+    }
+
+    @Test
+    @Transactional
+    public void updateOrderDetailsByOrderId(){
+        OrderDetails orderDetails=new OrderDetails();
+        orderDetails.setOrderId(18);
+        orderDetails.setQuantity(5);
+        orderDetails.setUnitPrice((float) 2469.13);
+        orderDetails.setProductId(31);
+        orderDetails.setSubTotal((float)12345.66);
+        orderDetails.setProductCost((float)12345.66);
+        orderDetails.setShippingCost((float)8.8);
+        List<OrderDetails> list=orderDAO.getOrderDetailsByOrderId(18);
+        orderService.updateOrderDetailsByOrderId(orderDetails);
+       for(OrderDetails detail:list){
+           assertNotEquals(detail.getProductCost(),orderDetails.getProductCost());
+           assertNotNull(detail);
+
+       }
     }
 
 
