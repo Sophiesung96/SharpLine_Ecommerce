@@ -1,8 +1,10 @@
+var TrackCount;
 $(document).ready(function () {
-    $('#trackingList').on("click",".link-Remove",function (e) {
+    TrackCount=$('.hiddenTrackingId').length;
+    $('#trackingList').on("click", ".link-remove", function (e) {
         e.preventDefault();
-        deleteTrack($(this));
-        updateTrackCountNumber();
+        removeProduct($(this));
+        updateCountNumber();
     });
     // add new track record
     $('#track').on("click","#linkTrackOrder",function (e) {
@@ -22,35 +24,43 @@ $(document).ready(function () {
 
 })
 
-function deleteTrack(link){
+function removeProduct(link){
     rowNumber=link.attr('rowNumber');
     $('#trackList'+rowNumber).remove();
 }
+
+function updateCountNumber(){
+    $('.divCount').each(function (index,element) {
+        element.innerHTML=""+(index+1);
+        console.log("index",index)
+    });
+}
+
+
+
 
 function addNewTrackRecord(){
     htmlCode=generateTrackCode();
     $('#trackingList').append(htmlCode);
 }
 
-function updateTrackCountNumber(){
-    $('.divTrackCount').each(function (index,element) {
-        element.innerHTML=""+(index+1);
-    })
-}
+
 
 function generateTrackCode(){
-    TrackCount=$('.hiddenTrackingId').length+1;
-    trackNoteId='trackNote'+TrackCount;
-    rowId='trackList'+TrackCount;
+    NextCount=TrackCount+1;
+    TrackCount++;
+    trackNoteId='trackNote'+NextCount;
+    rowId='trackList'+NextCount;
+
     //get updatedTime
     currentTime=formatDateTimeforForm();
     TrackHtml=`<div class="border rounded p-1" id="${rowId}">
                 <input type="hidden" value="0" name="trackId" class="hiddenTrackingId"/>
                 <div class="row mt-2" >
                     <div class="col-1 divTrackCount">
-                        ${TrackCount}
-                  
-                            <div><a class="fas fa-trash icon-dark link-Remove" href="" rowNumber="${TrackCount}"></a></div>
+                        ${NextCount}
+                 
+                        <div><a class="link-remove"  href="" rowNumber="${NextCount}"><i class="fa-solid fa-trash-can" style="color:blue"></i></a></div>
                        
                     </div>
                     <div class="col-10">
@@ -69,9 +79,9 @@ function generateTrackCode(){
                                 Status:
                             </label>
                             <div class="col">                     
-                                    <input type="hidden" name="trackStatus" value="0" />                              
+                                              
                                 <select name="trackStatus"  class="form-control dropDownStatus"
-                                        required rowNumber="${TrackCount}"                 
+                                        required rowNumber="${NextCount}"                 
                                         style="max-width: 150px;">`;
     //clone the<select> attribute's html code(<options> value)
     TrackHtml+= $('#trackStatusOptions').clone().html();

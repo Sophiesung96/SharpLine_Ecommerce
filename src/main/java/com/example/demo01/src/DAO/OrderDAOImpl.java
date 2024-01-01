@@ -277,4 +277,14 @@ public class OrderDAOImpl implements OrderDAO {
         map.put("deliver_Date",order.getDeliverDate());
         namedParameterJdbcTemplate.update(sql,map);
     }
+
+    @Override
+    public void updateTrackStatus(String trackStatus,Order order) {
+        String sql="update `Order` set status=:status where id=:orderid";
+        Map<String,Object>map=new HashMap<>();
+        map.put("status",trackStatus);
+        map.put("orderid",order.getId());
+        namedParameterJdbcTemplate.update(sql,map);
+
+    }
 }
