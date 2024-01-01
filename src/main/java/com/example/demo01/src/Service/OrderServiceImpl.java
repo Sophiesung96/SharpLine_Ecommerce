@@ -202,4 +202,11 @@ public class OrderServiceImpl implements OrderService{
     public void updateOriginalOrderById(Order order) {
         orderDAO.updateOriginalOrderById(order);
     }
+
+    @Override
+    public void updateTrackStatus(String trackStatus,Order order) {
+        orderDAO.updateTrackStatus(trackStatus,order);
+    }
 }
+
+

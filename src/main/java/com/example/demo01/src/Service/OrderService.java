@@ -24,4 +24,5 @@ public interface OrderService {
     public void createOrderDetail(Order order,Iterable<OrderDetails> list, Customer customer);
     public void updateOrderDetailsByOrderId(OrderDetails orderDetails);
     public void updateOriginalOrderById(Order order);
+    public void updateTrackStatus(String trackStatus,Order order);
 }

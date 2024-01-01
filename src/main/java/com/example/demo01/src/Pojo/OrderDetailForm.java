@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -20,7 +22,6 @@ public class OrderDetailForm {
     private String email;
     private String orderTime;
     private String Productname;
-    private String ProductmainImage;
     private String paymentMethod;
     private String Customeremail;
     private float unitPrice;
@@ -91,13 +92,6 @@ public class OrderDetailForm {
     }
 
 
-    public String getMainImagePath(){
-        if( this.ProductmainImage==null){
-            return "/image/default.jpeg";
-        }
-        else{
 
-            return"/product-images/"+this.id+"/"+this.ProductmainImage;
-        }
-    }
+
 }

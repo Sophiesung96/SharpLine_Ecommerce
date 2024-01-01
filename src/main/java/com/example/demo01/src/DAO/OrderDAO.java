@@ -22,6 +22,7 @@ public interface OrderDAO {
      List<Country> listAllCountries();
      public void updateOrderDetailsByOrderId(OrderDetails orderDetails);
      public void updateOriginalOrderById(Order order);
+     public void updateTrackStatus(String trackStatus,Order order);
 
 
 }
