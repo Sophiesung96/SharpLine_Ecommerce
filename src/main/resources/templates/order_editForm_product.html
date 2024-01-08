@@ -17,7 +17,7 @@
                     <div class="col-1 divCount">
                         [[${status.count}]]
                     </div>
-                    <div><a class="fas fa-trash icon-dark link-Remove" href="" th:rowNumber="${status.count}"></a></div>
+                    <div><a class="link-Remove" href="" th:rowNumber="${status.count}"><i class="fa-solid fa-trash-can" style="color: blue"></i></a></div>
                     <div class="col-3">
                         <img th:src="@{${detail.getMainImagePath()}}" class="img-fluid"/>
                     </div>

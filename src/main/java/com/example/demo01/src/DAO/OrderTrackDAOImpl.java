@@ -35,19 +35,19 @@ public class OrderTrackDAOImpl implements OrderTrackDAO {
 
     @Override
     public void updateOrderTrackByOrderId(OrderTrack orderTrack, int orderId) {
-        String sql="update order_track set status=:status,updated_time=:updatedTime,notes=:note where order_id=:id";
+        String sql="update order_track set status=:orderStatus,updated_time=:updatedTime,notes=:note where order_id=:orderid and id=:id";
         Map<String,Object> map=new HashMap<>();
-        map.put("orderid",orderTrack.getOrderId());
-        map.put("status",orderTrack.getStatus());
+        map.put("id",orderTrack.getOrderId());
+        map.put("orderStatus",orderTrack.getStatus());
         map.put("updatedTime",orderTrack.getUpdatedTime());
         map.put("note",orderTrack.getNotes());
-        map.put("id",orderId);
+        map.put("orderid",orderId);
         namedParameterJdbcTemplate.update(sql,map);
     }
 
     @Override
     public List<OrderTrack> findOrderTrackById(int id) {
-        String sql="select * from  order_track  where order_id=:orderId";
+        String sql="select * from  order_track  where order_id=:orderId order by updated_time asc";
         Map<String,Object> map=new HashMap<>();
         map.put("orderId",id);
        List<OrderTrack> list= namedParameterJdbcTemplate.query(sql,map,new OrderTrackMapper());

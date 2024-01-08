@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -37,7 +38,7 @@ public class Order {
     private int DeliverDays;
     private Date DeliverDate;
     private List<OrderDetails> orderDetailList;
-    private List<OrderTrack> orderTrackList;
+    private List<TableOrderDetail> orderTrackList;
 
     public String getCustomerFullName(){
         return this.FirstName+" "+this.LastName;
@@ -86,6 +87,61 @@ public class Order {
             e.printStackTrace();
         }
     }
+    public String getRecipientAddress() {
+        String address=Addressline1;
+        StringBuilder addressBuilder = new StringBuilder();
+        addressBuilder.append(address);
+
+
+        if (this.Addressline2 != null && !this.Addressline2.isEmpty()) {
+            addressBuilder.append(" ").append(this.Addressline2);
+        }
+        if (this.City!= null && !this.City.isEmpty()) {
+            addressBuilder.append(", ").append(this.City);
+        }
+        if (this.State!=null && !this.State.isEmpty()) {
+            addressBuilder.append(", ").append(this.State);
+        }
+        if (this.PostalCode !=null &&!this.PostalCode.isEmpty()) {
+            addressBuilder.append(".").append(this.PostalCode);
+        }
+        return addressBuilder.toString();
+    }
+
+    public boolean isCOD(){
+        return this.PaymentMethod.equals("COD");
+    }
+
+    public boolean hasStatus(String status) {
+        List<TableOrderDetail>list=new ArrayList<>();
+         list=this.orderTrackList;
+        for (TableOrderDetail detail : list) {
+            if (status != null && !status.isEmpty()) {
+                if (status.equals(detail.getStatusCondition())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isPicked(){
+        return hasStatus("PICKED");
+    }
+    public boolean isDelivered(){
+        return hasStatus("DELIVERED");
+    }
+    public boolean isShipping(){
+        return hasStatus("SHIPPING");
+    }
+    public boolean isReturned(){
+        return hasStatus("RETURNED");
+    }
+    public boolean isPackaged(){
+        return hasStatus("PACKAGED");
+    }
+
+
 
 
 
