@@ -7,7 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.boot.test.mock.web.SpringBootMockServletContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import java.util.Date;
 import java.util.List;
@@ -124,6 +127,40 @@ class OrderDAOImplTest {
 
        }
     }
+    @Test
+    @Transactional
+    public void testUpdateOrderStatus(){
+        String trackStatus="NEW";
+        Order order=new Order();
+        order.setId(1);
+        Order DBorder=orderService.getOrderById(order.getId());
+        orderService.updateTrackStatus(trackStatus,order);
+        assertNotEquals(DBorder.getStatus(),trackStatus);
+    }
+
+    @Test
+    public void testgetTrackStatusList(){
+        int orderId=1;
+      List<TableOrderDetail>list= orderDAO.getTrackStatusList(orderId);
+        TableOrderDetail details=new TableOrderDetail();
+        details.setStatusCondition("PICKED");
+      boolean yay=list.contains(details.getStatusCondition());
+        boolean no=list.contains("PACKAGED");
+        System.out.println(no);
+        System.out.println(yay);
+      list.stream().forEach(detail-> System.out.println(detail.getStatusCondition()));
+    }
+
+    @Test
+    public void  testgetOrderTrackByKeyword(){
+        String keyword="Sanya Lad";
+        int pageNo=1;
+       List<Order>list= orderDAO.getOrderTrackByKeyword(keyword,pageNo);
+       assertNotNull(list);
+       list.stream().forEach(detail-> assertEquals(2,detail.getCustomerId()));
+
+    }
+
 
 
 

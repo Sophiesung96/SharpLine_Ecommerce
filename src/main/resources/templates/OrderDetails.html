@@ -10,12 +10,14 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         @media screen and (max-width: 768px) {
             /*small screen*/
             div.full-detail {
                 display: none;
             }
+
             div.less-detail {
                 display: block;
             }
@@ -33,6 +35,8 @@
                 display: none;
             }
 
+
+
         }
 
         @media screen and (min-width: 1024px) {
@@ -44,6 +48,8 @@
             div.less-detail {
                 display: none;
             }
+
+
         }
     </style>
 </head>
@@ -81,48 +87,57 @@
                     >
                 </div>
             </div>
+            <th:block th:if="${isvisibleforAdminorSalesPerson}">
 
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Customer:</label>
-                <div class="col-sm-10">
-                    <input class="form-control" type="text" th:value="${order.getCustomerFullName()}"
-                           readonly="readonly">
+                 <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Customer:</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" type="text" th:value="${order.getCustomerFullName()}"
+                               readonly="readonly">
+                    </div>
+
                 </div>
 
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Product Cost:</label>
-                <div class="col-sm-10">
-                    <input class="form-control" type="text" th:value="${order.productCost}"
-                           readonly>
-                </div>
-            </div>
-
-
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Shipping Cost:</label>
-                <div class="col-sm-10">
-                    <input class="form-control" type="text" th:value="${order.shippingCost}"
-                           readonly>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Tax</label>
-                <div class="col-sm-10 mt-2">
-                    <input class="form-control"  type="text"  th:value="${order.tax}" readonly>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Product Cost:</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" type="text" th:value="${order.productCost}"
+                               readonly>
+                    </div>
                 </div>
 
-            </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Shipping Cost:</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" type="text" th:value="${order.shippingCost}"
+                               readonly>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Tax</label>
+                    <div class="col-sm-10 mt-2">
+                        <input class="form-control"  type="text"  th:value="${order.tax}" readonly>
+                    </div>
+
+                </div>
+            </th:block>
 
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Total:</label>
                 <div class="col-sm-10 mt-2">
                     <input class="form-control"  type="text"  th:value="'$ '+${order.total}" readonly>
+                </div>
+            </div>
+        <th:block th:if="${isvisibleforAdminorSalesPerson}">
+            <div class="form-group row">
+                <div class="col-sm-10 mt-2">
                     <div class="m-2">TOTAL=SubTotal+ Shipping Cost+ Tax</div>
                 </div>
 
             </div>
+        </th:block>
+
 
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Payment Method:</label>
@@ -150,12 +165,41 @@
                 </div>
 
             </div>
+        </div>
+        <!--Product overview-->
+        <div class="tab-pane fade  active p-3" id="products" role="tabpanel">
+            <div>
+                <th:block th:each="detail,status:${orderDetailFormList}">
+                    <div class="border rounded p-1" th:id="'list'+${status.count}">
+                        <div class="row" mt-2>
+                            <div class="col-sm-1 divCount">
+                                [[${status.count}]]
+                            </div>
+                            <div class="col-sm-4">
+                                <img th:src="@{${detail.getMainImagePath()}}" class="img-fluid"/>
+                            </div>
+                            <div class="col-sm-7">
+                                <div class="text-wrap"><b>[[${detail.Productname}]]</b></div>
+                                <th:block th:if="${isvisibleforAdminorSalesPerson}">
+                                    <div>Product Cost: $[[${detail.DetailproductCost}]]</div>
+                                    <div><span>SubTotal:[[${detail.quantity}]]</span>
+                                        X<span>[[${detail.unitPrice}]]</span>
+                                        =
+                                        <span>$&nbsp;[[${detail.subTotal}]]</span>
+                                    </div>
+                                    <div>Shipping Cost: $[[${detail.shippingCost}]]</div>
+                                </th:block>
 
+                            </div>
 
+                        </div>
 
-
+                    </div>
+                </th:block>
+            </div>
 
         </div>
+
 
 
 
@@ -282,6 +326,23 @@
 
 
             </div>
+            <!--Less Track Details-->
+            <div class="less-detail" id="less-track" >
+                <th:block  th:each="track:${tracklist}">
+                        <div class="row p-1">
+                            <span></span>
+                            [[${track.updatedTime}]]
+                        </div>
+                        <div class="row p-1">
+                            <span class="text-primary">&nbsp;&nbsp;<b>[[${track.status}]]:<i> [[${track.notes}]]</i></b></span>
+                        </div>
+                        <div class="row">
+                            &nbsp;
+                        </div>
+
+
+                </th:block>
+            </div>
 
 
         </div>
@@ -289,27 +350,17 @@
     </div>
 
 
-    <div class="less-detail">
-        <th:block th:each="track:${tracklist}">
-            <div class="row p-1">
-                <span></span>
-                [[${track.updatedTime}]]
-            </div>
-            <div class="row p-1">
-                <span class="text-primary">&nbsp;&nbsp;<b>[[${track.status}]]:<i> [[${track.notes}]]</i></b></span>
-            </div>
-            <div class="row">
-                &nbsp;
-            </div>
-        </th:block>
-    </div>
 
 
 
 
+</div>
 
 <div class="modal-footer">
     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
 </div>
+
+
+
 </body>
 </html>
