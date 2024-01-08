@@ -206,7 +206,9 @@ public class OrderDAOImpl implements OrderDAO {
                 "o.city as city,o.status as status,o.product_cost as productCost, o.shipping_cost as shippingCost" +
                 ",o.tax as tax, o.state as state,o.total as total,o.postal_code as postalCode,o.payment_method as paymentmethod" +
                 ",o.country as country,o.deliver_days as deliverDays,o.deliver_Date as deliverDate," +
-                "c.enabled as enabled, details.quantity as quantity,details.unit_price as unitPrice,details.subtotal as subTotal,details.product_cost as DetailproductCost from `Order` o inner join Order_details details on o.id=details.order_id inner join products p on p.id=details.product_id inner join customers c on o.customer_id=c.id where o.id=:orderid";
+                "c.enabled as enabled, details.quantity as quantity,details.unit_price as unitPrice,details.subtotal as subTotal " +
+                ",details.product_cost as DetailproductCost,track.status as StatusCondition from `Order` o inner join Order_details details on o.id=details.order_id  inner join products p on p.id=details.product_id inner join customers c on o.customer_id=c.id " +
+                "inner join order_track track on o.id=track.order_id where o.id=:orderid";
         Map<String,Object> map=new HashMap<>();
         map.put("orderid",orderId);
         List<TableOrderDetail>list= namedParameterJdbcTemplate.query(sql,map,new TableOrderDetailMapper());
@@ -250,7 +252,7 @@ public class OrderDAOImpl implements OrderDAO {
     public void updateOriginalOrderById(Order order) {
         String sql="update `Order`set customer_id=:customerid,order_time=:order_time,payment_method=:payment_method," +
                 "product_cost=:product_cost,shipping_cost=:shipping_cost,subtotal=:subtotal," +
-                "tax=:tax,total=:total,status=:status,first_name=:firstname," +
+                "tax=:tax,total=:total,first_name=:firstname," +
                 "last_name=:lastname,phone_number=:phonenumber,address_line1=:addressline1,address_line2=:addressline2,city=:city," +
                 "state=:state,postal_code=:postal_code,country=:country,deliver_days=:deliver_days,deliver_Date=:deliver_Date where id=:id";
         Map<String,Object> map=new HashMap<>();
@@ -260,7 +262,6 @@ public class OrderDAOImpl implements OrderDAO {
         map.put("payment_method",order.getPaymentMethod());
         map.put("tax",order.getTax());
         map.put("total",order.getTotal());
-        map.put("status",order.getStatus());
         map.put("firstname",order.getFirstName());
         map.put("lastname",order.getLastName());
         map.put("phonenumber",order.getPhoneNumber());
@@ -286,5 +287,56 @@ public class OrderDAOImpl implements OrderDAO {
         map.put("orderid",order.getId());
         namedParameterJdbcTemplate.update(sql,map);
 
+    }
+
+
+
+    @Override
+    public List<TableOrderDetail> getTrackStatusList(int orderId) {
+        String sql="select o.id as Orderid,track.status as StatusCondition " +
+                "from `Order` o " +
+                "inner join order_track track on track.order_id=o.id " +
+                "where o.id=:orderId and track.status<>'NEW' and track.status<>'PAID' " +
+                "and track.status<>'PROCESSING' and track.status<>'CANCELED'";
+        Map<String,Object>map=new HashMap<>();
+        map.put("orderId",orderId);
+      List<TableOrderDetail>list=namedParameterJdbcTemplate.query(sql,map,new OrderStatusforShipperMapper());
+      if(list.size()>0){
+          return list;
+
+      }
+      return null;
+    }
+
+    @Override
+    public List<Order> getOrderTrackByKeyword(String keyword,int pageNo) {
+        String sql = "SELECT * " +
+                "FROM `Order` " +
+                "WHERE " +
+                " CONCAT('#',id) LIKE CONCAT('%', :keyword, '%') OR " +
+                "CONCAT(first_name, ' ', last_name) LIKE CONCAT('%', :keyword, '%') OR"+
+                " first_name LIKE CONCAT('%', :keyword, '%') " +
+                "OR last_name LIKE CONCAT('%', :keyword, '%') " +
+                "OR address_line1 LIKE CONCAT('%', :keyword, '%') " +
+                "OR address_line2 LIKE CONCAT('%', :keyword, '%') " +
+                "OR postal_code LIKE CONCAT('%', :keyword, '%') " +
+                "OR phone_number LIKE CONCAT('%', :keyword, '%') " +
+                "OR payment_method LIKE CONCAT('%', :keyword, '%') " +
+                "OR city LIKE CONCAT('%', :keyword, '%') " +
+                "OR state LIKE CONCAT('%', :keyword, '%') " +
+                "OR country LIKE CONCAT('%', :keyword, '%') " +
+                "OR status LIKE CONCAT('%', :keyword, '%') " +
+                "LIMIT :pageNo,10";
+
+
+        Map<String,Object>map=new HashMap<>();
+        map.put("keyword",keyword);
+        map.put("pageNo",(pageNo-1)*10);
+        List<Order>list=namedParameterJdbcTemplate.query(sql,map,new OrderMapper());
+        if(list.size()>0){
+            return list;
+
+        }
+        return null;
     }
 }
