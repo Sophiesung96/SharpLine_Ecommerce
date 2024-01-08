@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -42,6 +44,8 @@ public class TableOrderDetail {
     private int quantity;
     private String deliverDate;
     private String paymentmethod;
+    private String StatusCondition;
+
 
 
     public String getCustomerFullName(){
@@ -95,7 +99,8 @@ public class TableOrderDetail {
         }
         else{
 
-            return"/product-images/"+this.id+"/"+this.ProductmainImage;
+            return"/product-images/"+this.productId+"/"+this.ProductmainImage;
         }
     }
+
 }

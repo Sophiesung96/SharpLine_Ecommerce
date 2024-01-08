@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 
 public class TableOrderDetailMapper implements RowMapper<TableOrderDetail> {
     @Override
@@ -44,6 +45,8 @@ public class TableOrderDetailMapper implements RowMapper<TableOrderDetail> {
         order.setPaymentMethod(resultSet.getString("paymentmethod"));
         order.setQuantity(resultSet.getInt("quantity"));
         order.setUnitPrice(resultSet.getFloat("unitPrice"));
+        order.setDetailproductCost(resultSet.getFloat("DetailproductCost"));
+        order.setStatusCondition(resultSet.getString("StatusCondition"));
         return order;
     }
 }
