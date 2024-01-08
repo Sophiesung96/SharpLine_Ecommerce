@@ -129,8 +129,24 @@
 
                             <li class="nav-item">
                                 <a class="nav-link" th:href="@{/cart}" style="font-weight: bold">
-                                    <i class="fa-solid fa-2x fa-cart-shopping"></i>
-                                    Cart
+                                    <div>
+                                        <i class="fa-solid fa-2x fa-cart-shopping"></i>
+                                        <span
+                                                class="badge bg-danger"
+                                                style="width: 30px;
+                                                height: 30px;
+                                                padding: 15.2px 7.8px;
+                                                font-size: 27px;
+                                                border-radius: 26px;
+                                                transform: perspective(0px) translate(-12px) rotate(0deg) scale(0.50);
+                                                transform-origin: top;
+                                                padding-right: 0;
+                                                padding-top: 0.2px;
+                                                padding-left: 0.2px;
+                                                text-align: center;border-width: 48px;
+                                          " th:text="${cartItemlist.size()}"></span>
+                                    </div>
+
                                 </a>
 
                             </li>

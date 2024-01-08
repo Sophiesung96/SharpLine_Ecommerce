@@ -4,18 +4,25 @@ import com.example.demo01.src.Exception.OrderNotFoundExcption;
 import com.example.demo01.src.Pojo.*;
 import com.example.demo01.src.Service.OrderService;
 import com.example.demo01.src.Service.OrderTrackService;
+import com.example.demo01.src.Service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.FlashMap;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Slf4j
@@ -27,15 +34,51 @@ public class OrderController {
     @Autowired
     OrderTrackService orderTrackService;
 
-
+   @Autowired
+    UserService userService;
 
 
     @GetMapping("/orders/{pageno}")
-    public String getPage(@PathVariable int pageno, Model model){
+    public String getPage(@PathVariable int pageno, Model model,  @AuthenticationPrincipal Authentication user,HttpServletRequest request){
         List<Order> list=orderService.findAll(pageno);
+        for(Order order:list){
+
+            log.info("order id:{}",order.getId());
+          //Get the order Status of each order
+            List<TableOrderDetail> orderStatusList=orderService.getTrackStatusList(order.getId());
+            // check whether the orderStatusList is null
+            if(orderStatusList!=null){
+                orderStatusList.stream().forEach(detail->log.info("order Status:{}",detail.getStatusCondition()));
+                order.setOrderTrackList(orderStatusList);
+            }
+        }
         List<Integer> total=orderService.getTotalPage();
         int isCOD=0;
-        for(Order order:list){
+        //get the authenticated user's name
+        //and check his authority
+        List<UsersRole> Rolelist = getUsersRoles(user);
+        for(UsersRole role:Rolelist){
+           if(role.getName().equals("Admin") ||role.getName().equals("Shipper")){
+               log.info("Authenticated User Role:{}",role.getName());
+              model.addAttribute("list",list);
+               model.addAttribute("currentPage",pageno);
+             model.addAttribute("total",total);
+               //Retrieve the updated orderList based on the keyword
+               if (model.getAttribute("orderList")!=null && model.getAttribute("Page")!= null){
+                   List<Order> orderList = (List<Order>) model.getAttribute("orderList");
+                   Integer currentPage = (Integer) model.getAttribute("Page");
+                   log.info("updated list:{}",model.getAttribute("orderList"));
+                   log.info("updated currentpage:{}",model.getAttribute("Page"));
+                   model.addAttribute("list", orderList);
+                   model.addAttribute("currentPage",currentPage);
+                   model.addAttribute("total",total);
+                   return "OrderShipper";
+               }
+               return "OrderShipper";
+           }
+        }
+
+     for(Order order:list){
             if(order.getPaymentMethod().equals("COD")){
                isCOD=1;
                 model.addAttribute("isCOD",isCOD);
@@ -50,23 +93,45 @@ public class OrderController {
         model.addAttribute("total",total);
         return "OrderList";
     }
-    @PostMapping("/orders/{pageno}/keyword")
-    public String getPageByKeyword(@PathVariable int pageno, HttpServletRequest request,Model model){
-        String keyword=request.getParameter("keyword");
-        log.info("keyword",keyword);
-       List<Order>list= orderService.findAllByKeyword(pageno,keyword);
-       model.addAttribute("list",list);
-        model.addAttribute("currentPage",pageno);
+   //Get authenticated user's role
+    private List<UsersRole> getUsersRoles(Authentication user) {
+        Users Authenticateduser=userService.getUserIdByName(user.getName());
+        List<UsersRole> Rolelist=userService.FindUserRoleByUser(Authenticateduser);
+        return Rolelist;
+    }
 
-        return "OrderList";
+
+    @PostMapping("/orders/{pageno}/keyword")
+    public String getPageByKeyword(@PathVariable int pageno, HttpServletRequest request, RedirectAttributes re) {
+        String keyword = request.getParameter("keyword");
+        log.info("Keyword: {}", keyword);
+
+        List<Order> list = orderService.getOrderTrackByKeyword(keyword, pageno);
+        re.addFlashAttribute("orderList", list);
+        re.addFlashAttribute("Page", pageno);
+
+
+        return "redirect:/orders/1";
     }
 
 
 
+
     @GetMapping("/orders/detail/{id}")
-    public String getOrderDetails(@PathVariable int id,Model model){
+    public String getOrderDetails(@PathVariable int id,Model model,@AuthenticationPrincipal  Authentication user ){
         OrderDetailForm order=orderService.getOrderDetailById(id);
         List<OrderTrack> list=orderTrackService.findOrderTrackById(order.getId());
+        List<TableOrderDetail> orderDetailFormList=orderService.getOrderDetailsList(order.getId());
+        boolean isvisibleforAdminorSalesPerson=true;
+        List<UsersRole> Rolelist=getUsersRoles(user);
+        for(UsersRole role:Rolelist){
+            if(role.getName().equals("Admin") ||role.getName().equals("Shipper")){
+                log.info("logged user's role name:{}",role.getName());
+                isvisibleforAdminorSalesPerson=false;
+            }
+        }
+        model.addAttribute("isvisibleforAdminorSalesPerson",isvisibleforAdminorSalesPerson);
+        model.addAttribute("orderDetailFormList",orderDetailFormList);
         model.addAttribute("order",order);
         model.addAttribute("tracklist",list);
         return "OrderDetails";
@@ -123,11 +188,7 @@ public class OrderController {
         return orderStatusList;
     }
 
-    @PostMapping("/update/order")
-    public String EditOrder(@ModelAttribute Order order,RedirectAttributes rs){
 
-        return "redirect:/orders/1";
-    }
 
     @GetMapping("/orders/delete/{id}")
     public String DeleteOrder(@PathVariable int id){
@@ -165,17 +226,18 @@ public class OrderController {
         order.setOrderTime(orderTime);
         order.setCustomerId(Integer.parseInt(customerId));
         order.setDeliverDateonForm(deliverDate);
-        orderService.updateOriginalOrderById(order);
         //update or create a new orderDetail
         updateProductDetails(order,request);
         //update or create a new orderTrack
-        updateOrderTracks(order,request);
+       updateOrderTracks(order,request);
+        orderService.updateOriginalOrderById(order);
         rs.addFlashAttribute("message","The order ID"+" "+order.getId()+" has been updated successfully");
         return "redirect:/orders/1";
     }
 
     private void updateOrderTracks(Order order, HttpServletRequest request) {
         String[] trackId = request.getParameterValues("trackId");
+        log.info("trackId length:{}", trackId.length);
         String[] trackStatuses = request.getParameterValues("trackStatus");
         String[] trackNotes = request.getParameterValues("trackNotes");
         String[] trackDates = request.getParameterValues("trackDate");
@@ -183,27 +245,41 @@ public class OrderController {
         OrderTrack orderTrack = new OrderTrack();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         for (int i = 0; i < trackId.length; i++) {
-            log.info("trackId:{}", trackId[i]);
-            log.info("trackStatuses:{}", trackStatuses[i]);
-            log.info("trackNotes:{}", trackNotes[i]);
-            log.info("trackDates:{}", trackDates[i]);
+            log.info("trackId: {}", trackId[i]);
+            log.info("trackStatuses: {}", trackStatuses[i]);
+            log.info("trackNotes: {}", trackNotes[i]);
+            log.info("trackDates: {}", trackDates[i]);
+
             int Id = Integer.parseInt(trackId[i]);
             orderTrack.setOrderId(order.getId());
+
             try {
                 orderTrack.setUpdatedTime(dateFormat.parse(trackDates[i]));
             } catch (ParseException e) {
                 e.printStackTrace();
+                // Handle the parse exception as needed
             }
             orderTrack.setStatus(trackStatuses[i]);
             orderTrack.setNotes(trackNotes[i]);
-            //a new track has been added
-            if (Id > 0 && orderTrackList.get(i).getId() != Id) {
-                orderTrack.setId(Id);
+
+            if (Id== 0) {
+                // It's a new track, create it
                 orderTrackService.createOrderTrack(orderTrack);
-            }else{
-                orderTrackService.updateOrderTrackByOrderId(orderTrack,order.getId());
+                log.info("TrackID: {}", Id);
+                log.info("Latest trackStatus: {}", trackStatuses[i]);
+                orderService.updateTrackStatus(trackStatuses[i], order);
+            } else {
+                // Update the existing track if status is not "NEW"
+                // and the order's id is not 1
+                if (!trackStatuses[i].equals("NEW")&&order.getId()!=1) {
+                    orderTrack.setId(Id);
+                    orderTrackService.updateOrderTrackByOrderId(orderTrack, order.getId());
+                }
             }
         }
+
+
+
     }
 
 
@@ -228,20 +304,23 @@ public class OrderController {
             Integer detailsId=Integer.parseInt(detailsIds[i]);
             Integer productId=Integer.parseInt(productIds[i]);
             Integer quantity=Integer.parseInt(productQuantities[i]);
-            orderDetails.setId(order.getId());
             orderDetails.setProductId(productId);
             orderDetails.setQuantity(quantity);
             orderDetails.setProductCost(Float.parseFloat(productCosts[i]));
             orderDetails.setShippingCost(Float.parseFloat(productShipCosts[i]));
             orderDetails.setSubTotal(Float.parseFloat(productSubtotals[i]));
             orderDetails.setUnitPrice(Float.parseFloat(productPrices[i]));
-            //an OrderDetail has been added to the list
-            if(detailsId>0&&orderDetailsList.get(i).getId()!=detailsId){
-                orderDetails.setId(detailsId);
+           // update the existed OrderDetail
+            if(orderDetailsList.get(i).getId()==detailsId&&detailsId>0){
+                orderDetails.setId(order.getId());
+                orderService.updateOrderDetailsByOrderId(orderDetails);
+                //a new OrderDetail is being added to the list
+            }else if (detailsId==0){
                 Customer customer=new Customer(order.getCustomerId());
-               orderService.createOrderDetail(order,orderDetailsList,customer);
+                orderService.createOrderDetail(order,orderDetailsList,customer);
+
+
             }
-            orderService.updateOrderDetailsByOrderId(orderDetails);
         }
     }
 
