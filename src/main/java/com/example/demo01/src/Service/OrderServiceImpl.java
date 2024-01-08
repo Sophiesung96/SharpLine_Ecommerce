@@ -207,6 +207,18 @@ public class OrderServiceImpl implements OrderService{
     public void updateTrackStatus(String trackStatus,Order order) {
         orderDAO.updateTrackStatus(trackStatus,order);
     }
+
+    @Override
+    public List<TableOrderDetail> getTrackStatusList(int orderId) {
+        List<TableOrderDetail> list=orderDAO.getTrackStatusList(orderId);
+        return list;
+    }
+
+    @Override
+    public List<Order> getOrderTrackByKeyword(String keyword,int pageNo) {
+        List<Order> list=orderDAO.getOrderTrackByKeyword(keyword,pageNo);
+        return list;
+    }
 }
 
 

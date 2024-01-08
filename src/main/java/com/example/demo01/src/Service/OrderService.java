@@ -25,4 +25,6 @@ public interface OrderService {
     public void updateOrderDetailsByOrderId(OrderDetails orderDetails);
     public void updateOriginalOrderById(Order order);
     public void updateTrackStatus(String trackStatus,Order order);
+    public List<TableOrderDetail> getTrackStatusList(int orderId);
+    public List<Order> getOrderTrackByKeyword(String keyword,int pageNo);
 }
