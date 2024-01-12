@@ -40,6 +40,10 @@ public class Order {
     private List<OrderDetails> orderDetailList;
     private List<TableOrderDetail> orderTrackList;
 
+    public Order(int id) {
+        this.id = id;
+    }
+
     public String getCustomerFullName(){
         return this.FirstName+" "+this.LastName;
     }
@@ -140,6 +144,7 @@ public class Order {
     public boolean isPackaged(){
         return hasStatus("PACKAGED");
     }
+
 
 
 

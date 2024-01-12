@@ -28,6 +28,9 @@ class OrderDAOImplTest {
     @Autowired
     OrderService orderService;
 
+    @Autowired
+    OrderTrackDAO orderTrackDAO;
+
 
     @Test
     public void testfindAll(){
@@ -161,6 +164,28 @@ class OrderDAOImplTest {
 
     }
 
+    @Test
+    @Transactional
+    public void test() {
+        int orderId = 1;
+        String status = "NEW";
+        Order orderInDB = orderDAO.getOrderById(orderId);
+        OrderStatus orderStatus = OrderStatus.valueOf(status);
+        List<OrderTrack> orderTrackList = orderTrackDAO.findOrderTrackById(orderId);
+        //if a new order Track has been added
+
+        orderInDB.setStatus(status);
+        OrderTrack NeworderTrack = new OrderTrack();
+        NeworderTrack.setOrderId(orderId);
+        NeworderTrack.setStatus(status);
+        NeworderTrack.setNotes(orderStatus.defaultdscription());
+        NeworderTrack.setUpdatedTime(new Date());
+        orderTrackList.add(NeworderTrack);
+        orderTrackDAO.createOrderTrack(NeworderTrack);
+        orderDAO.updateTrackStatus(status, new Order(orderId));
+
+
+    }
 
 
 

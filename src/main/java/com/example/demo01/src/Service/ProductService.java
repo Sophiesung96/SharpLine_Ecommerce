@@ -16,7 +16,7 @@ public interface ProductService {
     public void saveProduct(Product product);
 
     public boolean checkUniqueness(Product product);
-
+    public Product findById(int id);
     public void UpdateEnabledStatus(int id, int enabled);
     public List<Product> selectProductByName(Product product);
     public void deleteProductById(int id);
