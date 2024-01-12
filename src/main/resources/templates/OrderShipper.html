@@ -13,39 +13,118 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-        .horizontal-timeline .items {
-            border-top: 2px solid #000000;
+        .card-stepper {
+            z-index: 0
         }
 
-        .horizontal-timeline .items .items-list {
+        #progressbar-2 {
+            color: #455A64;
+        }
+
+        #progressbar-2 li {
+            list-style-type: none;
+            font-size: 13px;
+            width: 33.33%;
+            float: left;
             position: relative;
+        }
+
+        #progressbar-2 #step1:before {
+            content: '\f058';
+            font-family: "Font Awesome 5 Free";
+            color: #fff;
+            width: 37px;
+            margin-left: 0px;
+            padding-left: 0px;
+        }
+
+        #progressbar-2 #step2:before {
+            content: '\f058';
+            font-family: "Font Awesome 5 Free";
+            color: #fff;
+            width: 37px;
+        }
+        #progressbar-2 #step3:before {
+            content: '\f058';
+            font-family: "Font Awesome 5 Free";
+            color: #fff;
+            width: 37px;
+        }
+
+        #progressbar-2 #step4:before {
+            content: '\f058';
+            font-family: "Font Awesome 5 Free";
+            color: #fff;
+            width: 37px;
             margin-right: 0;
-            padding-top: 15px;
+            text-align: center;
         }
 
-        .horizontal-timeline .items .items-list:before {
-            content: "";
-            position: absolute;
-            height: 8px;
-            width: 8px;
+        #progressbar-2 #step5:before {
+            content: '\f111';
+            font-family: "Font Awesome 5 Free";
+            color: #fff;
+            width: 37px;
+            margin-right: 0;
+            text-align: center;
+        }
+
+        #progressbar-2 li:before {
+            line-height: 37px;
+            display: block;
+            font-size: 12px;
+            background: #c5cae9;
             border-radius: 50%;
-            background-color: purple;
-            top: 0;
-            margin-top: -5px;
         }
 
-        /* Responsive styles for small devices */
-        @media screen and  (max-width: 576px) {
-            .horizontal-timeline .items .items-list {
-                padding: 5px;  /* Adjust padding for smaller screens */
-            }
-
-            .horizontal-timeline .items .items-list:before {
-                height: 6px;  /* Adjust dot size for smaller screens */
-                width: 6px;
-                margin-top: -3px;
-            }
+        #progressbar-2 li:after {
+            content: '';
+            width: 100%;
+            height: 10px;
+            background: #c5cae9;
+            position: absolute;
+            left: 0%;
+            right: 0%;
+            top: 15px;
+            z-index: -1;
         }
+
+        #progressbar-2 li:nth-child(1):after {
+            left: 1%;
+            width: 100%
+        }
+
+        #progressbar-2 li:nth-child(2):after {
+            left: 1%;
+            width: 100%;
+        }
+
+        #progressbar-2 li:nth-child(3):after {
+            left: 1%;
+            width: 100%;
+        }
+        #progressbar-2 li:nth-child(4):after {
+            left: 1%;
+            width: 100%;
+            background: #c5cae9 !important;
+        }
+
+        #progressbar-2 li:nth-child(5) {
+            left: 0;
+            width: 37px;
+        }
+
+        #progressbar-2 li:nth-child(5):after {
+            left: 0;
+            width: 0;
+        }
+
+        #progressbar-2 li.active:before,
+        #progressbar-2 li.active:after {
+            background: #6520ff;
+        }
+
+
     </style>
 
 </head>
@@ -181,116 +260,90 @@
 
             <div>
                 <th:block th:each="order,status:${list}" >
-                    <div class="row m-1">
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="row">
-                                    <div class="col">
-                                        <span>Order ID [[${order.id}]]</span>
-                                    </div>
 
-                                    <div class="col-md-auto ms-md-auto ms-sm-auto">
-                                        <div class="float-right">
-                                            <a class=" order_detail btn  btn-sm flex-auto-m" th:href="@{'/orders/detail/'+${order.id}}"
-                                               title="View detail of this" style="color: green">
-                                                <i class="fa-solid fa-2x fa-circle-info"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
+                      <div class="card">
+                          <div class="container py-5">
+                              <div class="row d-flex justify-content-center align-items-center h-100">
+                                  <div class="col-md-10 col-lg-8 col-xl-6">
+                                      <div class="card card-stepper" style="border-radius: 16px;">
+                                          <div class="card-header p-4">
+                                              <div class="d-flex justify-content-between align-items-center">
+                                                  <div>
+                                                      <p class="text-muted mb-2"> Order ID <span class="fw-bold text-body">[[${order.id}]]</span></p>
+                                                      <p class="text-muted mb-0"> Place On <span class="fw-bold text-body">[[${order.orderTime}]]</span> </p>
+                                                  </div>
+                                                  <div>
+                                                      <h6 class="mb-0"> <a class="order_detail" th:href="@{'/orders/detail/'+${order.id}}">View Details</a> </h6>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          <div class="card-body p-4">
+                                              <div class="d-flex flex-row mb-4 pb-2">
+                                                  <div class="flex-fill">
+                                                      <div>
+                                                          <div>
+                                                              <i class="fas fa-user "></i>
+                                                              <b>[[${order.getCustomerFullName()}]]</b>
+                                                          </div>
+                                                          <div>
+                                                              <i class="fas fa-home" style="color: red"></i>
+                                                              <span>[[${order.getRecipientAddress()}]]</span>
+                                                          </div>
+                                                          <div>
+                                                              <i class="fas fa-phone-alt" style="color:blue"></i>
+                                                              <span>:[[${order.phoneNumber}]]</span>
+                                                          </div>
+                                                          <div th:if="${order.isCOD()}">
+                                                              <span>COD:&nbsp;<b>$ [[${order.Total}]]</b></span>
+                                                          </div>
 
-                            </div>
+                                                      </div>
+                                                  </div>
 
-                            <div class="card-body">
-                                <div>
-                                    <i class="fas fa-user "></i>
-                                    <b>[[${order.getCustomerFullName()}]]</b>
-                                </div>
-                                <div><hr/></div>
-                                <div>
-                                    <i class="fas fa-home" style="color: red"></i>
-                                    <span>[[${order.getRecipientAddress()}]]</span>
-                                </div>
-                                <div><hr/></div>
-                                <div>
-                                    <i class="fas fa-phone-alt" style="color:blue"></i>
-                                    <span>:[[${order.phoneNumber}]]</span>
-                                </div>
-                                <div><hr/></div>
-                                <div th:if="${order.isCOD()}">
-                                    <span>COD:&nbsp;<b>$ [[${order.Total}]]</b></span>
-                                </div>
+                                              </div>
 
-
-                                <div class="horizontal-timeline row mt-2">
-                                    <div class="col-12">
-                                        <ul class="list-inline items d-flex justify-content-between">
-                                            <th:block th:if="${order.orderTrackList!=null}">
-                                                <li class="list-inline-item items-list">
-                                                    <th:block th:if="${order.isPackaged()}">
-                                                        <p class="py-1 px-2 rounded text-white"
-                                                           style="background-color: #f37a27;">Packaged</p>
-                                                    </th:block>
-                                                    <th:block th:unless="${order.isPackaged()}">
-                                                        <p class="py-1 px-2 rounded text-white"
-                                                           style="background-color: #555555;">Packaged</p>
-                                                    </th:block>
-
-                                                </li>
-
-                                                <li class="list-inline-item items-list">
-                                                    <th:block th:if="${order.isPicked()}">
-                                                        <p class="py-1 px-2 rounded text-white"
-                                                           style="background-color: #f37a27;">Picked</p>
-                                                    </th:block>
-                                                    <th:block th:unless="${order.isPicked()}">
-                                                        <p class="py-1 px-2 rounded text-white"
-                                                           style="background-color: #555555;">Picked</p>
-                                                    </th:block>
-
-                                                </li>
-                                                <li class="list-inline-item items-list">
-                                                    <th:block th:if="${order.isShipping()}">
-                                                        <p class="py-1 px-2 rounded text-white"
-                                                           style="background-color: #f37a27;">Shipping</p>
-                                                    </th:block>
-                                                    <th:block th:unless="${order.isShipping()}">
-                                                        <p class="py-1 px-2 rounded text-white"
-                                                           style="background-color: #555555;">Shipping</p>
-                                                    </th:block>
-                                                </li>
-                                                <li class="list-inline-item items-list">
-                                                    <th:block th:if="${order.isDelivered()}">
-                                                        <p class="py-1 px-2 rounded text-white"
-                                                           style="background-color: #f37a27;">Delivered</p>
-                                                    </th:block>
-                                                    <th:block th:unless="${order.isDelivered()}">
-                                                        <p class="py-1 px-2 rounded text-white"
-                                                           style="background-color: #555555;">Delivered</p>
-                                                    </th:block>
-                                                </li>
-                                                <li class="list-inline-item items-list text-end" style="margin-right: 8px;">
-                                                    <p style="margin-right: -8px;">Return</p>
-                                                </li>
+                                          </div>
 
 
-                                            </th:block>
+                                          <ul id="progressbar-2" class="d-flex justify-content-between mx-0 mt-0 mb-5 px-0 pt-0 pb-2">
+                                              <th:block th:if="${order.orderTrackList!=null}">
+                                                  <li class="step0 active text-center" id="step1" >
+                                                      <div th:replace="~{order_StatusFragment::content(${order.isPackaged()},'Packaged')}"></div>
 
-                                        </ul>
+                                                  </li>
 
-                                    </div>
+                                                  <li class="step0 active text-center" id="step2">
+                                                      <div th:replace="~{order_StatusFragment::content(${order.isPicked()},'Picked')}"></div>
 
-                                </div>
+                                                  </li>
+                                                  <li class="step0 active active text-center" id="step3">
+                                                      <div th:replace="~{order_StatusFragment::content(${order.isShipping()},'Shipping')}"></div>
+                                                  </li>
+                                                  <li class="step0 active active text-center" id="step4">
+                                                      <div th:replace="~{order_StatusFragment::content(${order.isDelivered()},'Delivered')}"></div>
+                                                  </li>
+                                                  <li class="step0 active active text-muted text-end" id="step5">
+                                                      <div th:replace="~{order_StatusFragment::content(${order.isReturned()},'Returned')}"></div>
+                                                  </li>
 
 
-                            </div>
+                                              </th:block>
+                                          </ul>
+                                      </div>
+                                      <div class="card-footer p-4">
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
 
-                        </div>
-                    </div>
+                      </div>
 
-                 </th:block>
+                </th:block>
 
-                </div>
+            </div>
+
+        </div>
+
 
 
             <!--Pagination-->
@@ -316,19 +369,25 @@
 
         </div>
 
+
+        <div class="modal fade "id="detailModal">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content"></div>
+            </div>
+        </div>
+
     </div>
 
-    <div class="modal fade "id="detailModal">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content"></div>
-        </div>
-    </div>
-</div>
+
+<div th:replace="~{Order_warning_Modal::confirm}"></div>
+
+
 <script>
     
     $(document).ready(function () {
         $('[name=keyword]').attr('placeholder','Type #number to search by Order ID');
-    })
+
+    });
 
     document.addEventListener('DOMContentLoaded', function() {
         var productDetails = document.querySelectorAll('.order_detail');
@@ -354,7 +413,11 @@
     });
 
 
+
+
+
 </script>
+<script type="text/javascript" th:src="@{/Js/orders_shipper.js}"></script>
 
 </body>
 </html>
