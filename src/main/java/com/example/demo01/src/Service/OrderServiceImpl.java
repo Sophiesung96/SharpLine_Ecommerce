@@ -1,9 +1,6 @@
 package com.example.demo01.src.Service;
 
-import com.example.demo01.src.DAO.AddressDAO;
-import com.example.demo01.src.DAO.CountryDao;
-import com.example.demo01.src.DAO.CustomerDao;
-import com.example.demo01.src.DAO.OrderDAO;
+import com.example.demo01.src.DAO.*;
 import com.example.demo01.src.Pojo.*;
 import com.example.demo01.src.DAO.AddressDAO;
 import com.example.demo01.src.DAO.CountryDao;
@@ -33,6 +30,9 @@ public class OrderServiceImpl implements OrderService{
 
     @Autowired
     CountryDao countryDao;
+
+    @Autowired
+    OrderTrackDAO orderTrackDAO;
 
 
 
@@ -219,6 +219,37 @@ public class OrderServiceImpl implements OrderService{
         List<Order> list=orderDAO.getOrderTrackByKeyword(keyword,pageNo);
         return list;
     }
+
+    @Override
+    public void updateStatus(int orderId, String status) {
+        Order orderInDB=orderDAO.getOrderById(orderId);
+        OrderStatus orderStatus=OrderStatus.valueOf(status);
+        List<OrderTrack>orderTrackList=orderTrackDAO.findOrderTrackById(orderId);
+        log.info("test orderInDb's has status:{}",orderInDB.getOrderTrackList());
+        // Check if the list contains an OrderTrack with a status
+        // that matches the input status. If found, assign it to orderTrack,
+        // otherwise, set orderTrack to null.
+        OrderTrack orderTrack = orderTrackList.stream()
+                .filter(track -> track.getStatus().equals(status))
+                .findFirst()
+                .orElse(null);
+        //Check if a new order Track has been added
+        if(orderTrack==null && orderTrackList!=null){
+                orderInDB.setStatus(status);
+                OrderTrack NeworderTrack=new OrderTrack();
+                NeworderTrack.setOrderId(orderId);
+                NeworderTrack.setStatus(status);
+                NeworderTrack.setNotes(orderStatus.defaultdscription());
+                NeworderTrack.setUpdatedTime(new Date());
+                orderTrackList.add(NeworderTrack);
+                orderTrackDAO.createOrderTrack(NeworderTrack);
+                orderDAO.updateTrackStatus(status,new Order(orderId));
+
+            }
+
+        }
+
+
 }
 
 
