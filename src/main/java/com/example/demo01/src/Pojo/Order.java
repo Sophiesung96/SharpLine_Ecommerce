@@ -39,10 +39,12 @@ public class Order {
     private Date DeliverDate;
     private List<OrderDetails> orderDetailList;
     private List<TableOrderDetail> orderTrackList;
+    private List<String> productNameList;
 
     public Order(int id) {
         this.id = id;
     }
+
 
     public String getCustomerFullName(){
         return this.FirstName+" "+this.LastName;
@@ -128,7 +130,7 @@ public class Order {
         }
         return false;
     }
-
+    public boolean isReturnRequested(){return true;};
     public boolean isPicked(){
         return hasStatus("PICKED");
     }
@@ -148,6 +150,5 @@ public class Order {
 
 
 
-
-
 }
+

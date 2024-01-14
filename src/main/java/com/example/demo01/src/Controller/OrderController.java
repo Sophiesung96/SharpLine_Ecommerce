@@ -45,7 +45,7 @@ public class OrderController {
 
             log.info("order id:{}",order.getId());
           //Get the order Status of each order
-            List<TableOrderDetail> orderStatusList=orderService.getTrackStatusList(order.getId());
+            List<TableOrderDetail> orderStatusList=orderService.getTrackStatusList(order.getCustomerId());
             // check whether the orderStatusList is null
             if(orderStatusList!=null){
                 orderStatusList.stream().forEach(detail->log.info("order Status:{}",detail.getStatusCondition()));

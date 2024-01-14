@@ -24,6 +24,27 @@
     </div>
 </div>
 
+<div th:fragment="confirm">
+    <div class="modal fade text-center" id="ConfirmModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center">Update Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="confirm-text">
+                    <p></p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-success"id="yes-Button">Yes</a>
+                    <button type="button" class="btn btn-danger"id="noButton" data-bs-dismiss="modal"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
 
 
 </body>

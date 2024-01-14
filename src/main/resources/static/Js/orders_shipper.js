@@ -1,6 +1,13 @@
 var confirmText;
 var yesButton;
 var noButton;
+var iconNames={
+    'PICKED':'fa-people-carry',
+    'SHIPPING':'fa-solid fa-truck-fast',
+    'DELIVERED':'fa-box-open',
+    'RETURNED':'fa-undo',
+    'PACKAGED':'fa-solid fa-cube'
+}
 $(document).ready(function () {
     confirmText=$('#confirm-text');
     yesButton=$('#yes-Button');
@@ -59,5 +66,5 @@ function showMessageModal(message){
 function updateStatusColor(orderId,status){
     link=$('#link'+status+orderId);
 
-    link.css('background-color', '#f37a27');
+    link.replaceWith(" <i class='fas"+iconNames[status]+"fa-2x icon-green'></i>");
 }
