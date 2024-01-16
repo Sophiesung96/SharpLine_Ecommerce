@@ -173,13 +173,13 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     @Override
-    public Order getOrderByCustomerId(int customerid) {
+    public List<Order> getOrderByCustomerId(int customerid) {
         String sql="select * from `Order` where customer_id=:customerid";
         Map<String,Object> map=new HashMap<>();
         map.put("customerid",customerid);
         List<Order>list= namedParameterJdbcTemplate.query(sql,map,new OrderMapper());
         if(list.size()>0){
-            return list.get(0);
+            return list;
         }
         return null;
     }
@@ -314,7 +314,8 @@ public class OrderDAOImpl implements OrderDAO {
                 "FROM `Order` " +
                 "WHERE " +
                 " CONCAT('#',id) LIKE CONCAT('%', :keyword, '%') OR " +
-                "CONCAT(first_name, ' ', last_name) LIKE CONCAT('%', :keyword, '%') OR"+
+                "CONCAT(first_name, ' ', last_name) LIKE CONCAT('%', :keyword, '%') " +
+                "OR"+
                 " first_name LIKE CONCAT('%', :keyword, '%') " +
                 "OR last_name LIKE CONCAT('%', :keyword, '%') " +
                 "OR address_line1 LIKE CONCAT('%', :keyword, '%') " +
@@ -339,4 +340,69 @@ public class OrderDAOImpl implements OrderDAO {
         }
         return null;
     }
+
+
+    @Override
+    public List<CombinedOrderListForCustomer> getOrderListForCustomer(int customerId) {
+        String sql="select CombinedOrderListForCustomer.id as OrderId,GROUP_CONCAT(productName) as ProductName from (select o.id ,o.customer_id as customerId " +
+                "     ,p.name as productName" +
+                "       from `Order` o inner join Order_details details on o.id=details.order_id inner join products p on p.id=details.product_id " +
+                "where o.customer_id=:customerId) CombinedOrderListForCustomer " +
+                "group by OrderId";
+        Map<String,Object>map=new HashMap<>();
+        map.put("customerId",customerId);
+        List<CombinedOrderListForCustomer> list=  namedParameterJdbcTemplate.query(sql,map,new CombinedOrderListForCustomerMapper());
+        if(list.size()>0){
+            return list;
+
+        }
+        return null;
+    }
+
+    @Override
+    public Integer getTotalPageForCustomerOrderList(int customerId) {
+        String sql="SELECT COUNT(1) as total " +
+                "FROM (" +
+                "    SELECT CombinedOrderListForCustomer.id AS OrderId, GROUP_CONCAT(productName) AS ProductName" +
+                "    FROM ( " +
+                "    SELECT o.id, o.customer_id AS customerId, p.name AS productName" +
+                "    FROM `Order` o" +
+                "    INNER JOIN Order_details details ON o.id = details.order_id" +
+                "    INNER JOIN products p ON p.id = details.product_id" +
+                "    WHERE o.customer_id = :customerId" +
+                "    ) CombinedOrderListForCustomer" +
+                "       GROUP BY OrderId " +
+                "     )  testM;";
+
+        Map<String,Object> map=new HashMap<>();
+        map.put("customerId",customerId);
+        PageNumber pageNumber=namedParameterJdbcTemplate.queryForObject(sql,map,new PageNumberMapper());
+        if(pageNumber!=null){
+            return pageNumber.getPagenumber();
+        }
+        return null;
+    }
+
+
+
+    public List<ProductListForCustomer> getCustomerOrderDetailList(int customerId) {
+        String sql="select SecondLayerQ.OrderId as OrderId ,GROUP_CONCAT(SecondLayerQ.MainImage) as MainImage,GROUP_CONCAT(SecondLayerQ.ProductId) as ProductId," +
+                " GROUP_CONCAT(SecondLayerQ.Quantity) as Quantity,GROUP_CONCAT(SecondLayerQ.Subtotal)as Subtotal,GROUP_CONCAT(SecondLayerQ.Unitprice) as Unitprice, GROUP_CONCAT(SecondLayerQ.ProductName )as ProductName from (select CombinedOrderListForCustomer.id as OrderId,GROUP_CONCAT(productName) as ProductName" +
+                "  ,CombinedOrderListForCustomer.MainImage,CombinedOrderListForCustomer.Quantity,CombinedOrderListForCustomer.Subtotal,CombinedOrderListForCustomer.Unitprice,CombinedOrderListForCustomer.ProductId as ProductId from (select o.id ,o.customer_id as customerId" +
+                "   ,p.name as productName,p.main_image as MainImage,details.quantity as Quantity, details.subtotal as Subtotal,details.unit_price as Unitprice,p.id as ProductId\n" +
+                "    from `Order` o inner join Order_details details on o.id=details.order_id inner join products p on p.id=details.product_id\n" +
+                "   where o.customer_id=:customerId ) CombinedOrderListForCustomer " +
+                "group by OrderId,MainImage,Quantity,Subtotal,Unitprice,ProductId) SecondLayerQ " +
+                "group by OrderId;";
+        Map<String,Object> map=new HashMap<>();
+        map.put("customerId",customerId);
+        List<ProductListForCustomer>list=namedParameterJdbcTemplate.query(sql,map,new ProductListForCustomerMapper());
+        if(list.size()>0){
+            return list;
+
+        }
+        return null;
+    }
+
+
 }

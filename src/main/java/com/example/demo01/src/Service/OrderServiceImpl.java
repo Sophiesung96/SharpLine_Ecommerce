@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -248,6 +249,55 @@ public class OrderServiceImpl implements OrderService{
             }
 
         }
+
+
+        @Override
+        public List<CombinedOrderListForCustomer>  getOrderListForCustomer(int customerId) {
+            List<CombinedOrderListForCustomer>  list=orderDAO.getOrderListForCustomer(customerId);
+            return list;
+    }
+
+
+    @Override
+    public List<Order> getOrderByCustomerId(int customerid) {
+        List<Order> list=orderDAO.getOrderByCustomerId(customerid);
+        return list;
+    }
+
+    @Override
+    public List<Integer> getTotalPageForCustomerOrderList(int customerid) {
+        Integer number=orderDAO.getTotalPageForCustomerOrderList(customerid);
+        number=(number/5)+1;
+        List<Integer> pageList=new ArrayList<>();
+        for(int i=1;i<=number;i++){
+            pageList.add(i);
+        }
+        return pageList;
+    }
+
+
+    @Override
+    public List<ProductListForCustomer> getCustomerOrderDetailList(int customerId) {
+        List<ProductListForCustomer> list=orderDAO.getCustomerOrderDetailList(customerId);
+        for(ProductListForCustomer customer:list){
+            String UnsortedProductName=customer.getProductName();
+            String SortedProductName[]=UnsortedProductName.split(",");
+            String UnsortedQuantity=customer.getProductName();
+            String SortedQuantity[]=UnsortedProductName.split(",");
+            String UnsortedSubTotal=customer.getProductName();
+            String SortedSubTotal[]=UnsortedProductName.split(",");
+            String UnsortedUnitPrice=customer.getProductName();
+            String SortedUnitPrice[]=UnsortedProductName.split(",");
+            String UnsortedProductId=customer.getProductName();
+            String SortedProductId[]=UnsortedProductName.split(",");
+            customer.setSortedProductName(Arrays.asList(SortedProductName));
+            customer.setSortedQuantity(Arrays.asList(SortedQuantity));
+            customer.setSortedSubtotal(Arrays.asList(SortedSubTotal));
+            customer.setSortedUnitprice(Arrays.asList(SortedUnitPrice));
+            customer.setSortedProductId(Arrays.asList(SortedProductId));
+        }
+        return list;
+    }
 
 
 }
