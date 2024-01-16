@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -45,8 +46,6 @@ public class TableOrderDetail {
     private String deliverDate;
     private String paymentmethod;
     private String StatusCondition;
-
-
 
     public String getCustomerFullName(){
         if(this.lastName!=null && this.lastName.length()>2){
@@ -102,5 +101,9 @@ public class TableOrderDetail {
             return"/product-images/"+this.productId+"/"+this.ProductmainImage;
         }
     }
+
+
+
+
 
 }
