@@ -1,12 +1,10 @@
 package com.example.demo01.src.Controller;
 
 import com.example.demo01.src.Configuration.MailConfiguration;
+import com.example.demo01.src.DAO.OrderDAO;
 import com.example.demo01.src.Pojo.*;
 import com.example.demo01.src.Security.CustomerOAuth2User;
-import com.example.demo01.src.Service.CountryService;
-import com.example.demo01.src.Service.CustomerService;
-import com.example.demo01.src.Service.SettingService;
-import com.example.demo01.src.Service.StateService;
+import com.example.demo01.src.Service.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -34,6 +32,8 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -55,7 +55,10 @@ public class CustomerController {
     CountryService countryService;
 
     @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    OrderService orderService;
+
+    @Autowired
+    OrderTrackService orderTrackService;
 
 
 
@@ -63,7 +66,6 @@ public class CustomerController {
 
     @GetMapping("/customerLogin")
     public String customerLoginPage(Model model) {
-
         return "customer-login";
     }
 
@@ -102,7 +104,7 @@ public class CustomerController {
             helper.setTo(customerAddress);
             helper.setSubject(subject);
             content = content.replace("[[name]]", customer.getFullName());
-            //give a random verification code and make it into the verify url to customer
+            //Create a random verification code and make it into the verification url to customer
             String verifyUrl = MailConfiguration.getSiteURL(request) + "/verify?code=" + customer.getVerificationCode();
             content = content.replace("[[URL]]", verifyUrl);
             helper.setText(content, true);
@@ -243,8 +245,59 @@ public class CustomerController {
         return redirectURL;
     }
 
+    @GetMapping("/customers/Order/{pageNo}")
+    public String checkOrder(Model model,@PathVariable int pageNo,HttpServletRequest request){
+       String userName=getEmailOfAuthenticatedCustomer(request);
+       Customer customer=customerService.getCustomerByfullName(userName);
+        List<Order>list=orderService.getOrderByCustomerId(customer.getId());
+        List<Integer> total=orderService.getTotalPageForCustomerOrderList(customer.getId());
+            //Get the ProductName of each order
+        List<CombinedOrderListForCustomer>  ProductNameList=orderService.getOrderListForCustomer(customer.getId());
+        for(Order order:list){
+            for(CombinedOrderListForCustomer orderListForCustomer:ProductNameList){
+                if(order.getId()==orderListForCustomer.getOrderId()){
+                    List<TableOrderDetail> orderStatusList=orderService.getCustomerTrackStatusList(order.getCustomerId(),order.getId());
+                    String name[]=orderListForCustomer.getProductName().split(",");
+                    log.info("ProductName:{}",name);
+                   order.setProductNameList(Arrays.asList(name));
+                   order.setOrderTrackList(orderStatusList);
+                }
 
+            }
+        }
 
+        int currentPage=0;
+        currentPage=pageNo;
+        model.addAttribute("list",list);
+        model.addAttribute("customer",customer.getId());
+        model.addAttribute("total",total);
+        model.addAttribute("currentPage",currentPage);
+        return "Customer_OrderList";
+    }
+
+    @GetMapping("/customers/orders/detail/{id}")
+    public String getCustomerOrderDetail(@PathVariable int id,Model model){
+        OrderDetailForm orderDetailForm=orderService.getOrderDetailById(id);
+        List<OrderTrack> list=orderTrackService.getCustomerTrackStatusList(orderDetailForm.getId());
+        List<TableOrderDetail> orderDetailFormList=orderService.getOrderDetailsList(orderDetailForm.getId());
+        //get Customer's product Details in the order
+        List<ProductListForCustomer> productNameList=orderService.getCustomerOrderDetailList(orderDetailForm.getCustomerId(),orderDetailForm.getId());
+        for(int i=0;i<orderDetailFormList.size();i++){
+
+            log.info("order id:{}",orderDetailForm.getId());
+            //Get the order Status of each order
+            List<TableOrderDetail> orderStatusList=orderService.getTrackStatusList(orderDetailForm.getId());
+            // check whether the orderStatusList is null
+            if(orderStatusList!=null){
+                orderStatusList.stream().forEach(detail->log.info("order Status:{}",detail.getStatusCondition()));
+            }
+        }
+        model.addAttribute("orderDetailFormList",orderDetailFormList);
+        model.addAttribute("CustomerProductList",productNameList);
+        model.addAttribute("order",orderDetailForm);
+        model.addAttribute("tracklist",list);
+        return "CustomerOrderDetail";
+    }
 
 
 }

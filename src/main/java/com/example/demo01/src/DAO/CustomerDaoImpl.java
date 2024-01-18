@@ -237,7 +237,6 @@ public class CustomerDaoImpl implements CustomerDao{
         String sql="select * from customers where first_name=:name";
         Map<String,Object> map=new HashMap<>();
         map.put("name",name);
-
         List<Customer>list=namedParameterJdbcTemplate.query(sql,map,new CustomerMapper());
 
         if(list.size()>0){
