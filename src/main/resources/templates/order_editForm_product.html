@@ -8,23 +8,23 @@
 <div th:fragment="content">
     <div id="productList">
 
-        <th:block th:each="detail,status:${orderDetailFormList}">
+        <th:block th:each="detail,status:${CustomerProductList}">
             <div class="border rounded p-1" th:id="'list'+${status.count}">
-                <input type="hidden" th:value="${detail.productId}" name="productId" class="hiddenProductId"/>
-                <input type="hidden" th:value="${detail.id}" name="id"/>
-                <input type="hidden" th:value="${detail.customerId}" name="customerId"/>
+                <input type="hidden" th:value="${detail.SortedProductId.get(status.index)}" name="productId" class="hiddenProductId"/>
+                <input type="hidden" th:value="${detail.OrderId}" name="id"/>
+                <input type="hidden" th:value="${customerId}" name="customerId"/>
                 <div class="row" mt-2>
                     <div class="col-1 divCount">
                         [[${status.count}]]
                     </div>
                     <div><a class="link-Remove" href="" th:rowNumber="${status.count}"><i class="fa-solid fa-trash-can" style="color: blue"></i></a></div>
                     <div class="col-3">
-                        <img th:src="@{${detail.getMainImagePath()}}" class="img-fluid"/>
+                        <img th:src="@{${detail.getSortedMainImage().get(status.index)}}" class="img-fluid"/>
                     </div>
                 </div>
 
                 <div class="row m-2">
-                    <b>[[${detail.Productname}]]</b>
+                    <b>[[${detail.getSortedProductName().get(status.index)}]]</b>
                 </div>
 
                 <div class="row mt-2">
@@ -38,7 +38,7 @@
                                            required
                                            class="form-control cost-input"
                                            th:rowNumber="${status.count}"
-                                           th:value="${detail.DetailproductCost}"
+                                           th:value="${detail.SortedProductCost.get(status.index)}"
                                            style="max-width: 140px;"/>
                                 </td>
 
@@ -51,7 +51,7 @@
                                            class="form-control quantity-input"
                                            th:rowNumber="${status.count}"
                                            th:id="'quantity'+${status.count}"
-                                           th:value="${detail.quantity}"
+                                           th:value="${detail.SortedQuantity.get(status.index)}"
                                            name="quantity"
                                            style="max-width: 140px;"/>
                                 </td>
@@ -65,7 +65,7 @@
                                            class="form-control price-input"
                                            th:id="'price'+${status.count}"
                                            th:rowNumber="${status.count}"
-                                           th:value="${detail.unitPrice}"
+                                           th:value="${detail.SortedUnitprice.get(status.index)}"
                                            name="productPrice"
                                            style="max-width: 140px;"/>
                                 </td>
@@ -79,7 +79,7 @@
                                            readonly
                                            class="form-control subtotal-input"
                                            th:id="'subtotal'+${status.count}"
-                                           th:value="${detail.subTotal}"
+                                           th:value="${detail.SortedSubtotal.get(status.index)}"
                                            name="productSubtotal"
                                            style="max-width: 140px;"/>
                                 </td>
@@ -92,7 +92,7 @@
                                     <input type="text"
                                            required
                                            class="form-control ship-input"
-                                         th:value="${detail.shippingCost}"
+                                         th:value="${detail.SortedShippingCost.get(status.index)}"
                                            name="productShipCost"
                                            style="max-width: 140px;"/>
                                 </td>
