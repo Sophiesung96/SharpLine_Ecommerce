@@ -17,6 +17,8 @@ public class ProductListForCustomerMapper implements RowMapper<ProductListForCus
         product.setMainImage(resultSet.getString("MainImage"));
         product.setUnitprice(resultSet.getString("Unitprice"));
         product.setProductId(resultSet.getString("ProductId"));
+        product.setShippingCost(resultSet.getString("ShippingCost"));
+        product.setProductCost(resultSet.getString("ProductCost"));
         return product;
     }
 }

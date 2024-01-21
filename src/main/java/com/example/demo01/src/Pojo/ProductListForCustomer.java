@@ -16,15 +16,19 @@ public class ProductListForCustomer {
     private String productId;
     private String ProductName;
     private String MainImage;
+    private String ProductCost;
     private String Quantity;
     private String Subtotal;
     private String Unitprice;
+    private String ShippingCost;
     private List<String> SortedProductName;
     private List<String> SortedMainImage;
     private List<String> SortedSubtotal;
     private List<String> SortedUnitprice;
     private List<String> SortedQuantity;
     private List<String> SortedProductId;
+    private List<String> SortedShippingCost;
+    private List<String> SortedProductCost;
 
     public List<String> getSortedMainImage() {
        this.SortedMainImage=new ArrayList<>();

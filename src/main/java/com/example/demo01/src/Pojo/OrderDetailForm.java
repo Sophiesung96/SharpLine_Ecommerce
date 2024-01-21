@@ -6,8 +6,10 @@ import lombok.NoArgsConstructor;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -45,7 +47,8 @@ public class OrderDetailForm {
     private int quantity;
     private String deliverDate;
     private String paymentmethod;
-
+    private List<TableOrderDetail> orderTrackList;
+    private List<CombinedOrderListForCustomer> orderProductNameList;
 
     public String getCustomerFullName(){
         if(this.lastName!=null && this.lastName.length()>2){
@@ -89,6 +92,36 @@ public class OrderDetailForm {
         Calendar calendar=Calendar.getInstance();
         calendar.add(Calendar.DATE,deliverDays);
         return calendar.getTime();
+    }
+
+
+    public boolean hasStatus(String status) {
+        List<TableOrderDetail> list=new ArrayList<>();
+        list=this.orderTrackList;
+        for (TableOrderDetail detail : list) {
+            if (status != null && !status.isEmpty()) {
+                if (status.equals(detail.getStatusCondition())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public boolean isReturnRequested(){return true;};
+    public boolean isPicked(){
+        return hasStatus("PICKED");
+    }
+    public boolean isDelivered(){
+        return hasStatus("DELIVERED");
+    }
+    public boolean isShipping(){
+        return hasStatus("SHIPPING");
+    }
+    public boolean isReturned(){
+        return hasStatus("RETURNED");
+    }
+    public boolean isPackaged(){
+        return hasStatus("PACKAGED");
     }
 
 

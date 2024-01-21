@@ -2,6 +2,7 @@ package com.example.demo01.src.Controller;
 
 import com.example.demo01.src.Pojo.Customer;
 import com.example.demo01.src.Pojo.State;
+import com.example.demo01.src.Pojo.Users;
 import com.example.demo01.src.Service.CustomerService;
 import com.example.demo01.src.Service.StateService;
 
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
