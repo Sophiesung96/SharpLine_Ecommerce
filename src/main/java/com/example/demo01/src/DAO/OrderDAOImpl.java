@@ -9,10 +9,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Repository
 public class OrderDAOImpl implements OrderDAO {
@@ -207,7 +205,9 @@ public class OrderDAOImpl implements OrderDAO {
                 ",o.tax as tax, o.state as state,o.total as total,o.postal_code as postalCode,o.payment_method as paymentmethod" +
                 ",o.country as country,o.deliver_days as deliverDays,o.deliver_Date as deliverDate," +
                 "c.enabled as enabled, details.quantity as quantity,details.unit_price as unitPrice,details.subtotal as subTotal " +
-                ",details.product_cost as DetailproductCost,track.status as StatusCondition from `Order` o inner join Order_details details on o.id=details.order_id  inner join products p on p.id=details.product_id inner join customers c on o.customer_id=c.id " +
+                ",details.product_cost as DetailproductCost,track.status as StatusCondition , ca.name as CategoryName from `Order` o inner join Order_details details on o.id=details.order_id  inner join products p on p.id=details.product_id " +
+                "inner join customers c on o.customer_id=c.id " +
+                "inner join categories ca on p.category_id =ca.id" +
                 "inner join order_track track on o.id=track.order_id where o.id=:orderid";
         Map<String,Object> map=new HashMap<>();
         map.put("orderid",orderId);
@@ -385,17 +385,53 @@ public class OrderDAOImpl implements OrderDAO {
 
 
 
-    public List<ProductListForCustomer> getCustomerOrderDetailList(int customerId) {
-        String sql="select SecondLayerQ.OrderId as OrderId ,GROUP_CONCAT(SecondLayerQ.MainImage) as MainImage,GROUP_CONCAT(SecondLayerQ.ProductId) as ProductId," +
-                " GROUP_CONCAT(SecondLayerQ.Quantity) as Quantity,GROUP_CONCAT(SecondLayerQ.Subtotal)as Subtotal,GROUP_CONCAT(SecondLayerQ.Unitprice) as Unitprice, GROUP_CONCAT(SecondLayerQ.ProductName )as ProductName from (select CombinedOrderListForCustomer.id as OrderId,GROUP_CONCAT(productName) as ProductName" +
-                "  ,CombinedOrderListForCustomer.MainImage,CombinedOrderListForCustomer.Quantity,CombinedOrderListForCustomer.Subtotal,CombinedOrderListForCustomer.Unitprice,CombinedOrderListForCustomer.ProductId as ProductId from (select o.id ,o.customer_id as customerId" +
-                "   ,p.name as productName,p.main_image as MainImage,details.quantity as Quantity, details.subtotal as Subtotal,details.unit_price as Unitprice,p.id as ProductId\n" +
-                "    from `Order` o inner join Order_details details on o.id=details.order_id inner join products p on p.id=details.product_id\n" +
-                "   where o.customer_id=:customerId ) CombinedOrderListForCustomer " +
-                "group by OrderId,MainImage,Quantity,Subtotal,Unitprice,ProductId) SecondLayerQ " +
-                "group by OrderId;";
+    public List<ProductListForCustomer> getCustomerOrderDetailList(int customerId,int orderId) {
+        String sql="SELECT\n" +
+                "    SecondLayerQ.OrderId as OrderId,\n" +
+                "    GROUP_CONCAT(SecondLayerQ.MainImage) as MainImage, " +
+                "    GROUP_CONCAT(SecondLayerQ.ProductId) as ProductId, " +
+                "    GROUP_CONCAT(SecondLayerQ.Quantity) as Quantity," +
+                "    GROUP_CONCAT(SecondLayerQ.Subtotal) as Subtotal," +
+                "    GROUP_CONCAT(SecondLayerQ.Unitprice) as Unitprice," +
+                "    GROUP_CONCAT(SecondLayerQ.ProductName) as ProductName," +
+                "    GROUP_CONCAT(SecondLayerQ.ShippingCost) as ShippingCost," +
+                "    GROUP_CONCAT(SecondLayerQ.ProductCost) as ProductCost\n" +
+                "FROM (" +
+                "    SELECT" +
+                "        CombinedOrderListForCustomer.id as OrderId," +
+                "        GROUP_CONCAT(productName) as ProductName," +
+                "        CombinedOrderListForCustomer.MainImage," +
+                "        CombinedOrderListForCustomer.Quantity," +
+                "        CombinedOrderListForCustomer.Subtotal," +
+                "        CombinedOrderListForCustomer.Unitprice," +
+                "        CombinedOrderListForCustomer.ProductId as ProductId," +
+                "        CombinedOrderListForCustomer.ShippingCost," +
+                "        CombinedOrderListForCustomer.ProductCost as ProductCost" +
+                "    FROM (" +
+                "        SELECT" +
+                "            o.id," +
+                "            o.customer_id as customerId," +
+                "            details.shipping_cost as ShippingCost," +
+                "            p.name as productName," +
+                "            p.main_image as MainImage," +
+                "            details.quantity as Quantity," +
+                "            details.subtotal as Subtotal," +
+                "            details.unit_price as Unitprice," +
+                "            p.id as ProductId," +
+                "            details.product_cost as ProductCost" +
+                "        FROM" +
+                "            `Order` o" +
+                "            INNER JOIN Order_details details ON o.id = details.order_id" +
+                "            INNER JOIN products p ON p.id = details.product_id" +
+                "        WHERE" +
+                "            o.customer_id = :customerId AND o.id = :orderId" +
+                "    ) CombinedOrderListForCustomer" +
+                "    GROUP BY OrderId, MainImage, Quantity, Subtotal, Unitprice, ProductId, ShippingCost, ProductCost" +
+                ") SecondLayerQ" +
+                " GROUP BY OrderId;";
         Map<String,Object> map=new HashMap<>();
         map.put("customerId",customerId);
+        map.put("orderId",orderId);
         List<ProductListForCustomer>list=namedParameterJdbcTemplate.query(sql,map,new ProductListForCustomerMapper());
         if(list.size()>0){
             return list;
@@ -404,5 +440,50 @@ public class OrderDAOImpl implements OrderDAO {
         return null;
     }
 
+    @Override
+    public Order getOrderDetailByIdAndCustomer(int customerId, int orderId) {
+        String sql="select * from `Order` where id=:orderId and customer_id=:customerId";
+        Map<String,Object> map=new HashMap<>();
+        map.put("customerId",customerId);
+        map.put("orderId",orderId);
+        List<Order>list=namedParameterJdbcTemplate.query(sql,map,new OrderMapper());
+        if(list.size()>0){
+            return list.get(0);
 
+        }
+        return null;
+    }
+
+    @Override
+    public List<TableOrderDetail> getCustomerTrackStatusList(int CustomerId, int OrderId) {
+        String sql="select  o.id as Orderid,track.status as StatusCondition " +
+                "    from `Order` o " +
+                "    inner join order_track track on track.order_id=o.id " +
+                "    where o.id=:orderId and o.customer_id=:customerId and track.status<>'NEW' and track.status<>'PAID' " +
+                "     and track.status<>'PROCESSING' and track.status<>'CANCELED';";
+        Map<String,Object>map=new HashMap<>();
+        map.put("orderId",OrderId);
+        map.put("customerId",CustomerId);
+        List<TableOrderDetail>list=namedParameterJdbcTemplate.query(sql,map,new OrderStatusforShipperMapper());
+        if(list.size()>0){
+            return list;
+
+        }
+        return null;
+    }
+
+    @Override
+    public List<Order> findByOrderTimeBetween(Date startTime, Date endTime) {
+       String sql="select * from `Order` where order_time between\n" +
+               " :startTime and :endTime order by order_time asc";
+       Map<String,Object>map=new HashMap<>();
+       map.put("startTime",startTime);
+       map.put("endTime",endTime);
+     List<Order>list=namedParameterJdbcTemplate.query(sql,map,new OrderMapper());
+     if(list.size()>0){
+         return list;
+
+     }
+     return null;
+    }
 }

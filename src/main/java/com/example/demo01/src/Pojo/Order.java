@@ -45,6 +45,13 @@ public class Order {
         this.id = id;
     }
 
+    public Order(int id, String OrderTime,float productCost, float total, float subTotal) {
+        this.id = id;
+        ProductCost = productCost;
+        Total = total;
+        orderTime=OrderTime;
+        SubTotal = subTotal;
+    }
 
     public String getCustomerFullName(){
         return this.FirstName+" "+this.LastName;
@@ -130,7 +137,7 @@ public class Order {
         }
         return false;
     }
-    public boolean isReturnRequested(){return true;};
+
     public boolean isPicked(){
         return hasStatus("PICKED");
     }
@@ -146,9 +153,7 @@ public class Order {
     public boolean isPackaged(){
         return hasStatus("PACKAGED");
     }
-
-
-
+    public boolean isReturnRequested(){return hasStatus("REQUEST_RETURNED");};
 
 }
 

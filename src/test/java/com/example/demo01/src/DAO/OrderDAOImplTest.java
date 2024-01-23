@@ -12,8 +12,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -82,6 +86,7 @@ class OrderDAOImplTest {
         order.setState("California");
         order.setProductCost(100);
         order.setPaymentMethod("Credit Card");
+        order.setCustomerId(1);
         order.setPostalCode("1234");
         order.setAddressline1("asdgdfgdfgdfgdfgdf");
         order.setAddressline2("asdgdfgdfgdfgdfgdf");
@@ -95,10 +100,10 @@ class OrderDAOImplTest {
         order.setDeliverDate(new Date());
         order.setStatus("NEW");
        orderDAO.createorder(customer,order);
-    Order testOrder= orderDAO.getOrderByCustomerId(2);
+        List<Order> testOrder= orderDAO.getOrderByCustomerId(1);
         System.out.println(order);
-    assertEquals(testOrder.getFirstName(),order.getFirstName());
-    assertEquals(testOrder.getLastName(),order.getLastName());
+    testOrder.stream().forEach(Neworder->assertEquals(Neworder.getFirstName(),order.getFirstName()));
+        testOrder.stream().forEach(Neworder->assertEquals(Neworder.getLastName(),order.getLastName()));
     }
 
     @Test
@@ -186,7 +191,46 @@ class OrderDAOImplTest {
 
 
     }
+    @Test
+    public void testgetTotalPageForCustomerOrderList(){
+       Integer total= orderDAO.getTotalPageForCustomerOrderList(2);
+        System.out.println(total);
+        List<Integer> getTotalPageForCustomerOrderList=orderService.getTotalPageForCustomerOrderList(2);
+        System.out.println(getTotalPageForCustomerOrderList.size());
+    }
 
+    @Test
+    public void testGetCustomerOrderDetailList() {
+        int customerId = 2;
+        int orderId=2;
+        List<ProductListForCustomer> list = orderDAO.getCustomerOrderDetailList(customerId,orderId);
+        assertNotNull(list);
+        list.stream().forEach(product -> System.out.println(product.getProductId()));
+        list.stream().forEach(product -> System.out.println(product.getMainImage()));
+         list.stream().forEach(product -> System.out.println("Sorted MainImage: "+product.getSortedMainImage()));
+
+    }
+    @Test
+    public void testGetOrderDetailByIdAndCustomer(){
+        int customerId = 2;
+        int orderId=25;
+      Order order= orderDAO.getOrderDetailByIdAndCustomer(customerId,orderId);
+        System.out.println(order.getId());
+    }
+
+    @Test
+    public void testfindByOrderTimeBetweenStartnEndTime() throws ParseException {
+        SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date startTime=dateFormat.parse("2020-10-31 10:55:44");
+        Date endTime=dateFormat.parse("2021-11-29 13:41:09");
+        List<Order>list=orderDAO.findByOrderTimeBetween(startTime,endTime);
+        list.stream().forEach(s-> System.out.println(s));
+    }
+    @Test
+    public void testTableOrderDetail(){
+        List<TableOrderDetail>list=orderDAO.getTrackStatusList(1);
+        System.out.println(list);
+    }
 
 
 
