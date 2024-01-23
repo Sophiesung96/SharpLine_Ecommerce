@@ -47,6 +47,7 @@ public class TableOrderDetailMapper implements RowMapper<TableOrderDetail> {
         order.setUnitPrice(resultSet.getFloat("unitPrice"));
         order.setDetailproductCost(resultSet.getFloat("DetailproductCost"));
         order.setStatusCondition(resultSet.getString("StatusCondition"));
+        order.setCategoryName(resultSet.getString("CategoryName"));
         return order;
     }
 }

@@ -46,6 +46,17 @@ public class TableOrderDetail {
     private String deliverDate;
     private String paymentmethod;
     private String StatusCondition;
+    private String CategoryName;
+
+
+
+    public TableOrderDetail(float productCost, float shippingCost, float subTotal, int quantity, String categoryName) {
+        this.productCost = productCost;
+        this.shippingCost = shippingCost;
+        this.subTotal = subTotal;
+        this.quantity = quantity;
+        CategoryName = categoryName;
+    }
 
     public String getCustomerFullName(){
         if(this.lastName!=null && this.lastName.length()>2){
