@@ -2,6 +2,7 @@ package com.example.demo01.src.DAO;
 
 import com.example.demo01.src.Pojo.*;
 
+import java.util.Date;
 import java.util.List;
 
 public interface OrderDAO {
@@ -27,9 +28,10 @@ public interface OrderDAO {
       List<Order> getOrderTrackByKeyword(String keyword,int pageNo);
       List<CombinedOrderListForCustomer> getOrderListForCustomer(int customerId);
       Integer getTotalPageForCustomerOrderList(int customerId);
-    List<ProductListForCustomer> getCustomerOrderDetailList(int customerId);
-
-
+    List<ProductListForCustomer>getCustomerOrderDetailList(int customerId,int orderId);
+    Order getOrderDetailByIdAndCustomer(int customerId,int orderId);
+    List<TableOrderDetail> getCustomerTrackStatusList(int CustomerId,int OrderId);
+    List<Order> findByOrderTimeBetween(Date startTime, Date endTime);
 
 
 }

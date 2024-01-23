@@ -58,7 +58,7 @@ public class OrderController {
         //and check his authority
         List<UsersRole> Rolelist = getUsersRoles(user);
         for(UsersRole role:Rolelist){
-           if(role.getName().equals("Admin") ||role.getName().equals("Shipper")){
+           if(role.getName().equals("s") ||role.getName().equals("Shipper")){
                log.info("Authenticated User Role:{}",role.getName());
               model.addAttribute("list",list);
                model.addAttribute("currentPage",pageno);
@@ -146,12 +146,16 @@ public class OrderController {
             List<OrderStatus>orderStatusList=getStatus();
             List<TableOrderDetail> orderDetailFormList=orderService.getOrderDetailsList(order.getId());
             List<OrderTrack> Tracklist=orderTrackService.findOrderTrackById(order.getId());
+            //get every product's detail in each order
+            List<ProductListForCustomer> productNameList=orderService.getCustomerOrderDetailList(order.getCustomerId(),order.getId());
             model.addAttribute("pageTitle","Edit Order (ID:"+id+")");
             model.addAttribute("order",order);
+            model.addAttribute("customerId", order.getCustomerId());
             model.addAttribute("orderDetailFormList",orderDetailFormList);
             model.addAttribute("orderStatusList",orderStatusList);
             model.addAttribute("paymentMethodList",paymentMethodList);
             model.addAttribute("countries",list);
+            model.addAttribute("CustomerProductList",productNameList);
             model.addAttribute("tracklist",Tracklist);
             return "OrderEditForm";
         }
