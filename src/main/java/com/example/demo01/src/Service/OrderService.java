@@ -2,6 +2,7 @@ package com.example.demo01.src.Service;
 
 import com.example.demo01.src.Pojo.*;
 
+import java.util.Date;
 import java.util.List;
 
 public interface OrderService {
@@ -50,10 +51,11 @@ public interface OrderService {
     List<CombinedOrderListForCustomer> getOrderListForCustomer(int customerId);
 
     List<Order> getOrderByCustomerId(int customerid);
-
+     Order getOrderDetailByIdAndCustomer(int customerId, int orderId);
     List<Integer> getTotalPageForCustomerOrderList(int customerid);
-    List<ProductListForCustomer> getCustomerOrderDetailList(int customerId);
-
-
+    List<ProductListForCustomer> getCustomerOrderDetailList(int customerId,int orderId);
+    void setOrderReturnRequested(OrderReturnRequest returnRequest,Customer customer,Order order);
+    List<TableOrderDetail> getCustomerTrackStatusList(int CustomerId,int OrderId);
+    List<Order> findByOrderTimeBetween(Date startTime, Date endTime);
 
 }

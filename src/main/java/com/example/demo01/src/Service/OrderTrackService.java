@@ -10,5 +10,6 @@ public interface OrderTrackService {
     void createOrderTrack(OrderTrack orderTrack);
     void updateOrderTrackByOrderId(OrderTrack orderTrack,int orderId);
     List<OrderTrack> findOrderTrackById(int id);
+    List<OrderTrack> getCustomerTrackStatusList(int orderId);
 
 }

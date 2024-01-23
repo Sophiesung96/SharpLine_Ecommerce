@@ -334,11 +334,11 @@
         for (var i = 0; i < productDetails.length; i++) {
             productDetails[i].addEventListener('click', function(e) {
                 e.preventDefault();
-                var linkurl = this.getAttribute('href');
+                var linkurl = $(this).attr('href');
                 var modal = new bootstrap.Modal(document.getElementById('detailModal'));
                 modal.show();
 
-                var modalContent = document.querySelector('.modal-content');
+                var modalContent = $('.modal-content');
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', linkurl, true);
                 xhr.send();

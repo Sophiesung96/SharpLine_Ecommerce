@@ -30,4 +30,9 @@ public class OrderTrackServiceImpl implements OrderTrackService {
         return list;
     }
 
+    @Override
+    public List<OrderTrack> getCustomerTrackStatusList(int orderId) {
+        List<OrderTrack> list=orderTrackDAO.getCustomerTrackStatusList(orderId);
+        return list;
+    }
 }

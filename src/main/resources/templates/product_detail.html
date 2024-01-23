@@ -75,11 +75,7 @@
 
             <nav class="navbar navbar-expand-sm bg-light">
                 <div class="collapse navbar-collapse d-flex align-items-center" id="searchNavBar">
-                    <form th:action="@{/search}" method="get" class="d-flex">
-                        <input type="search" name="keyword" class="form-control ms-auto"
-                               th:value="${keyword}" placeholder="keyword" required>
-                        <input type="submit" value="Search" class="btn btn-outline-success"/>
-                    </form>
+
                     <ul class="navbar-nav" >
                         <!--the following section is only accessible if the user is authenticated-->
                         <th:block sec:authorize="isAuthenticated()">
@@ -142,9 +138,9 @@
     <div class="row">
         <div class="col-md">
             <nav class="navbar navbar-expand-sm bg-light">
-                <div class="collapse navbar-collapse" id="searchNavbar">
+                <div class="collapse navbar-collapse" id="searchNavbars">
                     <div class="input-group-sm" style="width:35%">
-                        <form class="d-flex" method="get" th:action="@{'/p'+'/'+${product.alias}+'/'+${pageno}+'/keyword'}">
+                        <form class="d-flex" method="get" th:action="@{'/p'+'/keyword/'+${pageno}}">
                             <input class="form-control me-1" type="search" placeholder="Search" name="keyword">
                             <button class="btn btn-success" type="submit">Search</button>
                         </form>
@@ -162,77 +158,80 @@
 
 
     <div class="row">
-        <div class="col-sm">
-            <div>
-                <img id="bigImg" th:src="@{${product.getMainImagePath()}}" class="img-fluid" index="0">
-            </div>
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div>
+                            <img id="bigImg" th:src="@{${product.getMainImagePath()}}" class="img-fluid" index="0">
+                        </div>
 
-            <div class="row justify-content-center mt-2">
-                <div class="col-2  border border-secondary p-1 m-2">
-                    <img class="image-thumbnail" th:src="@{${product.getMainImagePath()}}" height="40" index="0"/>
-                </div>
-                <th:block th:each="extra,status:${extraList}">
-                    <div class=" col-2  border border-secondary m-2 p-1">
-                        <img th:src="@{${extra.getImagePath()}}" class="image-thumbnail" height="40" th:index="${status.count}"/>
+                        <div class="row justify-content-center mt-2">
+                            <div class="col-2  border border-secondary p-1 m-2">
+                                <img class="image-thumbnail" th:src="@{${product.getMainImagePath()}}" height="40" index="0"/>
+                            </div>
+                            <th:block th:each="extra,status:${extraList}">
+                                <div class=" col-2  border border-secondary m-2 p-1">
+                                    <img th:src="@{${extra.getImagePath()}}" class="image-thumbnail" height="40" th:index="${status.count}"/>
+                                </div>
+                            </th:block>
+                        </div>
                     </div>
-                </th:block>
+                </div>
             </div>
-        </div>
+            <div class="col-sm-6 justify-content-center">
+                        <h2 style="color: #555555">[[${product.name}]]</h2>
 
-        <div class="col-sm">
-            <h2 class="text-info ">[[${product.name}]]</h2>
-
-            <div>
-                <span>Brand: [[${productCBName.BrandName}]]</span>
-            </div>
-            <div>
-                List Price:
-                     <span th:if="${product.discountPercent<=0}">
+                        <div>
+                            <span>Brand: [[${productCBName.BrandName}]]</span>
+                        </div>
+                        <div>
+                            List Price:
+                            <span th:if="${product.discountPercent<=0}">
                      <span th:if="${CURRENCY_SYMBOL_POSITION} == 'Before_Price'">[[${CURRENCY_SYMBOL}]]</span>
-
-                      [[${product.price}]]
+                            <b> [[${product.price}]]</b>
                        <span th:if="${CURRENCY_SYMBOL_POSITION} == 'After_Price'">[[${CURRENCY_SYMBOL}]]</span>
 
                     </span>
-                    <del th:if="${product.discountPercent>0}" >
+                            <del th:if="${product.discountPercent>0}" >
                        <span>
                       <span th:if="${CURRENCY_SYMBOL_POSITION} == 'Before_Price'">[[${CURRENCY_SYMBOL}]]</span>
-                         [[${product.price}]]
+                           <b> [[${product.price}]]</b>
                      <span th:if="${CURRENCY_SYMBOL_POSITION} == 'After_Price'">[[${CURRENCY_SYMBOL}]]</span>
                     </span>
 
-                    </del>
-            </div>
-            <div th:if="${product.discountPercent>0}" >
-                Price:
-                <span style="font-size: larger ;color: darkred;">
+                            </del>
+                        </div>
+                        <div th:if="${product.discountPercent>0}" >
+                            Price:
+                            <span style="font-size:x-large ;color: red;">
                     <span th:if="${CURRENCY_SYMBOL_POSITION} == 'Before_Price'" >[[${CURRENCY_SYMBOL}]]</span>
-                     [[${product.getDetailPrice()}]]
+                        <b>[[${product.getDetailPrice()}]]</b>
                     <span th:if="${CURRENCY_SYMBOL_POSITION} == 'After_Price'">[[${CURRENCY_SYMBOL}]]</span>
                 </span>
-                ([[${product.discountPercent}]] % off)
-             </div>
+                            ([[${product.discountPercent}]] % off)
+                        </div>
 
-             <div th:utext="${product.shortDescription}"></div>
-         </div>
+                        <div th:utext="${product.shortDescription}"></div>
 
-         <div class="col-sm-2">
-             <div>
-                 <span th:if="${product.inStock}==1" class="text-success"><b>In Stock</b></span>
-                 <span th:if="${product.inStock}==0" style="font-size: larger ;color: darkred;"><b>Out Of Stock</b></span>
-             </div>
-             <th:block th:if="${product.inStock}==1">
-                 <div class="mt-2">
-                     <div th:replace="~{Quantity_Control::quantity_control(1, ${product.id})}"></div>
+                    <div >
+                        <span class="btn btn-success" th:if="${product.inStock}==1" ><b>In Stock</b></span>
+                        <span class=" mt-2 btn btn-warning text-center" th:if="${product.inStock}==0" style="font-size: larger ;color: darkred;"><b>Out Of Stock</b></span>
+                    </div>
+                    <th:block th:if="${product.inStock}==1">
+                        <div class="mt-2">
+                            <div th:replace="~{Quantity_Control::quantity_control(1, ${product.id})}"></div>
 
-                 </div>
-                 <div class="mt-3">
-                     <input type="button"  value="Add to Cart" id="buttonAdd2Cart" class="btn btn-primary">
-                 </div>
-             </th:block>
+                        </div>
+                        <div class="mt-3">
+                            <input type="button"  value="Add to Cart" id="buttonAdd2Cart" class="btn btn-primary">
+                        </div>
+                    </th:block>
 
 
-         </div>
+
+            </div>
+
+
      </div>
 
      <div class="row">

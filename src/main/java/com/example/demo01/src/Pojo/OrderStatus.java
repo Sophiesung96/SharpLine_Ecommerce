@@ -62,6 +62,13 @@ public  enum OrderStatus {
             return "Shipper picked the package";
         }
 
+    }
+    ,REQUEST_RETURNED{
+        @Override
+        public String defaultdscription (){
+            return "Customer sent request to return purchase.";
+        }
+
     };
 
     public abstract String defaultdscription();
