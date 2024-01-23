@@ -37,9 +37,5 @@ public class SettingBag {
     public List<Setting> getlist(){
         return settingList;
     }
-
-    public static void main(String[] args) {
-
-    }
 }
 

@@ -239,4 +239,10 @@ public class ProductServiceImpl implements ProductService {
         List<Product> list=productDAO.ProductSearchByKeywordforOrder(pageno, search);
         return list;
     }
+
+    @Override
+    public Product findById(int id) {
+        Product product=productDAO.findById(id);
+        return product;
+    }
 }

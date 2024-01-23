@@ -71,7 +71,7 @@ function showMessage(){
     Responsemodal.show();
 }
 function updateStatusTextandHideReturnButton(OrderId){
-    $('.textOrderStatus'+orderId).each(function (index) {
+    $('.textOrderStatus'+OrderId).each(function (index) {
         $(this).text('RETURN_REQUESTED');
     });
     $('.linkReturn'+orderId).each(function (index) {
