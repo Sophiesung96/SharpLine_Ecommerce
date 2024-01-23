@@ -1,13 +1,20 @@
 package com.example.demo01.src.Security;
 
+import com.example.demo01.src.Pojo.CartItem;
 import com.example.demo01.src.Pojo.Customer;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collection;
-
+import java.util.List;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CustomUserDetail implements UserDetails {
 
     @Autowired
@@ -16,6 +23,7 @@ public class CustomUserDetail implements UserDetails {
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
+
 
     public CustomUserDetail(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         this.username = username;

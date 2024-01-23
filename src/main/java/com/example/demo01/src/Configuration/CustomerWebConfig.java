@@ -29,7 +29,7 @@ import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
-@Order(1)
+@Order(-1)
 public class CustomerWebConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -64,7 +64,7 @@ public class CustomerWebConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/oauth2/**").permitAll()
-                .antMatchers("/customer/**", "/checkout", "placeOrder", "/addressBook", "/cart","/process_paypal_order").authenticated()
+                .antMatchers("/customer/**", "/checkout", "placeOrder", "/addressBook", "/cart","/process_paypal_order","/customers/Order/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()

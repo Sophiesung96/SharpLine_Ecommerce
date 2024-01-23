@@ -217,7 +217,7 @@
 
                                    <a class="fas fa-undo fa-2x linkReturnOrder" style="color:black;text-decoration: none;"
                                       th:orderId="${orderList.id}"
-                                      th:classappend="'linkReturn'+${plist.id}"
+                                      th:classappend="'linkReturn'+${orderList.id}"
                                       title="Return this Order"></a>
                                </th:block>
                             </td>
@@ -271,7 +271,7 @@
                                                 &nbsp;
                                                 <a class="fas fa-undo fa-2x linkReturnOrder"  style="color: black; text-decoration: none"
                                                    title="Return this Order"
-                                                   th:orderId="${orderList.id}"
+                                                   th:orderId="${plist.id}"
                                                    th:classappend="'linkReturn'+${plist.id}">
                                                 </a>
                                             </th:block>

@@ -119,7 +119,7 @@
 
 
                             <li class="nav-item">
-                                <a class="nav-link" href="">Orders</a>
+                                <a class="nav-link" th:href="@{/customers/Order/1}">Orders</a>
                             </li>
 
 
@@ -171,15 +171,15 @@
                          </th:block>
                          <th:block th:unless="${userPrimaryDefault}==1">
                              <!--Redirecting from shoppingCart Page-->
-                             <a  th:if="${param.redirect !=null && param.redirect[0]=='cart'}" class="px-2" th:href="@{'/address/default/0?redirect=cart'}">[Set as Default]</a>
+                             <a  th:if="${param.redirect !=null && param.redirect[0]=='cart'}" th:href="@{'/address/default/0?redirect=cart'}">[Set as Default]</a>
                              <!--Redirecting from CheckOut Page-->
-                             <a  th:if="${param.redirect !=null && param.redirect[0]=='checkout'}" class="px-2" th:href="@{'/address/default/0?redirect=checkout'}">[Choose]</a>
-                             <a  th:unless="${param.redirect}" class="px-2" th:href="@{'/address/default/0'}">[Set as Default]</a>
+                             <a  th:if="${param.redirect !=null && param.redirect[0]=='checkout'}"  th:href="@{'/address/default/0?redirect=checkout'}">[Choose]</a>
+                             <a  th:unless="${param.redirect}"th:href="@{'/address/default/0'}">[Set as Default]</a>
                          </th:block>
                      </div>
 
                      <div class="col">
-                         <div class="float-right">
+                         <div class="float-end">
                              <!--Redirecting from CheckOut Page-->
                              <a th:if="${param.redirect !=null && param.redirect[0]=='checkout'}"
                                 title="Edit your primary Address" th:href="@{/account_details(redirect=addressBook)}">
@@ -219,14 +219,14 @@
                                 </th:block>
                                 <th:block th:unless="${address.isDefaultforShopping()}==1">
                                     <!--Redirecting from shoppingCart Page-->
-                                    <a  th:if="${param.redirect!=null&& param.redirect[0]=='cart'}" class="px-2" th:href="@{'/address/default/'+${address.id}+'?redirect=cart'}">[Set as Default]</a>
+                                    <a  th:if="${param.redirect!=null&& param.redirect[0]=='cart'}"  th:href="@{'/address/default/'+${address.id}+'?redirect=cart'}">[Set as Default]</a>
                                     <!--Redirecting from CheckOut Page-->
-                                    <a  th:if="${param.redirect !=null && param.redirect[0]=='checkout'}" class="px-2" th:href="@{'/address/default/'+${address.id}+'?redirect=checkout'}">[Choose]</a>
-                                    <a  th:unless="${param.redirect}" class="px-2" th:href="@{'/address/default/'+${address.id}}">[Set as Default]</a>
+                                    <a  th:if="${param.redirect !=null && param.redirect[0]=='checkout'}"  th:href="@{'/address/default/'+${address.id}+'?redirect=checkout'}">[Choose]</a>
+                                    <a  th:unless="${param.redirect}"  th:href="@{'/address/default/'+${address.id}}">[Set as Default]</a>
                                 </th:block>
                             </div>
                             <div class="col ">
-                                <div class=" float-right">
+                                <div class=" float-end">
                                     <a th:if="${param.redirect !=null && param.redirect[0]=='checkout'}"
                                        th:href="@{'/edit/'+${address.id}+'/'+${address.customerId}+'?redirect=checkout'}">
                                         <i class="fa-solid fa-pen-to-square"></i>

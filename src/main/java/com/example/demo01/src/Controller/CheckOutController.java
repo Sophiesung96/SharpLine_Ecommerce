@@ -100,7 +100,7 @@ public class CheckOutController {
             model.addAttribute("currencyCode", currencyCode);
             model.addAttribute("checkOutInfo", checkOutInfo);
             model.addAttribute("cartItemlist", list);
-            //for customers using paypal paymentgateaway
+            //for customers using paypal payment gateaway
              Country country=countryService.getByCountryId(customer.getCountryId());
              customer.setCountryCode(country.getCode());
             model.addAttribute("customer", customer);
