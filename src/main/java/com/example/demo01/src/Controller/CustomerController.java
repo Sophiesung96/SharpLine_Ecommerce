@@ -1,7 +1,6 @@
 package com.example.demo01.src.Controller;
 
 import com.example.demo01.src.Configuration.MailConfiguration;
-import com.example.demo01.src.DAO.OrderDAO;
 import com.example.demo01.src.Pojo.*;
 import com.example.demo01.src.Security.CustomerOAuth2User;
 import com.example.demo01.src.Service.*;
@@ -32,7 +31,6 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,8 +53,9 @@ public class CustomerController {
     CountryService countryService;
 
     @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    @Autowired
     OrderService orderService;
-
     @Autowired
     OrderTrackService orderTrackService;
 
@@ -66,6 +65,7 @@ public class CustomerController {
 
     @GetMapping("/customerLogin")
     public String customerLoginPage(Model model) {
+
         return "customer-login";
     }
 
@@ -104,7 +104,7 @@ public class CustomerController {
             helper.setTo(customerAddress);
             helper.setSubject(subject);
             content = content.replace("[[name]]", customer.getFullName());
-            //Create a random verification code and make it into the verification url to customer
+            //give a random verification code and make it into the verify url to customer
             String verifyUrl = MailConfiguration.getSiteURL(request) + "/verify?code=" + customer.getVerificationCode();
             content = content.replace("[[URL]]", verifyUrl);
             helper.setText(content, true);
@@ -247,11 +247,11 @@ public class CustomerController {
 
     @GetMapping("/customers/Order/{pageNo}")
     public String checkOrder(Model model,@PathVariable int pageNo,HttpServletRequest request){
-       String userName=getEmailOfAuthenticatedCustomer(request);
-       Customer customer=customerService.getCustomerByfullName(userName);
+        String userName=getEmailOfAuthenticatedCustomer(request);
+        Customer customer=customerService.getCustomerByfullName(userName);
         List<Order>list=orderService.getOrderByCustomerId(customer.getId());
         List<Integer> total=orderService.getTotalPageForCustomerOrderList(customer.getId());
-            //Get the ProductName of each order
+        //Get the ProductName of each order
         List<CombinedOrderListForCustomer>  ProductNameList=orderService.getOrderListForCustomer(customer.getId());
         for(Order order:list){
             for(CombinedOrderListForCustomer orderListForCustomer:ProductNameList){
@@ -259,13 +259,12 @@ public class CustomerController {
                     List<TableOrderDetail> orderStatusList=orderService.getCustomerTrackStatusList(order.getCustomerId(),order.getId());
                     String name[]=orderListForCustomer.getProductName().split(",");
                     log.info("ProductName:{}",name);
-                   order.setProductNameList(Arrays.asList(name));
-                   order.setOrderTrackList(orderStatusList);
+                    order.setProductNameList(Arrays.asList(name));
+                    order.setOrderTrackList(orderStatusList);
                 }
 
             }
         }
-
         int currentPage=0;
         currentPage=pageNo;
         model.addAttribute("list",list);
@@ -273,7 +272,10 @@ public class CustomerController {
         model.addAttribute("total",total);
         model.addAttribute("currentPage",currentPage);
         return "Customer_OrderList";
-    }
+
+
+
+}
 
     @GetMapping("/customers/orders/detail/{id}")
     public String getCustomerOrderDetail(@PathVariable int id,Model model){
