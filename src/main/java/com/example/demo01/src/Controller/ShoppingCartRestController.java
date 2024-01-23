@@ -1,5 +1,6 @@
 package com.example.demo01.src.Controller;
 
+
 import com.example.demo01.src.Configuration.MailConfiguration;
 import com.example.demo01.src.Exception.CustomerNotFoundException;
 import com.example.demo01.src.Exception.ShoppingCartException;
@@ -25,8 +26,8 @@ public class ShoppingCartRestController {
     public String addProducttoCart(@PathVariable int productId,@PathVariable int quantity,HttpServletRequest request){
         try{
             Customer customer=getAuthenticatedCustomer(request);
-          int updatedQuantity=shoppingCartService.addProduct(productId,quantity,customer);
-          return updatedQuantity+"item(s) of this product were added to your shopping cart.";
+            int updatedQuantity=shoppingCartService.addProduct(productId,quantity,customer);
+            return updatedQuantity+"item(s) of this product were added to your shopping cart.";
         }
         catch(CustomerNotFoundException exception){
             return "You must login to add this product!";
@@ -58,8 +59,8 @@ public class ShoppingCartRestController {
     public String updateQuantity(@PathVariable int productId,@PathVariable int quantity,HttpServletRequest request){
         try{
             Customer customer=getAuthenticatedCustomer(request);
-          float subtotal=shoppingCartService.updateQuantity(productId,quantity,customer);
-          return String.valueOf(subtotal);
+            float subtotal=shoppingCartService.updateQuantity(productId,quantity,customer);
+            return String.valueOf(subtotal);
         }
         catch(CustomerNotFoundException exception){
             return "You must login to change quantity of product!";

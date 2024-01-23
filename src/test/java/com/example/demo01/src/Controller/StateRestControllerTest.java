@@ -6,7 +6,9 @@ import com.example.demo01.src.Pojo.State;
 import com.example.demo01.src.Service.CountryService;
 import com.example.demo01.src.Service.StateService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,6 +41,9 @@ class StateRestControllerTest {
     @Autowired
     StateDao stateDao;
 
+
+
+
     @Test
     @WithMockUser(username = "nam@codejava.net",password = "{noop}ha123",roles="Admin")
     public void testListBYCountries() throws Exception {
@@ -47,7 +52,6 @@ class StateRestControllerTest {
         mockMvc.perform(get(url))
                 .andExpect(status().isOk())
                 .andDo(print());
-
     }
     @Test
     @Transactional
