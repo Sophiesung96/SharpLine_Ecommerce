@@ -29,7 +29,7 @@ function showdateConfirmModal(link){
     var modal = new bootstrap.Modal(document.getElementById('ConfirmModal'));
     $('#ConfirmModal').find('.modal-body').text('Are you sure you want to update status ' +
         'of the Order ID'+"#"+" "+orderId
-    +"to"+" "+Modalstatus+"?");
+    +"to "+" "+Modalstatus+"?");
     modal.show();
 }
 

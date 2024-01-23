@@ -37,11 +37,8 @@ public class PayPalService {
         String clientId= paymentSettingBag.getClientID();
         String cleintSecret= paymentSettingBag.getClientSecret();
         HttpHeaders headers=new HttpHeaders();
-        String jwtToken=jwtUtil.generateToken("Sanya Lad");
-        jwtToken="Bearer "+jwtToken;
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         headers.add("Accept-Language","en_US");
-        headers.setBearerAuth(jwtToken);
         headers.setBasicAuth(clientId,cleintSecret);
         HttpEntity<MultiValuedMap<String,String>> httpEntity=new HttpEntity<>(headers);
         RestTemplate restTemplate=new RestTemplate();

@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
@@ -50,14 +51,11 @@ public class ProductController {
                     Product p = list.get(j);
                     p.setCategoryName(categoryName);
                     p.setBrandName(brandName);
-
-
                 }
                 model.addAttribute("list", list);
                 model.addAttribute("pagelist",pagelist);
                 model.addAttribute("currentPage",pageno);
             }
-
         }
 
         return "Product";
@@ -355,7 +353,6 @@ public class ProductController {
     public String viewProductdetail(@PathVariable int pageno, Model model,@PathVariable String product_nickname)  {
         try{
             Product product= productService.findByNickName(product_nickname);
-            Category category=categoryService.getCategoriesById(product.getCategoryId());
             List<Integer> pagelist=productService.getPageCount();
             ProductCBName productCBName=productService.selectCategoyrnBrandByProductId(product.getId());
             List<ProductDetail> detailList=productService.selectProductDetailsById(product.getId());
@@ -364,7 +361,6 @@ public class ProductController {
                 return "Error";
 
             }
-            model.addAttribute("category",category);
             model.addAttribute("product",product);
             model.addAttribute("nickname",product_nickname);
             model.addAttribute("currentpage",pageno);
@@ -384,9 +380,10 @@ public class ProductController {
 
 
     @GetMapping("/p/keyword/{pageno}")
-    public String filteredProductdetail(@PathVariable int pageno,@RequestParam(name="keyword")String keyword, Model model) {
+    public String filteredProductdetail(@PathVariable int pageno, Model model, HttpServletRequest request) {
 
        try{
+           String keyword=request.getParameter("keyword");
            List<Integer>pagelist=productService.getFilteredPageCount(keyword);
            List<Product> list=productService.SearchByKeyword(pageno,keyword);
            boolean item;
