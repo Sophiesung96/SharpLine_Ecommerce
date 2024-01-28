@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sales Report By Date</title>
+</head>
+<body>
+<div th:fragment="content">
+
+   <div>
+       <button period='Last_7_days' class="btn btn-primary m-1 button_sales_by_date">Last 7 Days</button>
+       <button period='Last_28_days' class="btn btn-light m-1 button_sales_by_date">Last 28 Days</button>
+       <button period='Last_6_months' class="btn btn-light m-1 button_sales_by_date">Last 6 Months</button>
+       <button period='Last_year' class="btn btn-light m-1 button_sales_by_date">Last Year</button>
+       <button  class="btn btn-light m-1 button_sales_by_date">Custom Date Range</button>
+   </div>
+
+    <form>
+        <div id="divCustomDateRange" class="d-none">
+            From date:<input type="date" id="startDate">&nbsp;
+            To date:<input type="date" id="endDate">&nbsp;
+            <button type="button" class="btn btn-secondary" id="buttonReviewReportByDataRange">View</button>
+        </div>
+    </form>
+
+    <div id="chart_sales_by_date" class="mt-3"></div>
+
+    <div class="row justify-content-center">
+        <div class="col-sm-2">
+            <div class="card">
+                <div class="card-header">Total Gross Sales </div>
+                <div class="card-body">
+                    <span class="h3" id="textTotalGrossSales"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-2">
+            <div class="card">
+                <div class="card-header">Total Net Sales </div>
+                <div class="card-body">
+                    <span class="h3" id="textNetGrossSales"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="card">
+                <div class="card-header">Avg. Gross Sales </div>
+                <div class="card-body">
+                    <span class="h3" id="textAvgGrossSales"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="card">
+                <div class="card-header">Avg. Net  Sales </div>
+                <div class="card-body">
+                    <span class="h3" id="textAvgNetSales"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-2">
+            <div class="card">
+                <div class="card-header">Total Orders </div>
+                <div class="card-body">
+                    <span class="h3" id="textTotalOrders"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+</html>
