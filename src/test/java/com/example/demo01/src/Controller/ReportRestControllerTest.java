@@ -32,6 +32,30 @@ class ReportRestControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print());
     }
+    @Test
+    public void testGetReportDataLast28Days() throws Exception {
+        String URL="/reports/sales_by_date/last_28_days";
+        mockMvc.perform(get(URL))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    public void testGetReportDataLast6Months() throws Exception {
+        String URL="/reports/sales_by_date/last_6_months";
+        mockMvc.perform(get(URL))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+    @Test
+    public void testGetReportDataByDataRange() throws Exception {
+        String startDate="2021-09-01";
+        String endDate="2021-09-30";
+        String URL="/reports/sales_by_date/"+startDate+"/"+endDate;
+        mockMvc.perform(get(URL))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
 
 
 

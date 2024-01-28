@@ -13,10 +13,13 @@ public class ReportItem {
     private String identifier;
     private float  grossSales;
     private float netSales;
-    private int OrderCount;
+    private int orderCount;
+
+
 
     public ReportItem(String identifier) {
         this.identifier = identifier;
+        this.orderCount=0;
     }
 
     public ReportItem(String identifier, float grossSales, float netSales) {
@@ -46,6 +49,7 @@ public class ReportItem {
     }
 
     public void increaseOrderCount() {
-        this.OrderCount++;
+
+        this.orderCount++;
     }
 }
