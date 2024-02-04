@@ -9,6 +9,9 @@ import com.example.demo01.src.Service.CustomerService;
 import com.example.demo01.src.Service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,8 +21,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 @RestController
@@ -117,6 +122,7 @@ public class OrderRestController {
     private Customer TestgetAuthenticatedCustomer() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         Authentication authentication = securityContext.getAuthentication();
+
 
         // Access user details from the authentication object
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetail) {

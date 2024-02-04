@@ -2,7 +2,9 @@ package com.example.demo01.src.Service;
 
 import com.example.demo01.src.DAO.OrderDAO;
 import com.example.demo01.src.Pojo.Order;
+import com.example.demo01.src.Pojo.OrderStatus;
 import com.example.demo01.src.Pojo.ReportItem;
+import com.example.demo01.src.Pojo.ReportType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,45 +18,32 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class MasterOrderReportServiceImpl implements MasterOrderReportService {
+public class MasterOrderReportServiceImpl extends AbstractReportService {
     @Autowired
     OrderDAO orderDAO;
 
     private SimpleDateFormat dateFormatter;
 
 
-    @Override
-    public List<ReportItem> getReportDataLast7Days() {
-        try {
-            return getReportDataLastXDays(7);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-       return null;
-    }
 
-    private List<ReportItem> getReportDataLastXDays(int day) throws ParseException {
-        Date endTime=new Date();
-       dateFormatter=new SimpleDateFormat("yyy-MM-dd");
-       // Date startTime=dateFormatter.parse("2020-10-31");
-      //  Date endTime=dateFormatter.parse("2021-11-29");
-        Calendar cal= Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH,-(day-1));
-         Date startTime=cal.getTime();
-        log.info("StartTime:{}",startTime);
-        log.info("EndTime:{}",endTime);
-        return getReportDataByDatRange(startTime,endTime);
-    }
 
-    private List<ReportItem> getReportDataByDatRange(Date startTime,Date endTime){
+
+    public  List<ReportItem> getReportDataByDatRangeInternal(Date startTime, Date endTime, ReportType reportType) throws ParseException {
         List<Order> Orderlist=orderDAO.findByOrderTimeBetween(startTime, endTime);
         printRawData(Orderlist);
-        List<ReportItem> ReportList=createReportData(startTime,endTime);
+        List<ReportItem> ReportList=createReportData(startTime,endTime,reportType);
         System.out.println();
         calculateSalesforReportData(Orderlist,ReportList);
         printFormattedReportData(ReportList);
         return ReportList;
     }
+   //For creating custom data
+    public List<ReportItem> getReportDataByDatRange(Date startTime, Date endTime,ReportType reportType) throws ParseException {
+            dateFormatter=new SimpleDateFormat("yyyy-MM-dd");
+            return getReportDataByDatRangeInternal(startTime, endTime,reportType);
+    }
+
+
     //format the ReportItem List
     private void printFormattedReportData(List<ReportItem> reportList) {
         reportList.forEach(ReportItem->
@@ -63,8 +52,9 @@ public class MasterOrderReportServiceImpl implements MasterOrderReportService {
                         ,ReportItem.getNetSales(),ReportItem.getOrderCount()));
     }
      //Creating Report Data
-    private List<ReportItem> createReportData(Date startTime, Date endTime) {
+    private List<ReportItem> createReportData(Date startTime, Date endTime,ReportType reportType) {
         List<ReportItem> reportItemList=new ArrayList<>();
+        dateFormatter=new SimpleDateFormat("yyyy-MM-dd");
         Calendar startDate=Calendar.getInstance();
         startDate.setTime(startTime);
         Calendar endDate=Calendar.getInstance();
@@ -75,11 +65,16 @@ public class MasterOrderReportServiceImpl implements MasterOrderReportService {
         //Add 1 day to the calendar incrementally according to the Calendar startDate
         // until the startDate is no longer before the endDate
         do{
-            startDate.add(Calendar.DAY_OF_MONTH,1);
+            if(reportType.equals(ReportType.DAY)){
+                startDate.add(Calendar.DAY_OF_MONTH,1);
+            }else if(reportType.equals(ReportType.MONTH)){
+                startDate.add(Calendar.MONTH,1);
+            }
             currentDate=startDate.getTime();
-             dateString=dateFormatter.format(currentDate);
+            dateString=dateFormatter.format(currentDate);
             reportItemList.add(new ReportItem(dateString));
         }while(startDate.before(endDate));
+
 
         return reportItemList;
     }
@@ -91,17 +86,26 @@ public class MasterOrderReportServiceImpl implements MasterOrderReportService {
     }
 
 
-    private void calculateSalesforReportData(List<Order>OrderList,List<ReportItem> reportItemList ){
+    private void calculateSalesforReportData(List<Order>OrderList,List<ReportItem> reportItemList ) throws ParseException {
+        dateFormatter=new SimpleDateFormat("yyyy-MM-dd");
        for(Order order:OrderList){
-           ReportItem reportItem=new ReportItem(order.getOrderTime());
+           Date orderDate=dateFormatter.parse(order.getOrderTime());
+           String orderTime=dateFormatter.format(orderDate);
+           ReportItem reportItem=new ReportItem(orderTime);
           int index= reportItemList.indexOf(reportItem);
-           if(index>0){
+           if(index>=0){
                reportItem=reportItemList.get(index);
                reportItem.addGrossSales(order.getTotal());
                reportItem.addNetSales(order.getSubTotal()-order.getProductCost());
+               //calculate order number per day
                reportItem.increaseOrderCount();
-
            }
        }
     }
+
+
+
+
+
+
 }
