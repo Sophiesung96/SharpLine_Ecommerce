@@ -70,6 +70,7 @@ function showMessage(){
     var Responsemodal = new bootstrap.Modal(document.getElementById('ResponsorderModal'));
     Responsemodal.show();
 }
+// if the Return Order Request works
 function updateStatusTextandHideReturnButton(OrderId){
     $('.textOrderStatus'+OrderId).each(function (index) {
         $(this).text('RETURN_REQUESTED');
