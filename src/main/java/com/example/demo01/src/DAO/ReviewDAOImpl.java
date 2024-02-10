@@ -83,5 +83,29 @@ public class ReviewDAOImpl implements  ReviewDAO{
         return null;
     }
 
+    @Override
+    public void DeleteReviewById(int id) {
+        String sql="Delete from reviews where id=:id";
+        Map<String, Object> map=new HashMap<>();
+        map.put("id",id);
+        namedParameterJdbcTemplate.update(sql,map);
+    }
+
+    @Override
+    public List<Review> getAllReviewListForCustomer(int customerId) {
+
+        String sql="select r.id as id,r.comment as comment, r.customer_Id as customerId, r.headline as headline,r.product_Id as productId," +
+                "     r.rating as rating, r.review_time as reviewTime,concat(c.first_name,' ',c.last_name) as CustomerName," +
+                "    p.name as productName from reviews r inner join customers  c on r.customer_Id=c.id" +
+                "   inner join products p on r.product_Id=p.id where r.customer_Id=:customerId";
+        Map<String, Object> map=new HashMap<>();
+        map.put("customerId",customerId);
+        List<Review>list=new ArrayList<>();
+        list=namedParameterJdbcTemplate.query(sql,map,new ReviewJoinMapper());
+        if(list.size()>0){
+            return list;
+        }
+        return null;
+    }
 }
 

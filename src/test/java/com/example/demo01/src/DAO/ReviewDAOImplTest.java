@@ -4,6 +4,7 @@ import com.example.demo01.src.Pojo.Review;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,5 +32,14 @@ class ReviewDAOImplTest {
         int id=1;
          Review review=reviewDAO.getReviewDetailById(1);
          assertEquals("Samsung Galaxy A31",review.getProductName());
+    }
+
+    @Test
+    @Transactional
+    public void testDeleteReviewById(){
+        int id=1;
+        reviewDAO.DeleteReviewById(id);
+       Review review= reviewDAO.getEditReviewById(id);
+       assertNull(review);
     }
 }
