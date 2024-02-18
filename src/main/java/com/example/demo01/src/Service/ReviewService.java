@@ -10,4 +10,6 @@ public interface ReviewService {
      Review getEditReviewById(int id);
      void EditReviewById(Review review);
      Review getReviewDetailById(int id);
+     void DeleteReviewById(int id);
+     List<Review> getAllReviewListForCustomer(int customerId);
 }

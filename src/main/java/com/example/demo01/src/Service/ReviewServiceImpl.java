@@ -41,7 +41,18 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Review getReviewDetailById(int id) {
-        Review review=getReviewDetailById(id);
+        Review review=reviewDAO.getReviewDetailById(id);
         return review;
+    }
+
+    @Override
+    public void DeleteReviewById(int id) {
+        reviewDAO.DeleteReviewById(id);
+    }
+
+    @Override
+    public List<Review> getAllReviewListForCustomer(int customerId) {
+        List<Review> list=reviewDAO.getAllReviewListForCustomer(customerId);
+        return list;
     }
 }

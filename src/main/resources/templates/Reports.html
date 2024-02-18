@@ -150,12 +150,14 @@
                     </ul>
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="date" role="tabpanel">
-                            <div th:replace="~{Sales_report_by_Date::content}"></div>
+                            <div th:replace="~{Sales_Report_Fragment::content('_date')}"></div>
                         </div>
                         <div class="tab-pane p-3 fade" id="category" role="tabpanel">
+                            <div th:replace="~{Sales_Report_Fragment::content('_category')}"></div>
                         </div>
 
                         <div class="tab-pane fade p-3" id="product" role="tabpanel ">
+                            <div th:replace="~{Sales_Report_Fragment::content('_product')}"></div>
                         </div>
 
                     </div>
@@ -187,12 +189,14 @@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        google.charts.load('current', {'packages':['corechart']});
+        google.charts.load('current', {'packages':['corechart','table']});
         google.charts.setOnLoadCallback(loadSalesReportByDate);
     })
 </script>
-
+<script type="text/javascript" th:src="@{/Js/Sales_report_common.js}"></script>
 <script type="text/javascript" th:src="@{/Js/sales_report_by_date.js}"></script>
+<script type="text/javascript" th:src="@{/Js/sales_report_by_category.js}"></script>
+<script type="text/javascript" th:src="@{/Js/sales_report_by_product.js}"></script>
 </body>
 </html>
 

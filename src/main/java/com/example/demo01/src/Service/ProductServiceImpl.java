@@ -45,7 +45,8 @@ public class ProductServiceImpl implements ProductService {
     public void saveProduct(Product product) {
         if (product.getId() == null) {
             product.setCreatedTime(new Date());
-
+        }else{
+            productDAO.UpdateReviewCountandAverageRating(product.getId());
         }
         if (product.getAlias() == null || product.getAlias().isEmpty()) {
             String defaultAlias = product.getName();
@@ -244,5 +245,10 @@ public class ProductServiceImpl implements ProductService {
     public Product findById(int id) {
         Product product=productDAO.findById(id);
         return product;
+    }
+
+    @Override
+    public void UpdateReviewCountandAverageRating(int productId) {
+        productDAO.UpdateReviewCountandAverageRating(productId);
     }
 }
