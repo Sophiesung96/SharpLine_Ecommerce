@@ -178,23 +178,28 @@
         <div>
 
 
-            <form th:action="@{/brands/1/keyword}" method="post" class=" m-3" style="width: 10%">
-                Filter:&nbsp;
-                <div class="input-group">
-                    <div class="form-outline">
-                        <input type="search" id="form1" class="form-control"/>
-                    </div>
-                    <button type="button" class="btn btn-primary mt-2">
-                        <i class="fas fa-search"></i>
-                    </button>
+            <div class="row">
+                <div class="col-md">
+                    <nav class="navbar navbar-expand-sm bg-light">
+                        <div class="collapse navbar-collapse" id="searchNavbars">
+                            <div class="input-group-sm" style="width:35%">
+                                <form class="d-flex" method="get" th:action="@{'/'}">
+                                    <input class="form-control me-1" type="search" placeholder="Search" name="keyword">
+                                    <button class="btn btn-success" type="submit">Search</button>
+                                </form>
+                            </div>
+
+                        </div>
+                    </nav>
                 </div>
-            </form>
+            </div>
+
 
             <div th:if="${message}!=null" class="alert alert-success text-center">[[${message}]]
             </div>
 
 
-            <div class="row mt-3">
+            <div class="row mt-3 text-center">
                 <div class="col-12 full-details">
 
                     <table class="table table-responsive-md table-striped table-hover">
@@ -288,39 +293,28 @@
                 </div>
             </div>
 
+
             <div class="less-details">
                 <div th:each="plist:${list}" class="row m-1">
-
+                    <div class="col-2">
+                        <div>[[${plist.id}]]</div>
+                    </div>
                     <div class="col-8">
-                        <div>[[${plist.ProductName}]]</div>
-                    </div>
-                    <div class="mt-4 row">
-
-                        <div class="col">
-                            <a class=" linkreview_detail btn  btn-sm flex-auto-m"
-                               th:href="@{'/review/detail/'+${plist.getId()}}">
-                                <i class="fa-solid fa-2x fa-circle-info"></i>
-                            </a>
-                            <a style="text-decoration: none;" class="btn btn-primary btn-sm flex-auto-m"
-                               th:href="@{'/review/edit/'+${plist.getId()}}">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
-                            <a style="text-decoration: none;" class="btn btn-danger btn-sm flex-auto-m "
-                               th:href="@{'/review/delete/'+${plist.getId()}}"
-                               th:data-confirm-delete="|Are you sure you want to delete this brand ${plist.getId()}?|"
-                               onclick="if (!confirm(this.getAttribute('data-confirm-delete'))) return false"
-                            >
-                                <i class="fa-solid fa-trash"></i>
-
-                            </a>
+                        <div>
+                            [[${plist.productName}]]
                         </div>
+                        <div class="mt-4 row">
 
+                            <div>[[${plist.rating}]]&nbsp;<span><i class="fa-regular fa-star" style="background-color: yellow"></i></span>
+                                <a class=" linkreview_detail btn  btn-sm flex-auto-m"
+                                   th:href="@{'/customers/review/detail/'+${plist.getId()}}">
+                                    <i class="fa-solid fa-2x fa-circle-info"></i>
+                                </a>
+                            </div>
 
-
-
-
-
+                        </div>
                     </div>
+
                 </div>
             </div>
 
