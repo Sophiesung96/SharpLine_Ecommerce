@@ -136,11 +136,12 @@ public class ProductDAOImpl implements ProductDAO {
         Map<String, Object> map = new HashMap<>();
         map.put("id",id);
         List<Product> list = new ArrayList<>();
-        Product p=new Product();
         list=namedParameterJdbcTemplate.query(sql,map,new ProductMapper());
-        p=list.get(0);
+        if(list.size()>0){
+            return  list.get(0);
 
-        return p;
+        }
+        return null;
     }
 
     @Override
@@ -366,6 +367,15 @@ public class ProductDAOImpl implements ProductDAO {
             return list;
         }
         return null;
+    }
+
+    @Override
+    public void UpdateReviewCountandAverageRating(int productId) {
+      String sql="update  products p set average_rating =(select avg(rating) from reviews r where r.product_Id=:productId)," +
+              "   review_Count=(select count(r.id) from reviews r where r.product_Id=:productId) where p.id=:productId";
+      Map<String,Object> map=new HashMap<>();
+      map.put("productId",productId);
+      namedParameterJdbcTemplate.update(sql,map);
     }
 }
 
