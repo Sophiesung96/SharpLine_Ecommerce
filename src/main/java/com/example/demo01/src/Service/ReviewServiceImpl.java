@@ -1,6 +1,8 @@
 package com.example.demo01.src.Service;
 
+import com.example.demo01.src.DAO.ProductDAO;
 import com.example.demo01.src.DAO.ReviewDAO;
+import com.example.demo01.src.Pojo.Product;
 import com.example.demo01.src.Pojo.Review;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Autowired
     ReviewDAO reviewDAO;
+    @Autowired
+    ProductDAO productDAO;
 
     @Override
     public List<Review> getAllReviewList() {
@@ -55,4 +59,18 @@ public class ReviewServiceImpl implements ReviewService {
         List<Review> list=reviewDAO.getAllReviewListForCustomer(customerId);
         return list;
     }
+
+    @Override
+    public void SaveReview(Review review) {
+        reviewDAO.SaveReview(review);
+        productDAO.UpdateReviewCountandAverageRating(review.getProductId());
+    }
+
+    @Override
+    public List<Review> List3MostRecentReviews(int productId) {
+        List<Review> list=reviewDAO.List3MostRecentReviews(productId);
+        return list;
+    }
+
+
 }

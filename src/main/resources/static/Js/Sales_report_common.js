@@ -17,7 +17,6 @@ function SetUpButtonEventHandler(reportType,callbackFunction) {
     startDatefield = document.getElementById('startDate'+ reportType);
     endDatefield = document.getElementById('endDate'+ reportType);
     $('.button-sales-by'+ reportType).on('click', function () {
-        divClassRange = $('#divCustomDateRange'+ reportType);
 
         // Set the color of the other non-clicked button from blue to white(unfilled)
         // while switching between them
@@ -30,15 +29,15 @@ function SetUpButtonEventHandler(reportType,callbackFunction) {
         console.log(period)
         if (period) {
             callbackFunction(period);
-            divClassRange.addClass('d-none');
+            $('#divCustomDateRange'+ reportType).addClass('d-none');
             //click the custom range button
         } else {
-            divClassRange.removeClass('d-none');
+            $('#divCustomDateRange'+ reportType).removeClass('d-none');
         }
         ;
         initCustomDateRange(reportType);
 
-        divClassRange.on('click', function (e) {
+        $('#divCustomDateRange'+ reportType).on('click', function (e) {
             validateDateRange(reportType);
         })
     });
@@ -68,18 +67,17 @@ function initCustomDateRange(reportType) {
 //Validate whether the start Date that the user chose is within the range
 function validateDateRange(reportType){
     startDatefield = document.getElementById('startDate'+reportType);
+    endDatefield=document.getElementById('endDate' + reportType);
     days=CalculateDays(reportType);
+    console.log(days);
     startDatefield.setCustomValidity('');
     parametrizedStartDate=startDatefield.value;
     parameterizedEndDate=endDatefield.value;
     //Date Range must be between at least 7 to 30 Days at most
-    if(days>=7 &&days<=30 ){
-        if(reportType=='_date'){
-            loadSalesReportByDate('custom',parametrizedStartDate,parameterizedEndDate);
-        }
-        if(reportType=='_category'){
-            loadSalesReportByDateForCategory('custom',parametrizedStartDate,parameterizedEndDate);
-        }}
+    if(days>=7 && days<=30 ){
+        callbackFunction('custom');
+    }
+
     else{
         startDatefield.setCustomValidity('Dates must be in the range of 7..30 days');
         startDatefield.reportValidity();
