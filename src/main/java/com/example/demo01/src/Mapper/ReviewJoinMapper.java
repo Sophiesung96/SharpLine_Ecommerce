@@ -10,8 +10,7 @@ public class ReviewJoinMapper implements RowMapper<Review> {
     @Override
     public Review mapRow(ResultSet resultSet, int i) throws SQLException {
                 Review review=new Review();
-                review.setId(resultSet.getInt("id"));
-                review.setAverageRating(resultSet.getFloat("averageRating"));
+                review.setId(resultSet.getInt("id"));;
                 review.setProductId(resultSet.getInt("productId"));
                 review.setCustomerId(resultSet.getInt("customerId"));
                 review.setReviewTime(resultSet.getTimestamp("reviewTime"));
