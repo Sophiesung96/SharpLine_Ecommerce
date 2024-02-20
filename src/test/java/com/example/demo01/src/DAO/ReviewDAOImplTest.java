@@ -1,5 +1,6 @@
 package com.example.demo01.src.DAO;
 
+import com.example.demo01.src.Pojo.Product;
 import com.example.demo01.src.Pojo.Review;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,5 +42,15 @@ class ReviewDAOImplTest {
         reviewDAO.DeleteReviewById(id);
        Review review= reviewDAO.getEditReviewById(id);
        assertNull(review);
+    }
+    @Test
+    public void testFind3MostRecentREviews(){
+        Product product=new Product();
+        product.setId(1);
+        List<Review>list=reviewDAO.List3MostRecentReviews(product.getId());
+        assertEquals(1,list.get(0).getProductId());
+        for(Review review:list){
+            assertEquals(4.5,review.getAverageRating());
+        }
     }
 }

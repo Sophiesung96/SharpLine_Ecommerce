@@ -5,6 +5,7 @@ import com.example.demo01.src.Pojo.*;
 import com.example.demo01.src.Service.BrandService;
 import com.example.demo01.src.Service.CategoryService;
 import com.example.demo01.src.Service.ProductService;
+import com.example.demo01.src.Service.ReviewService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,6 +35,9 @@ public class ProductController {
 
     @Autowired
     CategoryService categoryService;
+    @Autowired
+    ReviewService reviewService;
+
 
     @GetMapping("/products/{pageno}")
     public String listAll(Model model,@PathVariable int pageno) {
@@ -352,16 +356,23 @@ public class ProductController {
     @GetMapping("/p/{product_nickname}/{pageno}")
     public String viewProductdetail(@PathVariable int pageno, Model model,@PathVariable String product_nickname)  {
         try{
+            float averageRating = 0.0f;
             Product product= productService.findByNickName(product_nickname);
             List<Integer> pagelist=productService.getPageCount();
             ProductCBName productCBName=productService.selectCategoyrnBrandByProductId(product.getId());
             List<ProductDetail> detailList=productService.selectProductDetailsById(product.getId());
             List<ProductImage> extraList=productService.selectExtraByProductId(product.getId());
+            List<Review> reviewList=reviewService.List3MostRecentReviews(product.getId());
             if(product==null){
                 return "Error";
 
             }
+            for(Review review:reviewList){
+                 averageRating=review.getAverageRating();
+            }
             model.addAttribute("product",product);
+            model.addAttribute("averageRating",averageRating);
+            model.addAttribute("reviewList",reviewList);
             model.addAttribute("nickname",product_nickname);
             model.addAttribute("currentpage",pageno);
             model.addAttribute("pagelist",pagelist);
