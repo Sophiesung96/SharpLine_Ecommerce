@@ -46,7 +46,7 @@ public class ReviewController {
 
     @GetMapping("/review/detail/{id}")
     public String ExamineReviewDetail(@PathVariable int id,Model model){
-        Review review=reviewService.getEditReviewById(id);
+        Review review=reviewService.getReviewDetailById(id);
         model.addAttribute("review",review);
         return "Review_detail_form";
     }
