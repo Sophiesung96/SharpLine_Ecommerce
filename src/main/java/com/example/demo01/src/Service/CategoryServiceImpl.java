@@ -18,11 +18,18 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     CategoryDAO categoryDAO;
 
+    @Override
+    public List<Category> listHierarchicalCategories(List<Category> list) {
+        return null;
+    }
+
     public List<Category> getallList() {
         List<Category> list = new ArrayList<>();
-        list = categoryDAO.getallCategories();
-        return list;
+        list = categoryDAO.listRootCategories();
+        return listHierarchicalCategories(list);
     }
+
+
 
     @Override
     public Category getcategoryByName(String name) {

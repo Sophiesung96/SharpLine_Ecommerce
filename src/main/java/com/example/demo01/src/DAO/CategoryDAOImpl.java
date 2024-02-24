@@ -176,4 +176,15 @@ public class CategoryDAOImpl implements CategoryDAO {
         }
         return null;
     }
+
+    @Override
+    public List<Category> listRootCategories() {
+        String sql="select * from categories where parent_id is null";
+        Map<String, Object> map = new HashMap<>();
+        List<Category>list=namedParameterJdbcTemplate.query(sql,map,new CategoryMapper());
+        if(list.size()>0){
+            return list;
+        }
+        return null;
+    }
 }
