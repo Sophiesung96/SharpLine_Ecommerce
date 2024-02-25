@@ -6,29 +6,32 @@ import java.util.List;
 
 public interface CategoryDAO {
 
-    public List<Category> getallCategories();
 
-    public void saveCategory(Category category);
+     List<Category> getallCategories();
+     List<Category> selectNestedCategoriesWithParentId();
 
-    public Category getcategoryByName(String name);
+     void saveCategory(Category category);
 
-    public Category getCategoriesById(int id);
+     Category getcategoryByName(String name);
 
-    public void UpdateCategory(Category category);
+     Category getCategoriesById(int id);
 
-    public String SelectCategoryByName(String name);
+     void UpdateCategory(Category category);
 
-    public Category findByName(String name);
+     String SelectCategoryByName(String name);
 
-    public void UpdateEnabledStatus(int id, String enabled);
+     Category findByName(String name);
 
-    public void deleteCategoryById(int id);
+     void UpdateEnabledStatus(int id, String enabled);
 
-    public List<Category> getCategoryByPagination(int Pageno);
+     void deleteCategoryById(int id);
 
-    public Integer getPageCount();
+     List<Category> getCategoryByPagination(int Pageno);
 
-    public Category findByAliasEnabled(String alias);
+     Integer getPageCount();
+
+     Category findByAliasEnabled(String alias);
+     List<Category> listRootCategories();
 
 
 }

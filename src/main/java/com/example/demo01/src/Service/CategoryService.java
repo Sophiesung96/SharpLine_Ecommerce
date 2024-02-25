@@ -6,12 +6,10 @@ import com.example.demo01.src.Pojo.PageNumber;
 import java.util.List;
 
 public interface CategoryService {
+
     public List<Category> getallList();
-
     public Category getcategoryByName(String name);
-
     public void saveCategory(Category category);
-
     public Category getCategoriesById(int id);
 
     public void UpdateCategory(Category category);
@@ -28,4 +26,5 @@ public interface CategoryService {
 
     public List<Integer> getPageCount();
     public Category findByAliasEnabled(String alias);
+    List<Category> GetHierarchicalCategories();
 }
