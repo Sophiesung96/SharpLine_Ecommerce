@@ -77,6 +77,11 @@ class CategoryDAOImplTest {
         }
     }
 
+    @Test
+    public void testUpdateEnabledStatus(){
+        categoryDAO.UpdateEnabledStatus(2,0);
+    }
+
 
 
 

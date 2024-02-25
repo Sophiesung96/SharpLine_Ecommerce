@@ -121,8 +121,8 @@ public class CategoryDAOImpl implements CategoryDAO {
     }
 
     @Override
-    public void UpdateEnabledStatus(int id, String enabled) {
-        String sql = "update categories set enabled=:enabled where id=:id";
+    public void UpdateEnabledStatus(int id, int enabled) {
+        String sql = "update categories set enabled= :enabled where id= :id";
         Map<String, Object> map = new HashMap<>();
         map.put("enabled", enabled);
         map.put("id", id);
@@ -196,7 +196,6 @@ public class CategoryDAOImpl implements CategoryDAO {
                 "        id," +
                 "        name," +
                 "        parent_id," +
-                "        name AS parent_name," +
                 "        0 AS level" +
                 "    FROM" +
                 "        categories" +
@@ -206,23 +205,21 @@ public class CategoryDAOImpl implements CategoryDAO {
                 "    SELECT" +
                 "        c.id," +
                 "        c.name," +
-                "        c.parent_id," +
-                "        ch.parent_name," +
-                "        ch.level + 1" +
-                "    FROM" +
-                "        categories c" +
-                "            INNER JOIN" +
-                "        CategoryHierarchy ch ON c.parent_id = ch.id" +
-                ")" +
-                "  SELECT" +
+                "        c.parent_id, " +
+                "        ch.level + 1 " +
+                "    FROM " +
+                "        categories c " +
+                "            INNER JOIN " +
+                "        CategoryHierarchy ch ON c.parent_id = ch.id " +
+                ") " +
+                " SELECT" +
                 "    id," +
                 "    name," +
                 "    parent_id," +
-                "    parent_name," +
                 "    level" +
-                "   FROM" +
-                "    CategoryHierarchy" +
-                "  ORDER BY" +
+                " FROM" +
+                "    CategoryHierarchy " +
+                " ORDER BY" +
                 "    level, id";
         Map<String,Object> map=new HashMap<>();
         List<Category> list=namedParameterJdbcTemplate.query(sql,map,new NestedCategoryMapper());

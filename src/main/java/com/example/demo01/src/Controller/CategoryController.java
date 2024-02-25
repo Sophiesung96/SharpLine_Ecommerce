@@ -4,6 +4,7 @@ import com.example.demo01.src.Configuration.Exporter.CategoryCsvExporter;
 import com.example.demo01.src.Configuration.FileUploadUtil;
 import com.example.demo01.src.Pojo.Category;
 import com.example.demo01.src.Service.CategoryService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@Slf4j
 public class CategoryController {
 
 
@@ -42,7 +44,9 @@ public class CategoryController {
     @GetMapping("/categories/new")
     public String openCategoryList(Model model) {
         List<Category> list = new ArrayList<>();
-        list = categoryService.getallList();
+        list = categoryService.GetHierarchicalCategories();
+        Category category=new Category();
+        model.addAttribute("category",category);
         model.addAttribute("clist", list);
         return "CategoryForm";
     }
@@ -94,17 +98,20 @@ public class CategoryController {
         return "redirect:/categories/1";
     }
 
-    @RequestMapping("/update/enabled/{id}/{enabled}")
-    public String updateCategoryEnabledStatus(@PathVariable int id, @PathVariable String enabled) {
-        if (enabled.equals("true")) {
-            enabled = "false";
-            categoryService.UpdateEnabledStatus(id, enabled);
+    @RequestMapping("/update/enabled/{id}/{Permission}")
+    public String updateCategoryEnabledStatus(@PathVariable int id, @PathVariable int Permission) {
+        if (1==(Permission)) {
+            categoryService.UpdateEnabledStatus(id, 0);
+        } else if (0 ==(Permission)) {
+            categoryService.UpdateEnabledStatus(id, 1);
         } else {
-            enabled = "true";
-            categoryService.UpdateEnabledStatus(id, enabled);
+            // Handle invalid input, such as redirecting to an error page or logging a message.
+            // For now, let's log an error message:
+           log.info("Invalid value provided for enabled status: " + Permission);
         }
         return "redirect:/categories/1";
     }
+
 
     @RequestMapping("category/delete/{id}")
     public String deleteCategoryById(@PathVariable int id) {

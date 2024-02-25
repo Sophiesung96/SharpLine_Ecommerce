@@ -22,7 +22,7 @@ public interface CategoryDAO {
 
      Category findByName(String name);
 
-     void UpdateEnabledStatus(int id, String enabled);
+     void UpdateEnabledStatus(int id, int enabled);
 
      void deleteCategoryById(int id);
 
