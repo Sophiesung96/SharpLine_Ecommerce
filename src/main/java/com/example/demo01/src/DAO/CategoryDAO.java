@@ -8,6 +8,7 @@ public interface CategoryDAO {
 
 
      List<Category> getallCategories();
+     List<Category> selectNestedCategoriesWithParentId();
 
      void saveCategory(Category category);
 

@@ -1,6 +1,7 @@
 package com.example.demo01.src.DAO;
 
 import com.example.demo01.src.Mapper.CategoryMapper;
+import com.example.demo01.src.Mapper.NestedCategoryMapper;
 import com.example.demo01.src.Mapper.PageNumberMapper;
 import com.example.demo01.src.Pojo.Category;
 import com.example.demo01.src.Pojo.PageNumber;
@@ -182,6 +183,49 @@ public class CategoryDAOImpl implements CategoryDAO {
         String sql="select * from categories where parent_id is null";
         Map<String, Object> map = new HashMap<>();
         List<Category>list=namedParameterJdbcTemplate.query(sql,map,new CategoryMapper());
+        if(list.size()>0){
+            return list;
+        }
+        return null;
+    }
+
+    @Override
+    public List<Category> selectNestedCategoriesWithParentId() {
+        String sql="WITH RECURSIVE CategoryHierarchy AS (" +
+                "    SELECT" +
+                "        id," +
+                "        name," +
+                "        parent_id," +
+                "        name AS parent_name," +
+                "        0 AS level" +
+                "    FROM" +
+                "        categories" +
+                "    WHERE" +
+                "        parent_id IS NULL" +
+                "    UNION ALL" +
+                "    SELECT" +
+                "        c.id," +
+                "        c.name," +
+                "        c.parent_id," +
+                "        ch.parent_name," +
+                "        ch.level + 1" +
+                "    FROM" +
+                "        categories c" +
+                "            INNER JOIN" +
+                "        CategoryHierarchy ch ON c.parent_id = ch.id" +
+                ")" +
+                "  SELECT" +
+                "    id," +
+                "    name," +
+                "    parent_id," +
+                "    parent_name," +
+                "    level" +
+                "   FROM" +
+                "    CategoryHierarchy" +
+                "  ORDER BY" +
+                "    level, id";
+        Map<String,Object> map=new HashMap<>();
+        List<Category> list=namedParameterJdbcTemplate.query(sql,map,new NestedCategoryMapper());
         if(list.size()>0){
             return list;
         }
