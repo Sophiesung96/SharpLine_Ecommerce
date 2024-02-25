@@ -122,9 +122,9 @@ public class CategoryDAOImpl implements CategoryDAO {
 
     @Override
     public void UpdateEnabledStatus(int id, int enabled) {
-        String sql = "update categories set enabled= 0 where id= :id";
+        String sql = "update categories set enabled= :enabled where id= :id";
         Map<String, Object> map = new HashMap<>();
-       // map.put("enabled", enabled);
+        map.put("enabled", enabled);
         map.put("id", id);
         namedParameterJdbcTemplate.update(sql, map);
     }
