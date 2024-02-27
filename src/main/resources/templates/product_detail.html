@@ -32,7 +32,7 @@
                 <div class="collapse navbar-collapse" id="navbarToggleExternalContent">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/users/1}">Careers</a>
+                            <a class="nav-link" th:href="@{/customers/Order/1}">Orders</a>
                         </li>
 
                         <li class="nav-item">
@@ -47,12 +47,12 @@
 
 
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/products/1}">Login</a>
+                            <a class="nav-link" th:href="@{/customerLogin}">Login</a>
                         </li>
 
 
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/questions}">Register</a>
+                            <a class="nav-link" th:href="@{/register}">Register</a>
                         </li>
 
                         <li class="nav-item">
@@ -109,7 +109,7 @@
 
 
                                 <li class="nav-item">
-                                    <a class="nav-link" href="">Orders</a>
+                                    <a class="nav-link" th:href="@{/customers/Order/1}">Orders</a>
                                 </li>
 
 
@@ -221,7 +221,7 @@
 
                             <div class="mt-2" th:utext="${product.shortDescription}"></div>
 
-                        <div >
+                        <div class="mt-2">
                             <span class="btn btn-success" th:if="${product.inStock}==1" ><b>In Stock</b></span>
                             <span class=" mt-2 btn btn-warning text-center" th:if="${product.inStock}==0" style="font-size: larger ;color: darkred;"><b>Out Of Stock</b></span>
                         </div>

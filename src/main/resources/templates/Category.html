@@ -215,13 +215,13 @@
 
                             <td>
                                 <a th:if="${list.enabled==1}"
-                                   th:href="@{'/update/enabled/'+${list.getId()}+'/'+${list.getEnabled()}}"
+                                   th:href="@{'/category/update/enabled/'+${list.getId()}+'/'+${list.getEnabled()}}"
                                    style="text-decoration: none; color:deeppink">
                                     <i class="fa-solid fa-circle-check"></i>
 
                                 </a>
                                 <a th:if="${list.enabled==0}"
-                                   th:href="@{'/update/enabled/'+ ${list.getId()}+'/'+${list.getEnabled()}}"
+                                   th:href="@{'/category/update/enabled/'+ ${list.getId()}+'/'+${list.getEnabled()}}"
                                    style="text-decoration: none; color:grey">
                                     <i class="fa-solid fa-circle-check"></i>
                                 </a>
