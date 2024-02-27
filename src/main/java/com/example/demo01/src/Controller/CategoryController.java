@@ -98,7 +98,7 @@ public class CategoryController {
         return "redirect:/categories/1";
     }
 
-    @RequestMapping("/update/enabled/{id}/{Permission}")
+    @RequestMapping("/category/update/enabled/{id}/{Permission}")
     public String updateCategoryEnabledStatus(@PathVariable int id, @PathVariable int Permission) {
         if (1==(Permission)) {
             categoryService.UpdateEnabledStatus(id, 0);
