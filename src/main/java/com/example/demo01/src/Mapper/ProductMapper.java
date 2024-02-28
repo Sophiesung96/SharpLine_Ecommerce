@@ -31,6 +31,8 @@ public class ProductMapper implements RowMapper<Product> {
         product.setCreatedTime(resultSet.getTimestamp("created_Time"));
         product.setUpdatedTime(resultSet.getTimestamp("updated_Time"));
         product.setInStock(resultSet.getInt("in_stock"));
+        product.setReview(resultSet.getInt("review_Count"));
+        product.setAverageRating(resultSet.getFloat("average_rating"));
         return product;
     }
 }

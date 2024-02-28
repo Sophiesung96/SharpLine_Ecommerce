@@ -7,6 +7,7 @@ import com.example.demo01.src.Service.CategoryService;
 import com.example.demo01.src.Service.ProductService;
 import com.example.demo01.src.Service.ReviewService;
 import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
-@Log
+@Slf4j
 public class ProductController {
 
 
@@ -327,21 +328,23 @@ public class ProductController {
         return "product_detail_form";
     }
 
-    @GetMapping("/c/{nickname}/{page}")
-    public String viewCategory(  @PathVariable int page,@PathVariable String nickname, Model m){
+    @GetMapping("/c/{name}/{level}/{page}")
+    public String viewCategory(  @PathVariable int page,@PathVariable String name,@PathVariable int level, Model m){
         try{
-            Category category=categoryService.findByAliasEnabled(nickname);
+           Category category=categoryService.findByAliasEnabled(name);
             if(category==null){
+                log.info("There's something wrong with this category");
                 return "Error";
             }
-
             List<Integer> pagelist=new ArrayList<>();
             pagelist=productService.getPageCount();
             int currentpage=page;
-            m.addAttribute("nickname",nickname);
+            List<Category> categoryList=categoryService.listAllCategoriesOrderedByParentName(name,level);
+            m.addAttribute("nickname",name);
             m.addAttribute("pagelist",pagelist);
             m.addAttribute("currentpage",currentpage);
             m.addAttribute("category",category);
+            m.addAttribute("categoryList",categoryList);
             List<Product>list= productService.getProductByCategoryId(category.getId(),page);
             m.addAttribute("plist",list);
         }
@@ -367,12 +370,15 @@ public class ProductController {
                 return "Error";
 
             }
-            for(Review review:reviewList){
-                 averageRating=review.getAverageRating();
+            if(reviewList!=null){
+                for(Review review:reviewList){
+                    averageRating=review.getAverageRating();
+                    model.addAttribute("reviewList",reviewList);
+                }
             }
+
             model.addAttribute("product",product);
             model.addAttribute("averageRating",averageRating);
-            model.addAttribute("reviewList",reviewList);
             model.addAttribute("nickname",product_nickname);
             model.addAttribute("currentpage",pageno);
             model.addAttribute("pagelist",pagelist);
