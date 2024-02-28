@@ -40,5 +40,6 @@ public interface ProductService {
     public List<Product> ProductSearchByKeywordforOrder(int pageno, String search);
     List<Integer> getFilteredPageCount4Order(String keyword);
     void UpdateReviewCountandAverageRating(int productId);
+
 }
 

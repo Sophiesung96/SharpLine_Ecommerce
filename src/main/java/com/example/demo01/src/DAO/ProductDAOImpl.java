@@ -305,17 +305,17 @@ public class ProductDAOImpl implements ProductDAO {
 
     @Override
     public Product findByNickName(String alias) {
-        Product product=new Product();
-        String sql="select * from products where alias=:alias";
-        Map<String,Object>map=new HashMap<>();
-        map.put("alias",alias);
-        List<Product>list=namedParameterJdbcTemplate.query(sql,map,new ProductMapper());
-        if(list.size()>0){
-            product=list.get(0);
-            return product;
+        Product product = null;
+        String sql = "SELECT * FROM products WHERE alias = :alias"; // Modify SQL query
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("alias", alias); // Pass alias to SQL query
+        List<Product> list = namedParameterJdbcTemplate.query(sql, paramMap, new ProductMapper());
+        if (!list.isEmpty()) {
+            product = list.get(0);
         }
-        return null;
+        return product;
     }
+
 
     @Override
     public List<Product> SearchByKeyword(int pageno, String search) {
