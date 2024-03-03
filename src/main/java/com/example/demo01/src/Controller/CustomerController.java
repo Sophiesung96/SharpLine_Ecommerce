@@ -1,26 +1,21 @@
 package com.example.demo01.src.Controller;
 
 import com.example.demo01.src.Configuration.MailConfiguration;
+import com.example.demo01.src.Exception.CustomerNotFoundException;
 import com.example.demo01.src.Pojo.*;
 import com.example.demo01.src.Security.CustomerOAuth2User;
 import com.example.demo01.src.Service.*;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import org.springframework.security.authentication.RememberMeAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +26,7 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -53,11 +49,17 @@ public class CustomerController {
     CountryService countryService;
 
     @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    ReviewService reviewService;
+
     @Autowired
     OrderService orderService;
     @Autowired
     OrderTrackService orderTrackService;
+    @Autowired
+    OrderDetailService orderDetailService;
+
+    @Autowired
+    ProductService productService;
 
 
 
@@ -294,6 +296,8 @@ public class CustomerController {
                 orderStatusList.stream().forEach(detail->log.info("order Status:{}",detail.getStatusCondition()));
             }
         }
+        //Checking if the customer is permitted to write a review
+        setProductReviewableStatus(orderDetailForm.getCustomerId(),orderDetailFormList,productNameList);
         model.addAttribute("orderDetailFormList",orderDetailFormList);
         model.addAttribute("CustomerProductList",productNameList);
         model.addAttribute("order",orderDetailForm);
@@ -301,6 +305,72 @@ public class CustomerController {
         return "CustomerOrderDetail";
     }
 
+        private void setProductReviewableStatus(int customerId,List<TableOrderDetail>orderDetailList,List<ProductListForCustomer>  productListForCustomerList) {
+        int productId=0;
+        for(TableOrderDetail orderDetail:orderDetailList){
+            for(ProductListForCustomer listForCustomer:productListForCustomerList){
+                productId=orderDetail.getProductId();
+                log.info("Customer 's productId:{},customerId:{}",productId,customerId);
+                //Checking whether the customer has written reviews for the product he/she bought
+                boolean didCustomerReviewBefore= reviewService.didCustomerReviewProductBefore(customerId,productId);
+                log.info("didreviewbefore:{}",didCustomerReviewBefore);
+                if(listForCustomer!=null){
+                    listForCustomer.setReviewByCustomer(didCustomerReviewBefore);
+                }
 
-}
+            }
+
+        }
+        }
+
+
+        @GetMapping("/customers/review")
+        public String showReviewList(Model model,HttpServletRequest request){
+            List<Review> list=new ArrayList<>();
+            Customer customer=getAuthenticatedCustomer(request);
+            list=reviewService.getAllReviewListForCustomer(customer.getId());
+            model.addAttribute("list",list);
+
+            return "Customer_ReviewList";
+        }
+
+
+
+        @GetMapping("/customers/review/detail/{id}")
+        public String ExamineReviewDetail(@PathVariable int id,Model model){
+            Review review=reviewService.getReviewDetailById(id);
+            model.addAttribute("review",review);
+            return "Review_detail_form";
+        }
+
+
+    private Customer getAuthenticatedCustomer(HttpServletRequest request) {
+        String email = MailConfiguration.getEmailOfAuthenticatedCustomer(request);
+        if (email == null) {
+            throw new CustomerNotFoundException("No Aunthenticated Customer");
+        }
+        if (customerService.getCustomerByEmail(email) != null) {
+            return customerService.getCustomerByEmail(email);
+
+        } else {
+            String userName = email;
+            Customer customer = customerService.getCustomerByfullName(userName);
+            log.info(customer.getFirstName());
+            return customer;
+
+        }
+    }
+
+
+
+
+
+
+
+
+    }
+
+
+
+
 

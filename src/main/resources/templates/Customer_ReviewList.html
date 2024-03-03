@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <link rel="icon" type="image/x-icon"th:href="@{/image/logo.png}">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
-    <title>CustomerList </title>
+    <title>Customer Review List </title>
     <!-- Latest compiled and minified CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
@@ -100,7 +100,6 @@
                     </th:block>
 
 
-
                     <th:block sec:authorize="hasAnyAuthority('Admin','Assistant')">
 
                         <li class="nav-item">
@@ -151,7 +150,7 @@
                     <li class="nav-item  mx-2">
 
                         <div class="dropdown">
-                            <a class="nav-link text-warning btn btn-outline- dropdown-toggle"data-bs-toggle="dropdown" aria-expanded="false" sec:authentication="principal.username"></a>
+                            <a class="nav-link text-warning btn btn-outline- dropdown-toggle"data-bs-toggle="dropdown"  sec:authentication="principal.username"></a>
 
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                 <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
@@ -164,10 +163,10 @@
             </div>
 
         </div>
-        <div class="container mt-3">
+        <div class="container mt-3 text-center">
             <div class="row">
                 <div class="col-12">
-                    <h2>Manage Customers</h2>
+                    <h2>Review Posts By Me</h2>
 
 
                 </div>
@@ -179,125 +178,77 @@
         <div>
 
 
-            <div class="row">
-                <div class="col-md">
-                    <nav class="navbar navbar-expand-sm bg-light">
-                        <div class="collapse navbar-collapse" id="searchNavbars">
-                            <div class="input-group-sm" style="width:35%">
-                                <form th:action="@{/customers/1/keyword}" method="post" class="d-flex" style="max-width: 20%;">
-                                    <input class="form-control me-1" type="search" placeholder="Search" name="keyword">
-                                    <button class="btn btn-success" type="submit">Search</button>
-                                </form>
-                            </div>
-
-                        </div>
-                    </nav>
+            <form th:action="@{/brands/1/keyword}" method="post" class=" m-3" style="width: 10%">
+                Filter:&nbsp;
+                <div class="input-group">
+                    <div class="form-outline">
+                        <input type="search" id="form1" class="form-control"/>
+                    </div>
+                    <button type="button" class="btn btn-primary mt-2">
+                        <i class="fas fa-search"></i>
+                    </button>
                 </div>
-            </div>
+            </form>
 
             <div th:if="${message}!=null" class="alert alert-success text-center">[[${message}]]
             </div>
 
 
-            <div class="row mt-3">
+            <div class="row mt-3 text-center">
                 <div class="col-12 full-details">
 
                     <table class="table table-responsive-md table-striped table-hover">
                         <thead class="table-dark">
                         <tr>
                             <th>
-                                Customer ID
+                                ID
                             </th>
 
                             <th>
-                               Fist Name
+                                Product
                             </th>
                             <th>
-                                Last Name
-                            </th>
-                            <th>
-                               Email
+                                HeadLine
                             </th>
 
                             <th>
-                                City
+                                Rating
                             </th>
+
                             <th>
-                                State
+                                ReviewTime
                             </th>
-                            <th>
-                                Country
-                            </th>
-                            <th>
-                                Enabled
-                            </th>
+
                             <th>
 
                             </th>
                         </tr>
                         </thead>
                         <tbody class="text-center">
-                        <tr th:each="clist:${list}">
-                            <td th:text="${clist.id}">
-                            </td>
-
-                            <td th:text="${clist.firstName}">
-                            </td>
-
-
-                            <td th:text="${clist.lastName}">
-
-                            </td>
-
-                            <td th:text="${clist.email}">
-
-                            </td>
-
-                            <td th:text="${clist.city}">
-
-                            </td>
-                            <td th:text="${clist.state}">
-
-                            </td>
-
-                                <td th:text="${clist.getCountryName()}">
-
-                                </td>
-
-
-                            <td>
-                                <a th:if="${clist.enabled==1}"
-                                   th:href="@{'/customers/update/Enabledstatus/'+${clist.getId()}+'/'+${clist.enabled}}"
-                                   style="text-decoration: none; color:deeppink">
-                                    <i class="fa-solid fa-circle-check"></i>
-
-                                </a>
-                                <a th:if="${clist.enabled==0}"
-                                   th:href="@{'/customers/update/Enabledstatus/'+${clist.getId()}+'/'+${clist.enabled}}"
-                                   style="text-decoration: none; color:grey">
-                                    <i class="fa-solid fa-circle-check"></i>
-                                </a>
-
+                        <tr th:each="Rlist:${list}">
+                            <td th:text="${Rlist.id}">
                             </td>
 
                             <td>
-                                <a class=" customer_detail mx-2" th:href="@{'/customers/detail/'+${clist.getId()}}"
+                                <a th:href="@{'/products/detail/'+${Rlist.productId}}" class="linkproduct_detail"  data-bs-target="ProductdetailModal" style="text-decoration: none">
+                                    [[${Rlist.productName}]]
+                                </a>
+                            </td>
+
+                            <td>
+                                [[${Rlist.headline}]]
+                            </td>
+
+                            <td>[[${Rlist.rating}]]&nbsp;<span><i class="fa-regular fa-star" style="background-color: yellow"></i></span></td>
+
+                            <td>[[${Rlist.reviewTime}]]</td>
+
+
+                            <td>
+                                <a class=" linkreview_detail btn btn-sm flex-auto-m" th:href="@{'/customers/review/detail/'+${Rlist.getId()}}"
                                    title="View detail of this" style="color: green">
-                                    <i class="fa-solid fa-circle-info"></i>
+                                    <i class="fa-solid fa-2x fa-circle-info"></i>
                                 </a>
-                                <a style="text-decoration: none;" class="btn btn-primary btn-sm py-1"
-                                   th:href="@{'/customers/edit/'+${clist.getId()}}">
-                                    Edit
-                                </a>
-                                <a style="text-decoration: none;" class="btn btn-danger btn-sm py-1 "
-                                   th:href="@{'customers/delete/'+${clist.getId()}}"
-                                   th:data-confirm-delete="|Are you sure you want to delete this brand ${clist.getId()}?|"
-                                   onclick="if (!confirm(this.getAttribute('data-confirm-delete'))) return false">
-                                    Delete
-
-                                </a>
-
-
                             </td>
 
 
@@ -305,20 +256,20 @@
                         </tbody>
                     </table>
 
-                 <!--   <nav>
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item"><a class="page-link" th:href="@{/customer/1}">First</a></li>
-                            <li class="page-item"><a class="page-link" th:href="@{'/customer/'+${currentPage -1}}">Previous</a>
-                            </li>
-                            <th:block th:each="num:${totalpage}">
+                    <!--   <nav>
+                           <ul class="pagination justify-content-center">
+                               <li class="page-item"><a class="page-link" th:href="@{/customer/1}">First</a></li>
+                               <li class="page-item"><a class="page-link" th:href="@{'/customer/'+${currentPage -1}}">Previous</a>
+                               </li>
+                               <th:block th:each="num:${totalpage}">
 
-                                <li class="page-item"><a class="page-link" th:href="@{'/customer/'+${num}}"
-                                                         th:text="${num}">1</a></li>
-                            </th:block>
-                            <li class="page-item"><a class="page-link"
-                                                     th:href="@{'/customer/'+${currentPage +1}}">Next</a></li>
-                        </ul>
-                    </nav>-->
+                                   <li class="page-item"><a class="page-link" th:href="@{'/customer/'+${num}}"
+                                                            th:text="${num}">1</a></li>
+                               </th:block>
+                               <li class="page-item"><a class="page-link"
+                                                        th:href="@{'/customer/'+${currentPage +1}}">Next</a></li>
+                           </ul>
+                       </nav>-->
 
 
                 </div>
@@ -326,31 +277,25 @@
 
             <div class="less-details">
                 <div th:each="plist:${list}" class="row m-1">
-
+                    <div class="col-2">
+                        <div>[[${plist.id}]]</div>
+                    </div>
                     <div class="col-8">
-                        <div><a class="link-detail product_detail" th:href="@{'/customers/detail/'+${plist.getId()}}">
-                           [[${plist.getFullName()}]]
-                        </a></div>
+                       <div>
+                           [[${plist.productName}]]
+                       </div>
+                        <div class="mt-4 row">
+
+                            <div>[[${plist.rating}]]&nbsp;<span><i class="fa-regular fa-star" style="background-color: yellow"></i></span>
+                                <a class=" linkreview_detail btn  btn-sm flex-auto-m"
+                                   th:href="@{'/customers/review/detail/'+${plist.getId()}}">
+                                    <i class="fa-solid fa-2x fa-circle-info"></i>
+                                </a>
+                            </div>
+
+                        </div>
                     </div>
-                    <div class="mt-4">
-                        <a class="fa-solid fa-file fs-2 product_detail" th:href="@{'/customers/detail/'+${plist.getId()}}"
-                           title="View detail of this" style="color: green">
-                        </a>
 
-
-                        <a style="text-decoration: none;" class="btn btn-primary btn-sm py-1"
-                           th:href="@{'/customers/edit/'+${plist.getId()}}">
-                            Edit
-                        </a>
-                        <a style="text-decoration: none;" class="btn btn-danger btn-sm py-1 "
-                           th:href="@{'/customers/delete/'+${plist.getId()}}"
-                           th:data-confirm-delete="|Are you sure you want to delete this category ${plist.getId()}?|"
-                           onclick="if (!confirm(this.getAttribute('data-confirm-delete'))) return false">
-                            Delete
-
-                        </a>
-
-                    </div>
                 </div>
             </div>
 
@@ -359,39 +304,97 @@
 
     </div>
 
-    <div class="modal fade "id="detailModal">
-        <div class="modal-dialog modal-xl">
+
+
+    <div class="modal fade" id="ProductdetailModal">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content"></div>
         </div>
     </div>
+
+
+    <div class="modal fade" id="ReviewdetailModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="ReivewContent"></div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var productDetails = document.querySelectorAll('.linkproduct_detail');
+
+            var CustomerDetails = document.querySelectorAll('.linkcustomer_detail');
+            var ReviewDetails = document.querySelectorAll('.linkreview_detail');
+            <!--For Product Detail-->
+            for (var i = 0; i < productDetails.length; i++) {
+                productDetails[i].addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var linkurl = this.getAttribute('href');
+                    var modal = new bootstrap.Modal(document.getElementById('ProductdetailModal'));
+                    modal.show();
+
+                    var modalContent = document.querySelector('.modal-content');
+                    var xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            modalContent.innerHTML = xhr.responseText;
+                        }
+                    };
+                    xhr.open('GET', linkurl, true);
+                    xhr.send();
+                });
+            }
+            <!--For Customer Detail-->
+            for (var i = 0; i < CustomerDetails.length; i++) {
+                CustomerDetails[i].addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var Linkurl = this.getAttribute('href');
+                    var modal = new bootstrap.Modal(document.getElementById('CustomerdetailModal'));
+                    modal.show();
+
+                    var modalContent = document.getElementById('CustomerContent');
+                    var xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            modalContent.innerHTML = xhr.responseText;
+                        }
+                    };
+                    xhr.open('GET', Linkurl, true);
+                    xhr.send();
+                });
+            };
+
+
+            <!--For Review Detail-->
+            for (var i = 0; i < ReviewDetails.length; i++) {
+                ReviewDetails[i].addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var Linkurl = this.getAttribute('href');
+                    var modal = new bootstrap.Modal(document.getElementById('ReviewdetailModal'));
+                    modal.show();
+
+                    var modalContent = document.getElementById('ReivewContent');
+                    var xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            modalContent.innerHTML = xhr.responseText;
+                        }
+                    };
+                    xhr.open('GET', Linkurl, true);
+                    xhr.send();
+                });
+            }
+
+
+        });
+
+
+    </script>
 </div>
-<script>
-
-    document.addEventListener('DOMContentLoaded', function() {
-        var productDetails = document.querySelectorAll('.customer_detail');
-
-        for (var i = 0; i < productDetails.length; i++) {
-            productDetails[i].addEventListener('click', function(e) {
-                e.preventDefault();
-                var linkurl = this.getAttribute('href');
-                var modal = new bootstrap.Modal(document.getElementById('detailModal'));
-                modal.show();
-
-                var modalContent = document.querySelector('.modal-content');
-                var xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        modalContent.innerHTML = xhr.responseText;
-                    }
-                };
-                xhr.open('GET', linkurl, true);
-                xhr.send();
-            });
-        }
-    });
-
-
-</script>
-
 </body>
 </html>
