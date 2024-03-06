@@ -2,7 +2,9 @@ package com.example.demo01.src.DAO;
 
 import com.example.demo01.src.Pojo.Product;
 import com.example.demo01.src.Pojo.Review;
+import com.example.demo01.src.Service.ReviewService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,8 @@ class ReviewDAOImplTest {
 
     @SpyBean
     ReviewDAO reviewDAO;
+    @Autowired
+    ReviewService reviewService;
 
 
     @Test
@@ -53,4 +57,34 @@ class ReviewDAOImplTest {
             assertEquals(4.5,review.getAverageRating());
         }
     }
+    @Test
+    public void testListAllReviewListByPage(){
+        Product product=new Product();
+        product.setId(1);
+        List<Review>list=reviewDAO.ListAllReviewListByPage(product,1);
+      list.stream().forEach(review->assertEquals(review.getProductId(),product.getId()));
+    }
+    @Test
+    public void testCountReviewMadeByCustomerByProductIdnCustomerId(){
+        int productId=5;
+        int customerId=2;
+      Integer num=  reviewDAO.CountReviewMadeByCustomerByProductIdnCustomerId(productId,customerId);
+        System.out.println(num);
+    }
+    @Test
+    public void testSearchCustomerReviewByKeyword(){
+        String keyword="iphone";
+        int customerId=2;
+      List<Review>list=reviewDAO.SearchCustomerReviewByKeyword(keyword,customerId);
+      list.stream().forEach(review-> assertNotNull(review));
+    }
+    @Test
+    public void testExamineCustomerReviewByProductIdnCustomerId(){
+        int productId=5;
+        int customerId=2;
+        List<Review> list=reviewDAO.ExamineCustomerReviewByProductIdnCustomerId(productId,customerId);
+        list.stream().forEach(review->assertEquals(5,review.getProductId()));
+    }
+
+
 }

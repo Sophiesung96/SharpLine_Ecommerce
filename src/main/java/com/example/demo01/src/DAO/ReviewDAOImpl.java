@@ -1,5 +1,6 @@
 package com.example.demo01.src.DAO;
 
+import com.example.demo01.src.Mapper.CountReviewMadeByCustomerMapper;
 import com.example.demo01.src.Mapper.ReviewJoinMapper;
 import com.example.demo01.src.Mapper.ReviewMapper;
 import com.example.demo01.src.Pojo.Product;
@@ -75,7 +76,7 @@ public class ReviewDAOImpl implements  ReviewDAO{
     public Review getReviewDetailById(int id) {
         String sql="select r.id as id,r.comment as comment, r.customer_Id as customerId, r.headline as headline,r.product_Id as productId," +
                 "     r.rating as rating, r.review_time as reviewTime,concat(c.first_name,' ',c.last_name) as CustomerName," +
-                "    p.name as productName from reviews r inner join customers  c on r.customer_Id=c.id" +
+                "    p.name as productName,p.average_rating as averageRating from reviews r inner join customers  c on r.customer_Id=c.id" +
                 "   inner join products p on r.product_Id=p.id where r.id=:id ";
         Map<String, Object> map=new HashMap<>();
         map.put("id",id);
@@ -100,7 +101,7 @@ public class ReviewDAOImpl implements  ReviewDAO{
 
         String sql="select r.id as id,r.comment as comment, r.customer_Id as customerId, r.headline as headline,r.product_Id as productId," +
                 "     r.rating as rating, r.review_time as reviewTime,concat(c.first_name,' ',c.last_name) as CustomerName," +
-                "    p.name as productName from reviews r inner join customers  c on r.customer_Id=c.id" +
+                "    p.name as productName, p.average_rating as averageRating from reviews r inner join customers  c on r.customer_Id=c.id" +
                 "   inner join products p on r.product_Id=p.id where r.customer_Id=:customerId";
         Map<String, Object> map=new HashMap<>();
         map.put("customerId",customerId);
@@ -129,7 +130,7 @@ public class ReviewDAOImpl implements  ReviewDAO{
     @Override
     public List<Review> List3MostRecentReviews(int productId) {
         String sql="select r.id as id,r.comment as comment, r.customer_Id as customerId, r.headline as headline," +
-                " r.product_Id as productId," +
+                " r.product_Id as productId, (select avg(rating) from reviews r where r.product_Id=p.id ) as averageRating," +
                 "     r.rating as rating, r.review_time as reviewTime,concat(c.first_name,' ',c.last_name) as CustomerName," +
                 "    p.name as productName from reviews r inner join customers  c on r.customer_Id=c.id" +
                 "   inner join products p on r.product_Id=p.id where  p.id=:productId order by review_time desc limit 0,3";
@@ -143,6 +144,67 @@ public class ReviewDAOImpl implements  ReviewDAO{
     }
 
 
+    @Override
+    public List<Review> ListAllReviewListByPage(Product product, int pageNo) {
+        String sql="select r.id as id,r.comment as comment, r.customer_Id as customerId, r.headline as headline," +
+                " r.product_Id as productId, (select avg(rating) from reviews r where r.product_Id=p.id ) as averageRating," +
+                "     r.rating as rating, r.review_time as reviewTime,concat(c.first_name,' ',c.last_name) as CustomerName," +
+                "    p.name as productName from reviews r inner join customers  c on r.customer_Id=c.id" +
+                "   inner join products p on r.product_Id=p.id where  p.id=:productId order by review_time desc limit :pageno,5";
+        Map<String,Object>map=new HashMap<>();
+        map.put("productId",product.getId());
+        map.put("pageno",(pageNo-1)*5);
+        List<Review>list=namedParameterJdbcTemplate.query(sql,map,new ReviewJoinMapper());
+        if(list.size()>0){
+            return list;
 
+        }
+        return null;
+    }
+
+    @Override
+    public Integer CountReviewMadeByCustomerByProductIdnCustomerId(int productId, int customerId) {
+        String sql="select count(r.id) as reviewCount from reviews r where r.product_Id=:productid and r.customer_Id=:customerid";
+        Map<String,Object>map=new HashMap<>();
+        map.put("productid",productId);
+        map.put("customerid",customerId);
+        List<Review> list=namedParameterJdbcTemplate.query(sql,map,new CountReviewMadeByCustomerMapper());
+        if(list.size()>0){
+            return list.get(0).getReviewCount();
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<Review> SearchCustomerReviewByKeyword(String keyWord,int customerId) {
+        String sql="SELECT * FROM reviews r inner join products p on p.id=r.product_id" +
+                "   where r.customer_Id=:customerId and   p.name LIKE CONCAT('%', :keyword, '%') OR p.alias LIKE CONCAT('%', :keyword, '%')" +
+                "  OR short_description LIKE CONCAT('%', :keyword, '%') and r.customer_Id=:customerId"+
+                "  order by r.review_time desc";
+        Map<String,Object>map=new HashMap<>();
+        map.put("keyword",keyWord);
+        map.put("customerId",customerId);
+        List<Review>list=namedParameterJdbcTemplate.query(sql,map,new ReviewMapper());
+        if(list.size()>0){
+            return list;
+        }
+        return null;
+    }
+
+    @Override
+    public List<Review> ExamineCustomerReviewByProductIdnCustomerId(int productId, int customerId) {
+        String sql="SELECT * FROM reviews r where r.customer_Id=:customerId and r.product_Id=:productId ";
+
+        Map<String,Object>map=new HashMap<>();
+        map.put("productId",productId);
+        map.put("customerId",customerId);
+      List<Review>list= namedParameterJdbcTemplate.query(sql,map,new ReviewMapper());
+      if(list.size()>0){
+          return list;
+      }
+
+        return null;
+    }
 }
 

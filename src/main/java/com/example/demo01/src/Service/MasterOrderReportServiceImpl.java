@@ -74,8 +74,6 @@ public class MasterOrderReportServiceImpl extends AbstractReportService {
             dateString=dateFormatter.format(currentDate);
             reportItemList.add(new ReportItem(dateString));
         }while(startDate.before(endDate));
-
-
         return reportItemList;
     }
 

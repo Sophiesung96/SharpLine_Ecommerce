@@ -15,6 +15,10 @@ public interface ReviewDAO {
      List<Review> getAllReviewListForCustomer(int customerId);
      void SaveReview(Review review);
      List<Review> List3MostRecentReviews(int productId);
+     List<Review> ListAllReviewListByPage(Product product,int pageNo);
+     Integer CountReviewMadeByCustomerByProductIdnCustomerId(int productId,int customerId);
+     List<Review> SearchCustomerReviewByKeyword(String keyWord,int customerId);
+     List<Review> ExamineCustomerReviewByProductIdnCustomerId(int productId,int customerId);
 
 
 }

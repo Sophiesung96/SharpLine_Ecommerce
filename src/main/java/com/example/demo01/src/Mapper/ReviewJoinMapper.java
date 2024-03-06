@@ -15,10 +15,11 @@ public class ReviewJoinMapper implements RowMapper<Review> {
                 review.setCustomerId(resultSet.getInt("customerId"));
                 review.setReviewTime(resultSet.getTimestamp("reviewTime"));
                 review.setComment(resultSet.getString("comment"));
-                review.setRating(resultSet.getInt("rating"));
+                review.setRating(resultSet.getFloat("rating"));
                 review.setHeadline(resultSet.getString("headline"));
                  review.setCustomerName(resultSet.getString("CustomerName"));
                  review.setProductName(resultSet.getString("productName"));
+                 review.setAverageRating(resultSet.getFloat("averageRating"));
                 return review;
             }
         }
