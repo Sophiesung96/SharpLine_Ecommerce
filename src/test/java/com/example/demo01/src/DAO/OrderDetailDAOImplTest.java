@@ -1,7 +1,12 @@
 package com.example.demo01.src.DAO;
 
+import com.example.demo01.src.Pojo.OrderDetails;
+import com.example.demo01.src.Pojo.OrderStatus;
 import com.example.demo01.src.Pojo.TableOrderDetail;
+import com.example.demo01.src.Service.OrderDetailService;
+import com.example.demo01.src.Service.ReviewService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
@@ -14,8 +19,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class OrderDetailDAOImplTest {
 
-    @SpyBean
+    @Autowired
     OrderDetailDAO orderDetailDAO;
+
+    @Autowired
+    ReviewService reviewService;
+    @Autowired
+    OrderDetailService orderDetailService;
 
     @Test
     public void testFindWithCategoryAndTimeBetween() throws ParseException {
@@ -27,5 +37,6 @@ class OrderDetailDAOImplTest {
         assertNotNull(list);
 
     }
+
 
 }

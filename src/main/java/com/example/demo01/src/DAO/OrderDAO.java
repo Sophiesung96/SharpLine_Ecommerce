@@ -32,6 +32,7 @@ public interface OrderDAO {
     Order getOrderDetailByIdAndCustomer(int customerId,int orderId);
     List<TableOrderDetail> getCustomerTrackStatusList(int CustomerId,int OrderId);
     List<Order> findByOrderTimeBetween(Date startTime, Date endTime);
+    List<TableOrderDetail> findOrderDetailListForGoogleChart(Date startDate,Date enddate);
 
 
 }

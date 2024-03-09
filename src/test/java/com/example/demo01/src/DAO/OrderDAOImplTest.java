@@ -15,6 +15,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -34,6 +36,8 @@ class OrderDAOImplTest {
 
     @Autowired
     OrderTrackDAO orderTrackDAO;
+    @Autowired
+    OrderDetailDAO orderDetailDAO;
 
 
     @Test
@@ -183,7 +187,7 @@ class OrderDAOImplTest {
         OrderTrack NeworderTrack = new OrderTrack();
         NeworderTrack.setOrderId(orderId);
         NeworderTrack.setStatus(status);
-        NeworderTrack.setNotes(orderStatus.defaultdscription());
+        NeworderTrack.setNotes(orderStatus.defaultdescription());
         NeworderTrack.setUpdatedTime(new Date());
         orderTrackList.add(NeworderTrack);
         orderTrackDAO.createOrderTrack(NeworderTrack);
@@ -230,6 +234,14 @@ class OrderDAOImplTest {
     public void testTableOrderDetail(){
         List<TableOrderDetail>list=orderDAO.getTrackStatusList(1);
         System.out.println(list);
+
+    }
+    @Test
+    public void testCountCustomerOrderByProductIdAndOrderStatus(){
+        int productId=5;
+        int customerId=2;
+        List<OrderDetails> list=orderDetailDAO.CountCustomerOrderByProductIdAndOrderStatus(productId,customerId,OrderStatus.DELIVERED);
+        assertEquals(list.get(0).getCount(),1);
     }
 
 
