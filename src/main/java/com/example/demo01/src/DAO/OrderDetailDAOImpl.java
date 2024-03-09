@@ -1,6 +1,12 @@
 package com.example.demo01.src.DAO;
 
+import com.example.demo01.src.Mapper.CountCustomerOrderDetailMapper;
+import com.example.demo01.src.Mapper.OrderDetailsMapper;
+import com.example.demo01.src.Mapper.ProductListForCustomerMapper;
 import com.example.demo01.src.Mapper.TableOrderDetailMapper;
+import com.example.demo01.src.Pojo.OrderDetails;
+import com.example.demo01.src.Pojo.OrderStatus;
+import com.example.demo01.src.Pojo.ProductListForCustomer;
 import com.example.demo01.src.Pojo.TableOrderDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -39,6 +45,21 @@ public class OrderDetailDAOImpl implements OrderDetailDAO{
         List<TableOrderDetail>list= namedParameterJdbcTemplate.query(sql,map,new TableOrderDetailMapper());
         if(list.size()>0){
             return list;
+        }
+        return null;
+    }
+
+    @Override
+    public List<OrderDetails> CountCustomerOrderByProductIdAndOrderStatus(int productId, int customerId, OrderStatus orderStatus) {
+        String sql="select count(*) as ReviewNum from Order_details d inner join `Order` o on o.id=d.order_Id  where d.product_id=:productId and  o.customer_id=:customerId and o.status='DELIVERED'";
+        Map<String,Object>map=new HashMap<>();
+        map.put("productId",productId);
+        map.put("customerId",customerId);
+        map.put("status",orderStatus.name());
+        List<OrderDetails> list=namedParameterJdbcTemplate.query(sql,map,new CountCustomerOrderDetailMapper());
+        if(list.size()>0){
+            return list;
+
         }
         return null;
     }

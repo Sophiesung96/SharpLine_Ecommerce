@@ -206,8 +206,8 @@ public class OrderDAOImpl implements OrderDAO {
                 ",o.country as country,o.deliver_days as deliverDays,o.deliver_Date as deliverDate," +
                 "c.enabled as enabled, details.quantity as quantity,details.unit_price as unitPrice,details.subtotal as subTotal " +
                 ",details.product_cost as DetailproductCost,track.status as StatusCondition , ca.name as CategoryName from `Order` o inner join Order_details details on o.id=details.order_id  inner join products p on p.id=details.product_id " +
-                "inner join customers c on o.customer_id=c.id " +
-                "inner join categories ca on p.category_id =ca.id" +
+                "inner join customers c on o.customer_id=c.id  " +
+                "inner join categories ca on p.category_id =ca.id " +
                 "inner join order_track track on o.id=track.order_id where o.id=:orderid";
         Map<String,Object> map=new HashMap<>();
         map.put("orderid",orderId);
@@ -474,7 +474,7 @@ public class OrderDAOImpl implements OrderDAO {
 
     @Override
     public List<Order> findByOrderTimeBetween(Date startTime, Date endTime) {
-       String sql="select * from `Order` where order_time between\n" +
+       String sql="select * from `Order` where order_time between " +
                " :startTime and :endTime order by order_time asc";
        Map<String,Object>map=new HashMap<>();
        map.put("startTime",startTime);
@@ -485,5 +485,31 @@ public class OrderDAOImpl implements OrderDAO {
 
      }
      return null;
+    }
+
+    @Override
+    public List<TableOrderDetail> findOrderDetailListForGoogleChart(Date startDate, Date enddate) {
+        String sql="select o.id as id,o.order_time as orderTime,o.customer_id as customerId,p.name as Productname, p.main_image as ProductmainImage," +
+                "    p.id as productId,c.enabled as enabled,o.status as StatusCondition," +
+                "     o.address_line1 as addressline1,o.address_line2 as addressline2,c.email as email," +
+                "   o.first_name as firstName, o.last_name as lastName,o.phone_number as phoneNumber," +
+                "   o.city as city,o.status as status,o.product_cost as productCost, o.shipping_cost as shippingCost" +
+                "  ,o.tax as tax, o.state as state,o.total as total,o.postal_code as postalCode,o.payment_method as paymentmethod" +
+                "  ,o.country as country,o.deliver_days as deliverDays,o.deliver_Date as deliverDate," +
+                "    details.quantity as quantity,details.unit_price as unitPrice,details.subtotal as subTotal" +
+                "  ,details.product_cost as DetailproductCost , ca.name as CategoryName from `Order` o" +
+                "      inner join Order_details details on o.id=details.order_id" +
+                "    inner join products p on p.id=details.product_id" +
+                "   inner join categories ca on p.category_id =ca.id inner join customers c on c.id=o.customer_id" +
+                " where o.order_time between :startTime and :endTime order by o.order_time asc";
+        Map<String,Object>map=new HashMap<>();
+        map.put("startTime",startDate);
+        map.put("endTime",enddate);
+      List<TableOrderDetail>list= namedParameterJdbcTemplate.query(sql,map,new TableOrderDetailMapper());
+        if(list.size()>0){
+            return list;
+
+        }
+        return null;
     }
 }
