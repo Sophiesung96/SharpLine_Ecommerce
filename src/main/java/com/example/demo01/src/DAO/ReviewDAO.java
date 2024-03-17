@@ -19,6 +19,6 @@ public interface ReviewDAO {
      Integer CountReviewMadeByCustomerByProductIdnCustomerId(int productId,int customerId);
      List<Review> SearchCustomerReviewByKeyword(String keyWord,int customerId);
      List<Review> ExamineCustomerReviewByProductIdnCustomerId(int productId,int customerId);
-
+     int saveReview(Review review);
 
 }

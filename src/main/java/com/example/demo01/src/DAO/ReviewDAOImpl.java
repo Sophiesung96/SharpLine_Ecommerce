@@ -206,5 +206,21 @@ public class ReviewDAOImpl implements  ReviewDAO{
 
         return null;
     }
+
+    @Override
+    public int saveReview(Review review) {
+        String sql="INSERT INTO reviews(headline,comment,rating,product_Id,customer_Id,review_Time) values(:headline,:comment,:rating,:productId,:customerId,:reviewTime)";
+        Map<String,Object>map=new HashMap<>();
+        map.put("headline",review.getHeadline());
+        map.put("comment",review.getComment());
+        map.put("rating",review.getRating());
+        map.put("productId",review.getProductId());
+        map.put("customerId",review.getCustomerId());
+        map.put("reviewTime",review.getReviewTime());
+        KeyHolder keyHolder=new GeneratedKeyHolder();
+        namedParameterJdbcTemplate.update(sql,new MapSqlParameterSource(map),keyHolder);
+        int key = keyHolder.getKey().intValue();
+        return key;
+    }
 }
 
