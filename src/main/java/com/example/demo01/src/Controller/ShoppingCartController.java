@@ -1,6 +1,7 @@
 package com.example.demo01.src.Controller;
 
 import com.example.demo01.src.Configuration.MailConfiguration;
+import com.example.demo01.src.Configuration.Utils.ControllerHelper;
 import com.example.demo01.src.Exception.CustomerNotFoundException;
 import com.example.demo01.src.Pojo.*;
 import com.example.demo01.src.Service.AddressService;
@@ -32,9 +33,12 @@ public class ShoppingCartController {
     @Autowired
     AddressService addressService;
 
+    @Autowired
+    ControllerHelper controllerHelper;
+
     @GetMapping("/cart")
     public String ViewCart(Model model, HttpServletRequest request){
-        Customer customer=getAuthenticatedCustomer(request);
+        Customer customer=controllerHelper.getAuthenticatedCustomer(request);
         List<CartItem> list=shoppingCartService.listAllCartItem(customer);
         List<CartItemPName>cartItemPNameList=shoppingCartService.getJoinedProductnCustomer(customer);
         Address DefaultAddress=addressService.findefaultAddressById(customer.getId());
@@ -65,22 +69,7 @@ public class ShoppingCartController {
 
 
 
-    private Customer getAuthenticatedCustomer(HttpServletRequest request){
-        String email = MailConfiguration.getEmailOfAuthenticatedCustomer(request);
-        if (email == null) {
-            throw new CustomerNotFoundException("No Aunthenticated Customer");
-        }
-        if (customerService.getCustomerByEmail(email) != null) {
-            return customerService.getCustomerByEmail(email);
 
-        } else {
-            String userName = email;
-            Customer customer = customerService.getCustomerByfullName(userName);
-            log.info("Authenticated Customer for accessing shopping cart ",customer.getFirstName());
-            return customer;
-
-        }
-    }
 
 
 }

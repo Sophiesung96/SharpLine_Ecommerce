@@ -1,6 +1,7 @@
 package com.example.demo01.src.Controller;
 
 import com.example.demo01.src.Configuration.MailConfiguration;
+import com.example.demo01.src.Configuration.Utils.ControllerHelper;
 import com.example.demo01.src.Exception.CustomerNotFoundException;
 import com.example.demo01.src.Exception.ProductNotFoundException;
 import com.example.demo01.src.Pojo.Customer;
@@ -34,6 +35,12 @@ public class ReviewController {
 
     @Autowired
     ProductService productService;
+
+    @Autowired
+    ControllerHelper controllerHelper;
+
+
+
 
     @GetMapping("/review")
     public String showReviewList(Model model){
@@ -117,7 +124,7 @@ public class ReviewController {
         Product product=productService.findById(ProductId);
         model.addAttribute("product",product);
         model.addAttribute("review",review);
-        Customer customer=getAuthenticatedCustomer(request);
+        Customer customer=controllerHelper.getAuthenticatedCustomer(request);
         boolean customerCanReview=reviewService.canCustomerReviewProduct(product.getId(),customer.getId());
         boolean IsReviewBefore=reviewService.didCustomerReviewProductBefore(customer.getId(),product.getId());
             if(product==null){
@@ -145,7 +152,7 @@ public class ReviewController {
     }
     @PostMapping("/post/review")
     public String saveNewlyCreatedReview(HttpServletRequest request,Model model,@ModelAttribute Review review){
-        Customer customer=getAuthenticatedCustomer(request);
+        Customer customer=controllerHelper.getAuthenticatedCustomer(request);
         Product product=new Product();
         try{
             product=productService.findById(review.getProductId());
@@ -172,24 +179,9 @@ public class ReviewController {
     }
 
 
-    private Customer getAuthenticatedCustomer(HttpServletRequest request) {
-        String email = MailConfiguration.getEmailOfAuthenticatedCustomer(request);
-        if (email == null) {
-            throw new CustomerNotFoundException("No Aunthenticated Customer");
-        }
-        if (customerService.getCustomerByEmail(email) != null) {
-            return customerService.getCustomerByEmail(email);
-
-        } else {
-            String userName = email;
-            Customer customer = customerService.getCustomerByfullName(userName);
-            log.info(customer.getFirstName());
-            return customer;
-
-        }
 
 
-    }
+
 
 
 

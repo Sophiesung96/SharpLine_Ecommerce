@@ -1,6 +1,7 @@
 package com.example.demo01.src.Controller;
 
 import com.example.demo01.src.Configuration.MailConfiguration;
+import com.example.demo01.src.Configuration.Utils.ControllerHelper;
 import com.example.demo01.src.Exception.CustomerNotFoundException;
 import com.example.demo01.src.Pojo.*;
 import com.example.demo01.src.Security.CustomerOAuth2User;
@@ -60,6 +61,8 @@ public class CustomerController {
 
     @Autowired
     ProductService productService;
+    @Autowired
+    ControllerHelper controllerHelper;
 
 
 
@@ -315,6 +318,7 @@ public class CustomerController {
                 boolean didCustomerReviewBefore= reviewService.didCustomerReviewProductBefore(customerId,productId);
                 log.info("didreviewbefore:{}",didCustomerReviewBefore);
                 if(listForCustomer!=null){
+                    listForCustomer.setCustomerId(customerId);
                     listForCustomer.setReviewByCustomer(didCustomerReviewBefore);
                 }
 
@@ -327,10 +331,9 @@ public class CustomerController {
         @GetMapping("/customers/review")
         public String showReviewList(Model model,HttpServletRequest request){
             List<Review> list=new ArrayList<>();
-            Customer customer=getAuthenticatedCustomer(request);
+            Customer customer=controllerHelper.getAuthenticatedCustomer(request);
             list=reviewService.getAllReviewListForCustomer(customer.getId());
             model.addAttribute("list",list);
-
             return "Customer_ReviewList";
         }
 
@@ -342,24 +345,25 @@ public class CustomerController {
             model.addAttribute("review",review);
             return "Review_detail_form";
         }
-
-
-    private Customer getAuthenticatedCustomer(HttpServletRequest request) {
-        String email = MailConfiguration.getEmailOfAuthenticatedCustomer(request);
-        if (email == null) {
-            throw new CustomerNotFoundException("No Aunthenticated Customer");
+        @GetMapping("/search/customer/{id}/review")
+        public String getReviewListByKeyword(@RequestParam (defaultValue = "") String keyword,@PathVariable int id, HttpServletRequest request,Model model){
+            List<Review> list=new ArrayList<>();
+            Customer customer=controllerHelper.getAuthenticatedCustomer(request);
+            list=reviewService.SearchCustomerReviewByKeyword(keyword,id);
+            model.addAttribute("list",list);
+            return "Customer_ReviewList";
         }
-        if (customerService.getCustomerByEmail(email) != null) {
-            return customerService.getCustomerByEmail(email);
-
-        } else {
-            String userName = email;
-            Customer customer = customerService.getCustomerByfullName(userName);
-            log.info(customer.getFirstName());
-            return customer;
-
-        }
+    @GetMapping("/review/customer/{productId}")
+    public String ExamineReviewListByCustomerIdnProductId(@PathVariable int productId, HttpServletRequest request,Model model){
+        List<Review> list=new ArrayList<>();
+        Customer customer=controllerHelper.getAuthenticatedCustomer(request);
+        list=reviewService.ExamineCustomerReviewByProductIdnCustomerId(productId,customer.getId());
+        model.addAttribute("list",list);
+        return "Customer_ReviewList";
     }
+
+
+
 
 
 

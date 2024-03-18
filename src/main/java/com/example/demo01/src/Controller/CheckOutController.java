@@ -1,6 +1,7 @@
 package com.example.demo01.src.Controller;
 
 import com.example.demo01.src.Configuration.MailConfiguration;
+import com.example.demo01.src.Configuration.Utils.ControllerHelper;
 import com.example.demo01.src.Exception.CustomerNotFoundException;
 import com.example.demo01.src.Pojo.*;
 import com.example.demo01.src.Service.*;
@@ -55,10 +56,13 @@ public class CheckOutController {
     @Autowired
     PayPalService payPalService;
 
+    @Autowired
+    ControllerHelper controllerHelper;
+
 
     @GetMapping("/checkout")
     public String showCheckOut(Model model, HttpServletRequest request) {
-        Customer customer = getAuthenticatedCustomer(request);
+        Customer customer = controllerHelper.getAuthenticatedCustomer(request);
         List<CartItem> list = shoppingCartService.listAllCartItem(customer);
         //contains more detailed products
         List<CartItemPName> pList = shoppingCartService.getJoinedProductnCustomer(customer);
@@ -118,29 +122,12 @@ public class CheckOutController {
     }
 
 
-    private Customer getAuthenticatedCustomer(HttpServletRequest request) {
-        String email = MailConfiguration.getEmailOfAuthenticatedCustomer(request);
-        if (email == null) {
-            throw new CustomerNotFoundException("No Aunthenticated Customer");
-        }
-        if (customerService.getCustomerByEmail(email) != null) {
-            return customerService.getCustomerByEmail(email);
-
-        } else {
-            String userName = email;
-            Customer customer = customerService.getCustomerByfullName(userName);
-            log.info(customer.getFirstName());
-            return customer;
-
-        }
-
-    }
 
     @PostMapping("/placeOrder")
     public String placeOrder(HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
         String paymentType = request.getParameter("paymentMethod");
         PaymentMethod paymentMethod = PaymentMethod.valueOf(paymentType);
-        Customer customer = getAuthenticatedCustomer(request);
+        Customer customer = controllerHelper.getAuthenticatedCustomer(request);
         List<CartItem> list = shoppingCartService.listAllCartItem(customer);
         List<Integer> productId = new ArrayList<>();
         //contains more detailed products
