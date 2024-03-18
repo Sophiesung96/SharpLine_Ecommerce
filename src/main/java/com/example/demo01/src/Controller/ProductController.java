@@ -1,12 +1,11 @@
 package com.example.demo01.src.Controller;
 
-import com.example.demo01.src.Configuration.FileUploadUtil;
+import com.example.demo01.src.Configuration.MailConfiguration;
+import com.example.demo01.src.Configuration.Utils.ControllerHelper;
+import com.example.demo01.src.Configuration.Utils.FileUploadUtil;
+import com.example.demo01.src.Exception.CustomerNotFoundException;
 import com.example.demo01.src.Pojo.*;
-import com.example.demo01.src.Service.BrandService;
-import com.example.demo01.src.Service.CategoryService;
-import com.example.demo01.src.Service.ProductService;
-import com.example.demo01.src.Service.ReviewService;
-import lombok.extern.java.Log;
+import com.example.demo01.src.Service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,6 +37,10 @@ public class ProductController {
     CategoryService categoryService;
     @Autowired
     ReviewService reviewService;
+    @Autowired
+    CustomerService customerService;
+    @Autowired
+    ControllerHelper controllerHelper;
 
 
     @GetMapping("/products/{pageno}")
@@ -357,7 +360,7 @@ public class ProductController {
 
 
     @GetMapping("/p/{product_nickname}/{pageno}")
-    public String viewProductdetail(@PathVariable int pageno, Model model,@PathVariable String product_nickname)  {
+    public String viewProductdetail(@PathVariable int pageno, Model model,@PathVariable String product_nickname,HttpServletRequest request)  {
         try{
             float averageRating = 0.0f;
             Product product= productService.findByNickName(product_nickname);
@@ -365,7 +368,9 @@ public class ProductController {
             ProductCBName productCBName=productService.selectCategoyrnBrandByProductId(product.getId());
             List<ProductDetail> detailList=productService.selectProductDetailsById(product.getId());
             List<ProductImage> extraList=productService.selectExtraByProductId(product.getId());
+            //Get all reviews for the product
             List<Review> reviewList=reviewService.List3MostRecentReviews(product.getId());
+            Customer customer=controllerHelper.getAuthenticatedCustomer(request);
             if(product==null){
                 return "Error";
 
@@ -375,8 +380,18 @@ public class ProductController {
                     averageRating=review.getAverageRating();
                     model.addAttribute("reviewList",reviewList);
                 }
+                if(customer!=null){
+                    boolean IsReviewBefore=reviewService.didCustomerReviewProductBefore(customer.getId(),product.getId());
+                    if(IsReviewBefore){
+                        log.info("IsReviewBefore:{}",IsReviewBefore);
+                        model.addAttribute("IsReviewBefore",IsReviewBefore);
+                    }else{
+                        boolean customercanReview=reviewService.canCustomerReviewProduct(product.getId(),customer.getId());
+                        log.info("customercanReview:{}",customercanReview);
+                        model.addAttribute("customercanReview",customercanReview);
+                    }
+                }
             }
-
             model.addAttribute("product",product);
             model.addAttribute("averageRating",averageRating);
             model.addAttribute("nickname",product_nickname);
@@ -424,8 +439,6 @@ public class ProductController {
         return"ProductByCategory";
 
     }
-
-
 
 
 
