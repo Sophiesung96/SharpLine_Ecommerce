@@ -48,8 +48,9 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
            }else{
              if(customer.getAuthenticationType()==null){
                customer.setAuthenticationType("GOOGLE");
-         }
                customerService.updateAuthenticationType(customer, AuthenticationType.GOOGLE);}
+         }
+
         // Generate JWT token
         String jwtToken = jwtUtil.generateToken(customerOAuth2User.getName());
         jwtToken+="Bearer";
@@ -57,7 +58,6 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
         response.addHeader("Authorization",jwtToken);
         log.info("jwtToken: {}", jwtToken);
         // Redirect to /index or respond with success message
-        response.sendRedirect("/index");
         response.sendRedirect("/index");
           //once the user is authenticated by google, he will be led to the /index
         super.onAuthenticationSuccess(request, response, authentication);
