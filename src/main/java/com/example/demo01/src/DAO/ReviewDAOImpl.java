@@ -222,5 +222,18 @@ public class ReviewDAOImpl implements  ReviewDAO{
         int key = keyHolder.getKey().intValue();
         return key;
     }
+
+    @Override
+    public int getVoteCount(int reviewId) {
+        String sql="select * from reviews where id=:id";
+        Map<String,Object>map=new HashMap<>();
+        map.put("id",reviewId);
+        List<Review> list=namedParameterJdbcTemplate.query(sql,map,new ReviewMapper());
+       if(list.size()>0){
+           return list.get(0).getVotes();
+       }
+        return 0;
+    }
+
 }
 

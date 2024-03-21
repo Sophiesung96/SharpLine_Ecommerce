@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -85,6 +86,30 @@ class ReviewDAOImplTest {
         List<Review> list=reviewDAO.ExamineCustomerReviewByProductIdnCustomerId(productId,customerId);
         list.stream().forEach(review->assertEquals(5,review.getProductId()));
     }
+    @Test
+    @Transactional
+    public void testCreateReview(){
+        Review review=new Review();
+        review.setReviewTime(new Date());
+        review.setAverageRating(4.5f);
+        review.setProductName("test01");
+        review.setProductId(20);
+        review.setCustomerId(6);
+        review.setComment("testing only");
+        review.setHeadline("testtesttest");
+       int key= reviewDAO.saveReview(review);
+        System.out.println(key);
+    }
+
+    @Test
+    public void testGetVoteCount(){
+        int reviewId=1;
+      int reviewCount=reviewDAO.getVoteCount(reviewId);
+      assertNotNull(reviewCount);
+        System.out.println(reviewCount);
+    }
+
+
 
 
 }
