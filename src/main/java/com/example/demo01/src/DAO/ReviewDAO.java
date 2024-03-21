@@ -20,5 +20,7 @@ public interface ReviewDAO {
      List<Review> SearchCustomerReviewByKeyword(String keyWord,int customerId);
      List<Review> ExamineCustomerReviewByProductIdnCustomerId(int productId,int customerId);
      int saveReview(Review review);
+     int getVoteCount(int reviewId);
+
 
 }
