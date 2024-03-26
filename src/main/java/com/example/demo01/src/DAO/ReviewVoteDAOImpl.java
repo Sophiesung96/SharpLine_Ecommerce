@@ -63,7 +63,10 @@ public class ReviewVoteDAOImpl implements  ReviewVoteDAO{
 
     @Override
     public void UpdateVoteCount(ReviewVote reviewVote) {
-        String sql="update reviews set votes=(select sum(votes) from review_votes where review_id=:id) where id=:id";
+        //COALESCE() in sql is to retrieve the first value that is not null
+        //So by writing this, we can set a default value as 0
+        // if there's nothing shown in the review_votes table with the specified review_id
+        String sql="update reviews set votes=coalesce ((select sum(votes) from review_votes where review_id=:id),0) where id=:id";
         Map<String,Object> map=new HashMap<>();
         map.put("id",reviewVote.getReviewId());
         namedParameterJdbcTemplate.update(sql,map);
