@@ -15,8 +15,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 </head>
 <body>
-<div class="container">
-    <div class="row">
+<div class="container-fluid justify-content-center">
+    <div class="row ">
         <div class="navbar navbar-expand-lg bg-dark navbar-dark">
             <a class="navbar-brand" th:href="@{/home}">
                 <img th:src="@{/image/logo.png}" style="width:100px;height:50px">
@@ -61,12 +61,12 @@
 
         </div>
 
-        <div th:if="${item}==true">
+        <div class="col mt-3 " th:if="${item}==true">
             <h2>Search Result For '[[${keyword}]]'</h2>
         </div>
 
 
-        <div th:if="${item}==false">
+        <div class="col mt-3" th:if="${item}==false">
             <h2>No Match Found For '[[${keyword}]]'</h2>
         </div>
 
@@ -113,11 +113,24 @@
         </th:block>
 
     </div>
-    </div>
+
 
     <div th:replace="~{breadcrumb ::content}"></div>
 
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item"><a class="page-link" th:href="@{'/p/'+${keyword}+'/'+1}">First</a></li>
+            <li class="page-item"><a class="page-link" th:href="@{'/p/'+${keyword}+'/'+${currentpage -1}}">Previous</a>
+            </li>
+            <th:block th:each="num:${pagelist}">
 
+                <li class="page-item"><a class="page-link" th:href="@{'/p/'+${keyword}+'/'+${num}}"
+                                         th:text="${num}">1</a></li>
+            </th:block>
+            <li class="page-item"><a class="page-link" th:href="@{'/p/'+${keyword}+'/'+${currentpage+1}}">Next</a>
+            </li>
+        </ul>
+    </nav>
 
 
     <div class="row mt-2">
@@ -151,20 +164,9 @@
     </div>
 
 
-<nav>
-    <ul class="pagination justify-content-center">
-        <li class="page-item"><a class="page-link" th:href="@{'/p/'+${keyword}+'/'+1}">First</a></li>
-        <li class="page-item"><a class="page-link" th:href="@{'/p/'+${keyword}+'/'+${currentpage -1}}">Previous</a>
-        </li>
-        <th:block th:each="num:${pagelist}">
+</div>
 
-            <li class="page-item"><a class="page-link" th:href="@{'/p/'+${keyword}+'/'+${num}}"
-                                     th:text="${num}">1</a></li>
-        </th:block>
-        <li class="page-item"><a class="page-link" th:href="@{'/p/'+${keyword}+'/'+${currentpage+1}}">Next</a>
-        </li>
-    </ul>
-</nav>
+
 
 </body>
 </html>
