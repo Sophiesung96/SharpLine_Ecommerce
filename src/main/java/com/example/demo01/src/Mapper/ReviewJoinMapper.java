@@ -20,6 +20,7 @@ public class ReviewJoinMapper implements RowMapper<Review> {
                  review.setCustomerName(resultSet.getString("CustomerName"));
                  review.setProductName(resultSet.getString("productName"));
                  review.setAverageRating(resultSet.getFloat("averageRating"));
+                 review.setVotes(resultSet.getInt("vote"));
                 return review;
             }
         }
