@@ -132,7 +132,7 @@ public class ReviewDAOImpl implements  ReviewDAO{
         String sql="select r.id as id,r.comment as comment, r.customer_Id as customerId, r.headline as headline," +
                 " r.product_Id as productId, (select avg(rating) from reviews r where r.product_Id=p.id ) as averageRating," +
                 "     r.rating as rating, r.review_time as reviewTime,concat(c.first_name,' ',c.last_name) as CustomerName," +
-                "    p.name as productName from reviews r inner join customers  c on r.customer_Id=c.id" +
+                "    p.name as productName,r.votes as vote from reviews r inner join customers  c on r.customer_Id=c.id" +
                 "   inner join products p on r.product_Id=p.id where  p.id=:productId order by review_time desc limit 0,3";
         Map<String, Object> map=new HashMap<>();
         map.put("productId",productId);
