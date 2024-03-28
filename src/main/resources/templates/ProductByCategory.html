@@ -5,17 +5,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
     <title>ProductByCategory</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon"th:href="@{/image/logo.png}">
     <!-- Latest compiled and minified CSS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Latest compiled JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <!-- For Star Rating -->
+    <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-svg/theme.css" media="all" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/js/star-rating.min.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-svg/theme.js"></script>
 </head>
 <body>
 <div class="container">
     <div class="row">
         <div class="navbar navbar-expand-lg bg-dark navbar-dark">
-            <a class="navbar-brand" th:href="@{/home}">
+            <a class="navbar-brand" th:href="@{/index}">
                 <img th:src="@{/image/logo.png}" style="width:100px;height:50px">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -78,7 +85,7 @@
         </div>
     </div>
 
-   <div th:if="${category}!=null">
+   <div th:if="${categoryList !=null && !categoryList.isEmpty()}">
        <div class="row">
          <div class="col">
              <nav>
@@ -86,7 +93,9 @@
                    <li class="breadcrumb-item">
                      <a th:href="@{/index}">Home</a>
                    </li>
-                     <li class="breadcrumb-item"> <a th:href="@{'/c/'+${category.nickname}+'/'+1}">[[${category.nickname}]]</a></li>
+                     <th:block th:each="parent:${categoryList}">
+                         <li class="breadcrumb-item"> <a th:href="@{'/c/'+${parent.name}+'/'+1}">[[${parent.name}]]</a></li>
+                     </th:block>
 
                  </ol>
              </nav>
@@ -95,6 +104,18 @@
          </div>
        </div>
     </div>
+
+<th:block th:if="${categoryList !=null && !categoryList.isEmpty()}">
+    <div class="row m-2">
+        <div class="col" th:each="parent:${categoryList}">
+            <div style="border-radius: 15px;"><img th:src="@{${parent.getPhotosImagePaths()}}" width="80"></div>
+            <div>
+                <a th:href="@{'/c/'+${parent.name}+'/'+1}">[[${parent.name}]]</a>
+            </div>
+        </div>
+    </div>
+</th:block>
+
 
 
 
@@ -108,6 +129,16 @@
                         <b>[[${product.name}]]</b>
                     </a>
 
+                </div>
+
+                <div>
+                    <table>
+                        <tr>
+                            <td>
+                                <input id='avg'class="rating rating-loading" type="text"  data-size="xs" th:value="${product.averageRating}">
+                            </td>
+                        </tr>
+                    </table>
                 </div>
                 <div th:if="${product.discountPercent<=0}">
                     <span th:if="${#httpServletRequest.getAttribute('CURRENCY_SYMBOL_POSITION')=='Before_Price'}">[[${CURRENCY_SYMBOL}]]</span>
@@ -135,6 +166,20 @@
     </div>
   </div>
 
+<nav th:if="${pagelist!=null && #lists.isEmpty(pagelist)}">
+    <ul class="pagination justify-content-center">
+        <li class="page-item"><a class="page-link" th:href="@{'/c/'+${nickname}+'/'+1}">First</a></li>
+        <li class="page-item"><a class="page-link" th:href="@{'/c/'+${nickname}+'/'+${currentpage -1}}">Previous</a>
+        </li>
+        <th:block th:each="num:${pagelist}">
+
+            <li class="page-item"><a class="page-link" th:href="@{'/c/'+${nickname}+'/'+${num}}"
+                                     th:text="${num}">1</a></li>
+        </th:block>
+        <li class="page-item"><a class="page-link" th:href="@{'/c/'+${nickname}+'/'+${currentpage+1}}">Next</a>
+        </li>
+    </ul>
+</nav>
 
 <div class="container">
   <div class="row">
@@ -168,24 +213,20 @@
        </div>
     </div>
 
-    <nav>
-        <ul class="pagination justify-content-center">
-            <li class="page-item"><a class="page-link" th:href="@{'/c/'+${nickname}+'/'+1}">First</a></li>
-            <li class="page-item"><a class="page-link" th:href="@{'/c/'+${nickname}+'/'+${currentpage -1}}">Previous</a>
-            </li>
-            <th:block th:each="num:${pagelist}">
 
-                <li class="page-item"><a class="page-link" th:href="@{'/c/'+${nickname}+'/'+${num}}"
-                                         th:text="${num}">1</a></li>
-            </th:block>
-         <li class="page-item"><a class="page-link" th:href="@{'/c/'+${nickname}+'/'+${currentpage+1}}">Next</a>
-            </li>
-        </ul>
-    </nav>
 
     <div class="container text-center">
         <p class="mt-5 ">[[${COPYRIGHT}]] All Rights Reserved</p>&nbsp;
     </div>
   </div>
+
+    <script type="text/javascript">
+        $('#avg').rating({
+            displayOnly: true,
+            hoverOnClear: false,
+            showCaption: false,
+            theme:'krajee-svg'
+        })
+    </script>
 </body>
 </html>
