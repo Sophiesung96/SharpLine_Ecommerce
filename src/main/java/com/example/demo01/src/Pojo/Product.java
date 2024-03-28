@@ -20,7 +20,6 @@ public class Product {
     private String alias;
     private String shortDescription;
     private String fullContent;
-
     private Date createdTime;
 @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date UpdatedTime;
@@ -42,6 +41,7 @@ public class Product {
     private String categoryName;
     private String brandName;
     private List<ProductDetail> detail;
+
 
     public Product(Integer id) {
         this.id = id;

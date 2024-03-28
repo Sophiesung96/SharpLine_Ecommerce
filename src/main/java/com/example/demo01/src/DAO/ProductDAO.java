@@ -7,7 +7,7 @@ import java.util.List;
 public interface ProductDAO {
 
     List<Product> listAll();
-
+    List<PageNumber> getPageCountForCategoriesWithParentId(int parentId);
     List<Product> listAllOrderByName();
 
     List<ProductCBName> selectCategoyrnBrandByName();

@@ -5,7 +5,7 @@
     <title>product_top_reviews</title>
 </head>
 <body>
- <div th:fragment="content">
+ <div th:fragment="content" th:if="${reviewList}">
      <div class="row"><div class="col"><hr/></div> </div>
      <div class="row m-1">
          <h3 id="review">Customer Reviews:</h3>
@@ -13,18 +13,52 @@
 
      <div class="row m-1">
          <div class="col-xs">
-             <input class="rating rating-loading StarRating" type="text"  data-size="xs" th:value="${averageRating}">
+             <input id='avg'class="rating rating-loading" type="text" data-size="md" th:value="${averageRating}">
          </div>
      </div>
      <div class="row m-1  m-lg-3">
-          <a href>View All [[${product.}]] ratings</a>
+          <a
+             th:href="@{'/ratings/'+${product.alias}+'/page/'+1}">
+              View All [[${product.review}]] ratings
+          </a>
      </div>
+     <div th:if="${IsReviewBefore}" class="row m-1  m-lg-3">
+         <span class="text-success">You already reviewed this product.</span>
+     </div>
+     <div th:if="${customercanReview}" class="row m-1  m-lg-3">
+         <span class="text-info">
+             You purchased and got this product.
+             <b><a th:href="@{'/write_review/product/'+${product.id}}">Write your Review Now</a></b>
+         </span>
+     </div>
+
      <div class="row"><div class="col"><hr/></div> </div>
      <div class="row m-2">
          <div class="col">
              <th:block th:each="review:${reviewList}">
                  <div class="row">
-                     <div class="col-xs"> <input class="rating rating-loading StarRating" type="text"  data-size="xs" th:value="${review.rating}"></div>
+                     <div class="col-xs-3">
+                         <input class="rating rating-loading StarRating" type="text" data-size="xs" th:value="${review.rating}">
+                         <!--Thumbs Up icon-->
+                         <a class="linkVoteReview far fa-thumbs-up"
+                            th:id="'thumbsUp'+${review.id}"
+                            th:reviewId="${review.id}"
+                            th:href="@{'/vote_review/'+${review.id}+'/up'}">
+                         </a>
+                         <span th:id="'voteCount'+${review.id}">[[${review.votes}]] Votes</span>
+                         <!--Thumbs Down icon-->
+                         <a class="linkVoteReview far fa-thumbs-down"
+                            th:id="'thumbsDown'+${review.id}"
+                            th:reviewId="${review.id}"
+                            th:href="@{'/vote_review/'+${review.id}+'/down'}">
+                         </a>
+
+                     </div>
+
+                 </div>
+
+                 <div class="row">
+                     <div class="col m-lg-3"><small>[[${review.CustomerName}]], <span>[[${review.reviewTime}]]</span></small></div>
                  </div>
                  <div class="row">
                      <div class="col"><b>[[${review.headline}]]</b></div>
@@ -32,15 +66,16 @@
                  <div class="row mt-2">
                      <div class="col">[[${review.comment}]]</div>
                  </div>
-                 <div class="row">
-                     <div class="col m-lg-3"><small>[[${review.CustomerName}]], <span>[[${review.reviewTime}]]</span></small></div>
-                 </div>
+
                  <div class="row">
                      <div class="col"><hr/></div>
                  </div>
              </th:block>
          </div>
      </div>
+
+
+
  </div>
 </body>
 </html>
