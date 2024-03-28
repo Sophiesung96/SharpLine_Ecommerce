@@ -18,13 +18,15 @@ public interface CategoryService {
 
     public boolean checkUnique(String name);
 
-    public void UpdateEnabledStatus(int id, String enabled);
+    public void UpdateEnabledStatus(int id,int enabled);
 
     public void deleteCategoryById(int id);
 
     public List<Category> getCategoryByPagination(int Pageno);
-
+    List<Category> listRootCategories();
     public List<Integer> getPageCount();
     public Category findByAliasEnabled(String alias);
     List<Category> GetHierarchicalCategories();
+    public List<Category> listAllCategoriesOrderedByParentName(String ParentName,int level);
+    List<Category>listChildrenCategoreisByParentId(int parentId);
 }

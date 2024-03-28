@@ -32,6 +32,8 @@ public interface CategoryDAO {
 
      Category findByAliasEnabled(String alias);
      List<Category> listRootCategories();
+     List<Category> listAllCategoriesOrderedByParentName(String ParentName,int level);
+     List<Category>listChildrenCategoreisByParentId(int parentId);
 
 
 }

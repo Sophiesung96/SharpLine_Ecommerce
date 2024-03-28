@@ -34,6 +34,8 @@ public class CategoryServiceImpl implements CategoryService {
 
 
 
+
+
     @Override
     public Category getcategoryByName(String name) {
         Category category = new Category();
@@ -74,7 +76,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void UpdateEnabledStatus(int id, String enabled) {
+    public void UpdateEnabledStatus(int id, int enabled) {
         categoryDAO.UpdateEnabledStatus(id, enabled);
     }
 
@@ -113,6 +115,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<Category> listRootCategories() {
+        List<Category> list=categoryDAO.listRootCategories();
+        return list;
+    }
+
+    @Override
     public List<Category> GetHierarchicalCategories() {
         List<Category> childrenCategoryList = categoryDAO.selectNestedCategoriesWithParentId();
         Map<Integer, List<Category>> categoryMap = new HashMap<>();
@@ -120,7 +128,8 @@ public class CategoryServiceImpl implements CategoryService {
         // Group categories by their parent_id
         for (Category category : childrenCategoryList) {
             Integer parentId = category.getParentid();
-           // If the category is the parent itself
+            //If there's no list associated with the parentId in the categoryMap,
+            // a new ArrayList<> is then created and associated with that parentId.
             categoryMap.computeIfAbsent(parentId, k -> new ArrayList<>()).add(category);
         }
 
@@ -148,11 +157,17 @@ public class CategoryServiceImpl implements CategoryService {
 
 
 
+    @Override
+    public List<Category> listAllCategoriesOrderedByParentName(String ParentName,int level) {
+        List<Category> list=categoryDAO.listAllCategoriesOrderedByParentName(ParentName, level);
+        return list;
+    }
 
-
-
-
-
+    @Override
+    public List<Category> listChildrenCategoreisByParentId(int parentId) {
+        List<Category>list=categoryDAO.listChildrenCategoreisByParentId(parentId);
+        return list;
+    }
 }
 
 

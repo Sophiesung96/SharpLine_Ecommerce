@@ -42,6 +42,9 @@ public class ProductController {
     @Autowired
     ControllerHelper controllerHelper;
 
+    @Autowired
+    ReviewVoteService reviewVoteService;
+
 
     @GetMapping("/products/{pageno}")
     public String listAll(Model model,@PathVariable int pageno) {
@@ -331,9 +334,10 @@ public class ProductController {
         return "product_detail_form";
     }
 
-    @GetMapping("/c/{name}/{level}/{page}")
-    public String viewCategory(  @PathVariable int page,@PathVariable String name,@PathVariable int level, Model m){
+    @GetMapping("/c/{name}/{page}")
+    public String viewCategory(  @PathVariable int page,@PathVariable String name, Model m){
         try{
+            log.info("category name:{}",name);
            Category category=categoryService.findByAliasEnabled(name);
             if(category==null){
                 log.info("There's something wrong with this category");
@@ -342,7 +346,7 @@ public class ProductController {
             List<Integer> pagelist=new ArrayList<>();
             pagelist=productService.getPageCount();
             int currentpage=page;
-            List<Category> categoryList=categoryService.listAllCategoriesOrderedByParentName(name,level);
+            List<Category>categoryList=categoryService.listChildrenCategoreisByParentId(category.getId());
             m.addAttribute("nickname",name);
             m.addAttribute("pagelist",pagelist);
             m.addAttribute("currentpage",currentpage);
@@ -370,16 +374,17 @@ public class ProductController {
             List<ProductImage> extraList=productService.selectExtraByProductId(product.getId());
             //Get all reviews for the product
             List<Review> reviewList=reviewService.List3MostRecentReviews(product.getId());
-            Customer customer=controllerHelper.getAuthenticatedCustomer(request);
             if(product==null){
                 return "Error";
 
             }
             if(reviewList!=null){
+                Customer customer=controllerHelper.getAuthenticatedCustomerForReviewVote(request);
                 for(Review review:reviewList){
                     averageRating=review.getAverageRating();
                     model.addAttribute("reviewList",reviewList);
                 }
+
                 if(customer!=null){
                     boolean IsReviewBefore=reviewService.didCustomerReviewProductBefore(customer.getId(),product.getId());
                     if(IsReviewBefore){
