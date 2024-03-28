@@ -19,13 +19,13 @@ public class ProductMapper implements RowMapper<Product> {
         product.setBrandId(resultSet.getInt("brand_id"));
         product.setCost(resultSet.getFloat("cost"));
         product.setDiscountPercent(resultSet.getFloat("discount_percent"));
-        product.setFullContent(resultSet.getString("full_context"));
+        product.setFullContent(resultSet.getString("full_description"));
         product.setHeight(resultSet.getFloat("height"));
         product.setWidth(resultSet.getFloat("width"));
-        product.setPrice(resultSet.getFloat("list_price"));
+        product.setPrice(resultSet.getFloat("price"));
         product.setShortDescription(resultSet.getString("short_description"));
         product.setLength(resultSet.getFloat("length"));
-        product.setMainimage(resultSet.getString("main_image"));
+        product.setMainimage(resultSet.getString("main_Image"));
         product.setWeight(resultSet.getFloat("weight"));
         product.setEnabled(resultSet.getInt("enabled"));
         product.setCreatedTime(resultSet.getTimestamp("created_Time"));

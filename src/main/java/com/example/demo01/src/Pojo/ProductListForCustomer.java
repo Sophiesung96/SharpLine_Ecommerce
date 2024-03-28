@@ -29,6 +29,9 @@ public class ProductListForCustomer {
     private List<String> SortedProductId;
     private List<String> SortedShippingCost;
     private List<String> SortedProductCost;
+    private boolean CustomerCanReview;
+    private boolean ReviewByCustomer;
+    private int customerId;
 
     public List<String> getSortedMainImage() {
        this.SortedMainImage=new ArrayList<>();
@@ -57,4 +60,7 @@ public class ProductListForCustomer {
 
         return SortedMainImage;
     }
+
+
+
 }

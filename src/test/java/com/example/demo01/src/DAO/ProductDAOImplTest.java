@@ -1,5 +1,6 @@
 package com.example.demo01.src.DAO;
 
+import com.example.demo01.src.Pojo.PageNumber;
 import com.example.demo01.src.Pojo.Product;
 import com.example.demo01.src.Pojo.ProductDetail;
 import com.example.demo01.src.Pojo.ProductImage;
@@ -112,5 +113,12 @@ class ProductDAOImplTest {
       assertEquals(product.getAverageRating(),4);
     }
 
+    @Test
+    public void testgetPageCountForCategoriesWithParentId(){
+        int parentId=2;
+        List<PageNumber> list = productDAO.getPageCountForCategoriesWithParentId(parentId);
+        list.forEach(num-> System.out.println(num.getPagenumber()));
+
+    }
 
 }

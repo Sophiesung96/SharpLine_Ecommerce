@@ -36,20 +36,13 @@ class ProductRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private WebApplicationContext webApplicationContext;
+
 
     @Autowired
     ObjectMapper objectMapper;
 
 
-    @BeforeEach
-    @Test
-    public void setup()
-    {
-        //Init MockMvc Object and build
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    }
+
 
     @Test
     public void testGetProductInfo() throws Exception {

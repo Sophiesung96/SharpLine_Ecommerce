@@ -344,7 +344,7 @@ public class ProductController {
                 return "Error";
             }
             List<Integer> pagelist=new ArrayList<>();
-            pagelist=productService.getPageCount();
+            pagelist=productService.getPageCountForCategoriesWithParentId(category.getId());
             int currentpage=page;
             List<Category>categoryList=categoryService.listChildrenCategoreisByParentId(category.getId());
             m.addAttribute("nickname",name);
