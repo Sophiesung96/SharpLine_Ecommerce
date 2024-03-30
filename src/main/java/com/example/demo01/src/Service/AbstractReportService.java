@@ -57,13 +57,13 @@ public abstract class AbstractReportService {
 
     //calculate Data by Days
     protected List<ReportItem> getReportDataLastXDays(int day,ReportType reportType) throws ParseException {
-        // Date endTime=new Date();
         dateFormatter=new SimpleDateFormat("yyyy-MM-dd");
-        Date startTime=dateFormatter.parse("2021-01-01");
-        Date endTime=dateFormatter.parse("2021-01-21");
-        Calendar cal= Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH,-(day-1));
-        // Date startTime=cal.getTime();
+        Date endTime = dateFormatter.parse("2021-10-05"); // End date is set to "2021-01-22"
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(endTime); // Set calendar time to end time
+        cal.add(Calendar.DAY_OF_MONTH, -(day - 1)); // Subtracting 6 days from end time to get the start time
+        Date startTime = cal.getTime(); // Getting the start time
+        System.out.println(startTime); // Output the calculated start time
         return getReportDataByDatRangeInternal(startTime,endTime,reportType);
     }
 
@@ -71,11 +71,11 @@ public abstract class AbstractReportService {
     protected List<ReportItem> getReportDataLastXMonths(int months,ReportType reportType) throws ParseException {
         // Date endTime=new Date();
         dateFormatter=new SimpleDateFormat("yyyy-MM");
-        Date startTime=dateFormatter.parse("2021-01-01");
-        Date endTime=dateFormatter.parse("2021-01-21");
+        Date endTime=dateFormatter.parse("2021-10-05");
         Calendar cal= Calendar.getInstance();
+        cal.setTime(endTime);
         cal.add(Calendar.MONTH,-(months-1));
-        // Date startTime=cal.getTime();
+          Date startTime=cal.getTime();
         return getReportDataByDatRangeInternal(startTime,endTime,reportType);
     }
 

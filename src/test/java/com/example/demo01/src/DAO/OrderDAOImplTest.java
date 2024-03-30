@@ -108,7 +108,9 @@ class OrderDAOImplTest {
         System.out.println(order);
     testOrder.stream().forEach(Neworder->assertEquals(Neworder.getFirstName(),order.getFirstName()));
         testOrder.stream().forEach(Neworder->assertEquals(Neworder.getLastName(),order.getLastName()));
+
     }
+
 
     @Test
     public void testFindOrderDetailsList(){
