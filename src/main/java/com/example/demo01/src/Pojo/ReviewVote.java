@@ -25,11 +25,11 @@ public class ReviewVote {
         this.votes = votes;
     }
 
-  public boolean IsVotedUp(){
+  public boolean isVotedUp(){
         return this.votes==VOTE_UP_POINT;
   }
 
-  public boolean IsVotedDown(){
+  public boolean isVotedDown(){
         return this.votes==VOTE_DOWN_POINT;
   }
 
