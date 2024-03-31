@@ -387,6 +387,8 @@ public class ProductController {
 
                 if(customer!=null){
                     boolean IsReviewBefore=reviewService.didCustomerReviewProductBefore(customer.getId(),product.getId());
+                  boolean isVotedByCustomer=reviewVoteService.markReviewVotedForProductByCustomer(reviewList, product.getId(),customer.getId());
+                    log.info("Is this review is voted by "+customer.getFirstName()+" "+isVotedByCustomer);
                     if(IsReviewBefore){
                         log.info("IsReviewBefore:{}",IsReviewBefore);
                         model.addAttribute("IsReviewBefore",IsReviewBefore);
