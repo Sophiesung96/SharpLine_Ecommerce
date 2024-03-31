@@ -40,14 +40,16 @@
                      <div class="col-xs-3">
                          <input class="rating rating-loading StarRating" type="text" data-size="xs" th:value="${review.rating}">
                          <!--Thumbs Up icon-->
-                         <a class="linkVoteReview far fa-thumbs-up"
+                         <a class="linkVoteReview  fa-thumbs-up"
+                            th:classappend="${review.isUpvotedByCurrentCustomer()? 'fas':'far'}"
                             th:id="'thumbsUp'+${review.id}"
                             th:reviewId="${review.id}"
                             th:href="@{'/vote_review/'+${review.id}+'/up'}">
                          </a>
                          <span th:id="'voteCount'+${review.id}">[[${review.votes}]] Votes</span>
                          <!--Thumbs Down icon-->
-                         <a class="linkVoteReview far fa-thumbs-down"
+                         <a class="linkVoteReview  fa-thumbs-down"
+                            th:classappend="${review.isDownvotedByCurrentCustomer()? 'fas':'far'}"
                             th:id="'thumbsDown'+${review.id}"
                             th:reviewId="${review.id}"
                             th:href="@{'/vote_review/'+${review.id}+'/down'}">

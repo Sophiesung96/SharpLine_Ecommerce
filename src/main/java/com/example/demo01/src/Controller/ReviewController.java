@@ -10,6 +10,7 @@ import com.example.demo01.src.Pojo.Review;
 import com.example.demo01.src.Service.CustomerService;
 import com.example.demo01.src.Service.ProductService;
 import com.example.demo01.src.Service.ReviewService;
+import com.example.demo01.src.Service.ReviewVoteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,6 +39,9 @@ public class ReviewController {
 
     @Autowired
     ControllerHelper controllerHelper;
+
+    @Autowired
+    ReviewVoteService reviewVoteService;
 
 
 
@@ -86,7 +90,8 @@ public class ReviewController {
     }
 
     @GetMapping("/ratings/{productAlias}/page/{pageNo}")
-    public String getRatingnReviewByProductPerPage(@PathVariable String productAlias, @PathVariable int pageNo,Model model){
+    public String getRatingnReviewByProductPerPage(@PathVariable String productAlias, @PathVariable int pageNo
+            ,Model model,HttpServletRequest request){
         Product product=new Product();
         int currentPage=0;
         currentPage=pageNo;
@@ -101,10 +106,15 @@ public class ReviewController {
         List<Review> ReviewList=reviewService.ListAllReviewListByPage(product,currentPage);
         log.info("producto:{}",product);
         log.info("reviewList:{}",ReviewList==null);
+        //Get the autneticated customer
+        Customer customer=controllerHelper.getAuthenticatedCustomerForReviewVote(request);
         if(ReviewList!=null){
             for(Review review:ReviewList){
                 averageRating=review.getAverageRating();
                 model.addAttribute("averageRating",averageRating);
+            }
+            if(customer!=null){
+                reviewVoteService.markReviewVotedForProductByCustomer(ReviewList,product.getId(),customer.getId());
             }
         }
         model.addAttribute("reviewList",ReviewList);
@@ -114,8 +124,8 @@ public class ReviewController {
     }
 
     @GetMapping("/ratings/{productAlias}")
-    public String listReviewByProductFirstPage(@PathVariable String productAlias,Model model){
-        return getRatingnReviewByProductPerPage(productAlias,1,model);
+    public String listReviewByProductFirstPage(@PathVariable String productAlias,Model model,HttpServletRequest request){
+        return getRatingnReviewByProductPerPage(productAlias,1,model,request);
     }
     @GetMapping("/write_review/product/{ProductId}")
     public String showReviewForm(@PathVariable int  ProductId, Model model, HttpServletRequest request){

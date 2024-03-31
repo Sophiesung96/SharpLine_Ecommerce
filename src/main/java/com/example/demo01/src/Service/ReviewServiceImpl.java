@@ -1,13 +1,15 @@
 package com.example.demo01.src.Service;
 
+import com.example.demo01.src.DAO.OrderDetailDAO;
 import com.example.demo01.src.DAO.ProductDAO;
 import com.example.demo01.src.DAO.ReviewDAO;
-import com.example.demo01.src.Pojo.Product;
-import com.example.demo01.src.Pojo.Review;
+import com.example.demo01.src.DAO.ReviewVoteDAO;
+import com.example.demo01.src.Pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -17,6 +19,12 @@ public class ReviewServiceImpl implements ReviewService {
     ReviewDAO reviewDAO;
     @Autowired
     ProductDAO productDAO;
+
+    @Autowired
+    OrderDetailDAO orderDetailDAO;
+
+    @Autowired
+    ReviewVoteDAO reviewVoteDAO;
 
     @Override
     public List<Review> getAllReviewList() {
@@ -70,6 +78,46 @@ public class ReviewServiceImpl implements ReviewService {
     public List<Review> List3MostRecentReviews(int productId) {
         List<Review> list=reviewDAO.List3MostRecentReviews(productId);
         return list;
+    }
+
+    @Override
+    public List<Review> ListAllReviewListByPage(Product product, int pageNo) {
+        List<Review>list=reviewDAO.ListAllReviewListByPage(product, pageNo);
+        return list;
+    }
+
+    @Override
+    public boolean canCustomerReviewProduct(int productId, int customerId) {
+        List<OrderDetails>list= orderDetailDAO.CountCustomerOrderByProductIdAndOrderStatus(productId, customerId,OrderStatus.DELIVERED);
+        return list!=null;
+    }
+
+    @Override
+    public boolean didCustomerReviewProductBefore(int customerId, int productId) {
+        Integer reviewCount= reviewDAO.CountReviewMadeByCustomerByProductIdnCustomerId(productId,customerId);
+        return reviewCount>0;
+    }
+
+    @Override
+    public List<Review> SearchCustomerReviewByKeyword(String keyWord,int customerId) {
+        List<Review> list=reviewDAO.SearchCustomerReviewByKeyword(keyWord,customerId);
+        return list;
+    }
+
+    @Override
+    public List<Review> ExamineCustomerReviewByProductIdnCustomerId(int productId, int customerId) {
+        List<Review> list=reviewDAO.ExamineCustomerReviewByProductIdnCustomerId(productId, customerId);
+        return list;
+    }
+
+    @Override
+    public Review saveReview(Review review) {
+        review.setReviewTime(new Date());
+        int reviewId=reviewDAO.saveReview(review);
+        Review newlyCreatedReview=reviewDAO.getEditReviewById(reviewId);
+        Integer productId= newlyCreatedReview.getProductId();
+        productDAO.UpdateReviewCountandAverageRating(productId);
+        return newlyCreatedReview;
     }
 
 
