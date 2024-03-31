@@ -38,7 +38,7 @@ public class ReviewVoteDAOImpl implements  ReviewVoteDAO{
     @Override
     public List<ReviewVote> findByProductAndCustomer(int productId, int customerId) {
         String sql="select * from review_votes  votes inner join reviews r on votes.review_id = r.id" +
-                "    where r.product_Id=:productId and r.customer_Id=:customerId";
+                "    where r.product_Id=:productId and votes.customer_Id=:customerId";
         Map<String,Object> map=new HashMap<>();
         map.put("productId",productId);
         map.put("customerId",customerId);

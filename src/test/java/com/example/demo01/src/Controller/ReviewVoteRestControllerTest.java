@@ -74,7 +74,7 @@ class ReviewVoteRestControllerTest {
     @Test
     public void test(){
         ReviewVote reviewVote=reviewVoteDAO.findByReviewAndCustomer(3,2);
-        System.out.println(reviewVote.IsVotedUp());
+        System.out.println(reviewVote.isVotedUp());
     }
 
 
