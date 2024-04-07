@@ -29,7 +29,7 @@ public interface UserDao {
 
     public void DeleteUserById(Integer id);
 
-    public void UpdateEnabledStatus(Integer id, String EnabledStatus);
+    public void UpdateEnabledStatus(Integer id, int enabled);
 
     public List<Users> getUserByPagination(int Pageno);
 

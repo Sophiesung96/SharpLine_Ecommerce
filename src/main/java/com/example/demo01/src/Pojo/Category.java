@@ -17,6 +17,7 @@ public class Category {
     private Integer parentid;
     private String parentname;
     private Integer level;
+    private Constants constants;
 
 
     public Category(int parentid) {
@@ -32,15 +33,17 @@ public class Category {
         this.id = id;
         this.name = name;
         this.nickname = nickname;
+
     }
 
 
 
     public String getPhotosImagePaths() {
+        this.constants=new Constants();
         if (this.image == null) {
             return "/image/thumbnail.jpeg";
         }
-        return "/category-image/"  + this.id + "/" + this.image;
+        return constants.getS3BaseUri() +"/categories-images/"+ this.id + "/" + this.image;
     }
 
 }

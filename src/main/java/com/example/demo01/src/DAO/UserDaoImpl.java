@@ -27,13 +27,13 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void insertUser(Users user) {
-        String sql = "INSERT INTO Users" +
-                "(Email,enabledStatus,first_name,last_name,password,photo)" +
+        String sql = "INSERT INTO users" +
+                "(Email,enable,first_name,last_name,password,photo)" +
                 " value " +
                 "( :Email, :enabledStatus, :first_name, :last_name, :password, :photo)";
         Map<String, Object> map = new HashMap<>();
         map.put("Email", user.getEmail());
-        map.put("enabledStatus", user.getEnabledStatus());
+        map.put("enabledStatus", user.getEnabled());
         map.put("first_name", user.getFirst_name());
         map.put("last_name", user.getLast_name());
         map.put("password", user.getPassword());
@@ -45,7 +45,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void updateUser(Users user) {
-        String sql = "update Users set email=:email,first_name=:first_name,last_name=:last_name,password=:password,photo=:photo where id=:id";
+        String sql = "update users set email=:email,first_name=:first_name,last_name=:last_name,password=:password,photo=:photo where id=:id";
         Map<String, Object> map = new HashMap<>();
         map.put("email", user.getEmail());
         map.put("enabledStatus", user.getFirst_name());
@@ -59,7 +59,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     public String getPassword(Users user) {
-        String sql = "select password from Users where id=:id";
+        String sql = "select password from users where id=:id";
         Map<String, Object> map = new HashMap<>();
         map.put("id", user.getId());
         List<Users> list = new ArrayList<>();
@@ -71,7 +71,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Users getUser(String username) {
-        String sql = "select * from Users where first_name=:uname";
+        String sql = "select * from users where first_name=:uname";
         Map<String, Object> map = new HashMap<>();
         map.put("uname", username);
         List<Users> list = new ArrayList<>();
@@ -86,7 +86,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<Users> ReadByUid(Integer uid) {
-        String sql = "select * from Users where id=:id";
+        String sql = "select * from users where id=:id";
         Map<String, Object> map = new HashMap<>();
         map.put("id", uid);
         List<Users> list = new ArrayList<>();
@@ -100,7 +100,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<Users> listAll() {
-        String sql = "select * from Users order by email asc";
+        String sql = "select * from users order by email asc";
         Map<String, Object> map = new HashMap<>();
         List<Users> list = new ArrayList<>();
         list = namedParameterJdbcTemplate.query(sql, map, new UserMapper());
@@ -113,7 +113,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<UsersRole> FindUserRole() {
-        String sql = "select r.name as description from Users inner join Users_role Ur on Users.id = Ur.user_id  inner join role r on Ur.role_id = r.id";
+        String sql = "select r.name as description from users inner join users_roles Ur on users.id = Ur.user_id  inner join roles r on Ur.role_id = r.id";
         Map<String, Object> map = new HashMap<>();
         List<UsersRole> list = new ArrayList<>();
         list = namedParameterJdbcTemplate.query(sql, map, new UsersRoleMapper());
@@ -127,7 +127,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<UsersRole> FindUserRoleByUser(Users user) {
-        String sql = "select r.name as description from Users inner join Users_role Ur on Users.id = Ur.user_id  inner join role r on Ur.role_id = r.id where Users.first_name=:username";
+        String sql = "select r.name as description from users inner join users_roles  Ur on users.id = Ur.user_id  inner join roles r on Ur.role_id = r.id where users.first_name=:username";
         Map<String, Object> map = new HashMap<>();
         map.put("username", user.getFirst_name());
         List<UsersRole> list = new ArrayList<>();
@@ -143,7 +143,7 @@ public class UserDaoImpl implements UserDao {
     //Get all role names and descriptions
     @Override
     public List<Role> getAllRole() {
-        String sql = "select * from Role";
+        String sql = "select * from roles";
         List<Role> list = new ArrayList<>();
         Map<String, Object> map = new HashMap<>();
         list = namedParameterJdbcTemplate.query(sql, map, new RoleMapper());
@@ -157,7 +157,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<Users> getUserIdbyName(String username) {
 
-        String sql = "select id from Users where first_name=:username";
+        String sql = "select id from users where first_name=:username";
         Map<String, Object> map = new HashMap<>();
         List<Users> list = new ArrayList<>();
         list = namedParameterJdbcTemplate.query(sql, map, new UserMapper());
@@ -170,7 +170,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<Users> getUserbyName(String username) {
 
-        String sql = "select * from Users where first_name=:username";
+        String sql = "select * from users where first_name=:username";
         Map<String, Object> map = new HashMap<>();
         List<Users> list = new ArrayList<>();
         list = namedParameterJdbcTemplate.query(sql, map, new UserMapper());
@@ -183,7 +183,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<Users> getUserByEmail(String email) {
-        String sql = "select * from  Users where email=:email";
+        String sql = "select * from  users where email=:email";
         Map<String, Object> map = new HashMap<>();
         map.put("email", email);
         List<Users> list = new ArrayList<>();
@@ -197,24 +197,24 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void DeleteUserById(Integer id) {
-        String sql = "delete from Users where id=:id";
+        String sql = "delete from users where id=:id";
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
         namedParameterJdbcTemplate.update(sql, map);
     }
 
     @Override
-    public void UpdateEnabledStatus(Integer id, String EnabledStatus) {
-        String sql = "update Users set enabledStatus=:enablestatus where id=:id";
+    public void UpdateEnabledStatus(Integer id, int enabled) {
+        String sql = "update users set enabled=:enablestatus where id=:id";
         Map<String, Object> map = new HashMap<>();
-        map.put("enablestatus", EnabledStatus);
+        map.put("enablestatus", enabled);
         map.put("id", id);
         namedParameterJdbcTemplate.update(sql, map);
     }
 
     @Override
     public List<Users> getUserByPagination(int pageno) {
-        String sql = "select * from Users  limit :pageno,10 ";
+        String sql = "select * from users  limit :pageno,10 ";
         Map<String, Object> map = new HashMap<>();
         map.put("pageno", (pageno - 1) * 10);
         List<Users> list = new ArrayList<>();
@@ -230,7 +230,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<Users> usingKeywordfindUser(String firstname, String lastname) {
-        String sql = "select * from Users where first_name like :username or last_name like :lastname";
+        String sql = "select * from users where first_name like :username or last_name like :lastname";
         List<Users> list = new ArrayList<>();
         Map<String, Object> map = new HashMap<>();
         map.put("username", "%" + firstname + "%");
@@ -245,7 +245,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Integer getCountByUser() {
-        String sql = "select count(*) as total from Users";
+        String sql = "select count(*) as total from users";
         List<PageNumber> list = new ArrayList<>();
         Map<String, Object> map = new HashMap<>();
         int number = 0;

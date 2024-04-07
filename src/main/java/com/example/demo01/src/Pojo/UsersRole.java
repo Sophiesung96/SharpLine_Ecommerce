@@ -11,7 +11,4 @@ public class UsersRole {
     int id;
     String name;
     int totalNumber;
-
-
-
 }

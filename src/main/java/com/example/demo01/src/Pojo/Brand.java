@@ -1,32 +1,28 @@
 package com.example.demo01.src.Pojo;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Brand {
     @NonNull
     private Integer id;
     private String name;
     private String logo;
     private String parentname;
-
-
-
+    private Constants constants;
 
 
     public String getLogoPath(){
-
+        this.constants=new Constants();
         if(this.id<0|| this.logo==null){
             return "/image/default.jpeg";
         }
         else{
 
-            return"/brand_logo/"+this.id+"/"+this.logo;
+            return constants.getS3BaseUri()+"/brand-logos/"+this.id+"/"+this.logo;
         }
     }
 }
