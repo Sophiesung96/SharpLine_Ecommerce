@@ -26,7 +26,7 @@ public class ReviewVoteRestController {
                                  HttpServletRequest request){
          Customer customer=controllerHelper.getAuthenticatedCustomerForReviewVote(request);
          if(customer ==null){
-             return VoteResult.fail("You must login to vote the review");
+             return VoteResult.fail("You must login to vote the review!");
          }
         VoteType voteType=VoteType.valueOf(type.toUpperCase());
 

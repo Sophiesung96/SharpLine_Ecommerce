@@ -22,5 +22,5 @@ public interface ReviewService {
      List<Review> ExamineCustomerReviewByProductIdnCustomerId(int productId,int customerId);
       boolean canCustomerReviewProduct(int productId,int customerId);
      Review saveReview(Review review);
-
+    List<Review> ListAllReviewWithMostVoted(int productId);
 }

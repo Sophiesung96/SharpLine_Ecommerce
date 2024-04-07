@@ -121,4 +121,9 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
 
+    @Override
+    public List<Review> ListAllReviewWithMostVoted(int productId) {
+        List<Review>list=reviewDAO.ListAllReviewWithMostVoted(productId);
+        return list;
+    }
 }

@@ -17,6 +17,7 @@ public class ReviewMapper implements RowMapper<Review> {
         review.setComment(resultSet.getString("comment"));
         review.setRating(resultSet.getInt("rating"));
         review.setHeadline(resultSet.getString("headline"));
+        review.setVotes(resultSet.getInt("votes"));
 
         return review;
     }

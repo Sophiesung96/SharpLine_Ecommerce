@@ -109,6 +109,14 @@ class ReviewDAOImplTest {
         System.out.println(reviewCount);
     }
 
+    @Test
+    public void testListAllReviewWithMostVoted(){
+        int productId=2;
+        List<Review> reviewList=reviewDAO.ListAllReviewWithMostVoted(productId);
+        assertNotNull(reviewList);
+        reviewList.stream().forEach(review-> System.out.println(review.getReviewCount()));
+    }
+
 
 
 

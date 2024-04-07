@@ -37,7 +37,6 @@ $(document).ready(function () {
     }
 
     function highlightVoteUpIcon(voteUpLink, voteDownLink) {
-        alert("checked");
         console.log("Vote Up Link:", voteUpLink); // Check if the voteUpLink is correctly selected
         console.log("Vote Down Link:", voteDownLink); // Check if the voteDownLink is correctly selected
         voteUpLink.removeClass('far').addClass('fas');
