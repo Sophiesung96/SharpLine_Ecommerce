@@ -41,6 +41,7 @@ public class Product {
     private String categoryName;
     private String brandName;
     private List<ProductDetail> detail;
+    private Constants constants;
 
 
     public Product(Integer id) {
@@ -48,12 +49,13 @@ public class Product {
     }
 
     public String getMainImagePath(){
+        this.constants=new Constants();
         if(this.id<0|| this.Mainimage==null){
             return "/image/default.jpeg";
         }
         else{
 
-            return"/product-images/"+this.id+"/"+this.Mainimage;
+            return constants.getS3BaseUri()+"/product-images/"+this.id+"/"+this.Mainimage;
         }
     }
 

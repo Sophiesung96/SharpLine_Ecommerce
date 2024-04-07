@@ -26,7 +26,7 @@ public interface UserService {
 
     public void DeleteUserById(Integer id);
 
-    public void UpdateEnabledStatus(Integer id, String enablestatus);
+    public void UpdateEnabledStatus(Integer id, int enabled);
 
     public List<Users> getUserByPagination(int pageno);
 

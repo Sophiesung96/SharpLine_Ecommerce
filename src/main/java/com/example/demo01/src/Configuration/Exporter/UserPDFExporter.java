@@ -1,4 +1,4 @@
-package com.example.demo01.src.Configuration;
+package com.example.demo01.src.Configuration.Exporter;
 
 import com.example.demo01.src.Pojo.Users;
 import com.lowagie.text.Font;
@@ -42,7 +42,7 @@ public class UserPDFExporter extends AbstractExporter {
             pdfPTable.addCell(user.getFirst_name());
             pdfPTable.addCell(user.getLast_name());
             pdfPTable.addCell(user.getUsersRole());
-            pdfPTable.addCell(user.getEnabledStatus());
+            pdfPTable.addCell(String.valueOf(user.getEnabled()));
         }
     }
 
@@ -64,7 +64,7 @@ public class UserPDFExporter extends AbstractExporter {
         pdfPTable.addCell(cell);
         cell.setPhrase(new Phrase("Role", font));
         pdfPTable.addCell(cell);
-        cell.setPhrase(new Phrase("EnabledStatus", font));
+        cell.setPhrase(new Phrase("Enabled", font));
         pdfPTable.addCell(cell);
 
     }
