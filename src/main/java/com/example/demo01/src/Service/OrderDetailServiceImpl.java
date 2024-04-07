@@ -1,6 +1,8 @@
 package com.example.demo01.src.Service;
 
 import com.example.demo01.src.DAO.OrderDetailDAO;
+import com.example.demo01.src.Pojo.OrderDetails;
+import com.example.demo01.src.Pojo.OrderStatus;
 import com.example.demo01.src.Pojo.TableOrderDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,4 +21,6 @@ public class OrderDetailServiceImpl implements  OrderDetailService{
         List<TableOrderDetail> list=orderDetailDAO.findWithCategoryAndTimeBetween(startTime, endTIme);
         return list;
     }
+
+
 }

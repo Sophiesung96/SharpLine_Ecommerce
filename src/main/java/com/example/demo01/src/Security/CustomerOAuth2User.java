@@ -7,7 +7,9 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import java.util.Collection;
 import java.util.Map;
 
+
 public class CustomerOAuth2User implements OAuth2User {
+
     private String clientName;
 
     private String fullName;
@@ -64,5 +66,8 @@ public class CustomerOAuth2User implements OAuth2User {
     public String getClientName() {
         return clientName;
     }
+
+
+
 }
 

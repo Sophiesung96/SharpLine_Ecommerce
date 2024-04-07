@@ -65,6 +65,6 @@ function showMessageModal(message){
 
 function updateStatusColor(orderId,status){
     link=$('#link'+status+orderId);
+    link.replaceWith("<i class='iconNames[status]" + " fa-2x icon-green'></i>");
 
-    link.replaceWith(" <i class='fas"+iconNames[status]+"fa-2x icon-green'></i>");
 }

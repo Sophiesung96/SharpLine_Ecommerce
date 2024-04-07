@@ -9,9 +9,12 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.RememberMeAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.DecimalFormat;
@@ -46,7 +49,7 @@ public class MailConfiguration {
         return urlBuilder.toString();
     }
 
-    public static String getEmailOfAuthenticatedCustomer(HttpServletRequest request) {
+   public static String getEmailOfAuthenticatedCustomer(HttpServletRequest request) {
         Object principal = request.getUserPrincipal();
         String customerEmail = null;
         if (principal == null) return null;

@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@Tag(name = "Customer RestController")
 public class CustomerRestController {
 
     @Autowired

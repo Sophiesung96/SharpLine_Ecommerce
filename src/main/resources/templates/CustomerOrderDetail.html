@@ -189,6 +189,15 @@
                                                 =
                                                 <span>$&nbsp;[[${detail.SortedSubtotal.get(status.index)}]]</span>
                                             </div>
+                                        <!--Write a review about the product-->
+                                        <div th:if="${!detail.isReviewByCustomer()}">
+                                           <a th:href="@{'/write_review/product/'+ ${Id}}" class="btn btn-info">Write a Review</a>
+                                        </div>
+                                        <!--Review a review about the product-->
+                                        <div th:if="${detail.isReviewByCustomer()}">
+                                            <a th:href="@{'/review/customer/'+${Id}}" class="btn btn-warning">See Your Review</a>
+                                        </div>
+
 
                                     </div>
                                 </div>

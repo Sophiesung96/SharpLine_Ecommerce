@@ -134,7 +134,7 @@ public class OrderServiceImpl implements OrderService{
         OrderTrack orderTrack=new OrderTrack();
         orderTrack.setOrderId(orderId);
         orderTrack.setStatus(OrderStatus.NEW.name());
-        orderTrack.setNotes(OrderStatus.NEW.defaultdscription());
+        orderTrack.setNotes(OrderStatus.NEW.defaultdescription());
         orderTrack.setUpdatedTime(new Date());
         orderTrackDAO.createOrderTrack(orderTrack);
         return orderDetailForm;
@@ -247,7 +247,7 @@ public class OrderServiceImpl implements OrderService{
                 OrderTrack NeworderTrack=new OrderTrack();
                 NeworderTrack.setOrderId(orderId);
                 NeworderTrack.setStatus(status);
-                NeworderTrack.setNotes(orderStatus.defaultdscription());
+                NeworderTrack.setNotes(orderStatus.defaultdescription());
                 NeworderTrack.setUpdatedTime(new Date());
                 orderTrackList.add(NeworderTrack);
                 orderTrackDAO.createOrderTrack(NeworderTrack);
