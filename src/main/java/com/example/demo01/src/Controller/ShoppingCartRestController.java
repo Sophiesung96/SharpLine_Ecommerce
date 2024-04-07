@@ -30,6 +30,7 @@ public class ShoppingCartRestController {
             return updatedQuantity+"item(s) of this product were added to your shopping cart.";
         }
         catch(CustomerNotFoundException exception){
+            log.error("Unauthenticated Customer attempted to log in ",exception.getMessage());
             return "You must login to add this product!";
         }
         catch(ShoppingCartException exception){

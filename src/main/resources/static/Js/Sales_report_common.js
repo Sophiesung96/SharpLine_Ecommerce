@@ -46,7 +46,7 @@ function SetUpButtonEventHandler(reportType,callbackFunction) {
 
 // Initiate the Date Range
 function initCustomDateRange(reportType) {
-    var specificDate = new Date(2021, 2, 15, 12, 30, 0); // March 15, 2023, 12:30 PM
+    var specificDate = new Date(2021, 2, 15, 12, 30, 0); // March 15, 2021, 12:30 PM
     endDatefield = document.getElementById('endDate' + reportType);
     if (endDatefield !== null) {
         endDatefield.valueAsDate = specificDate;
@@ -75,7 +75,7 @@ function validateDateRange(reportType){
     parameterizedEndDate=endDatefield.value;
     //Date Range must be between at least 7 to 30 Days at most
     if(days>=7 && days<=30 ){
-        callbackFunction('custom');
+        callbackFunction('custom',parametrizedStartDate,parameterizedEndDate);
     }
 
     else{
@@ -109,7 +109,7 @@ function setSalesAmount(period,reportType,LabelTotalItems){
 
 
 
-//Create Chart title for two different timeframe
+//Create Chart title for  different timeframes
 function getChartTitle(period){
     if(period=='Last_7_days') return 'Sales in Last 7 Days';
     if(period=='Last_28_days') return 'Sales in Last 28 Days';

@@ -1,9 +1,9 @@
 package com.example.demo01.src.Controller;
 
-import com.example.demo01.src.Configuration.UserCsvExporter;
-import com.example.demo01.src.Configuration.UserExcelExporter;
-import com.example.demo01.src.Configuration.UserPDFExporter;
-import com.example.demo01.src.Configuration.FileUploadUtil;
+import com.example.demo01.src.Configuration.Exporter.UserCsvExporter;
+import com.example.demo01.src.Configuration.Exporter.UserExcelExporter;
+import com.example.demo01.src.Configuration.Exporter.UserPDFExporter;
+import com.example.demo01.src.Configuration.Utils.FileUploadUtil;
 import com.example.demo01.src.Pojo.Role;
 import com.example.demo01.src.Pojo.Users;
 import com.example.demo01.src.Pojo.UsersRole;
@@ -83,9 +83,8 @@ public class UserController {
     //Direct to create new user form page
     @PostMapping("/user/save")
     public String saveUser(@ModelAttribute Users user, HttpSession session, @RequestParam("image") MultipartFile multipartFile) {
-        if (user.getEnabledStatus() == null) {
-            String status = "false";
-            user.setEnabledStatus(status);
+        if (user.getEnabled() == 0) {
+            user.setEnabled(0);
         }
         // Create new user
         userService.CreateUser(user);
@@ -163,12 +162,13 @@ public class UserController {
 
     @RequestMapping("/update/Enabledstatus/{id}/{enabledStatus}")
     public String UpdateEnabledStatus(@PathVariable Integer id, @PathVariable String enabledStatus) {
+        int enabled = 0;
         if (enabledStatus.equals("true")) {
-            enabledStatus = "false";
-            userService.UpdateEnabledStatus(id, enabledStatus);
+            enabled=0;
+            userService.UpdateEnabledStatus(id, enabled);
         } else {
-            enabledStatus = "true";
-            userService.UpdateEnabledStatus(id, enabledStatus);
+            enabled = 1;
+            userService.UpdateEnabledStatus(id, enabled);
 
         }
 
