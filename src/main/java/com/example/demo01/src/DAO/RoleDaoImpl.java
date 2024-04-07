@@ -15,7 +15,7 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public void insertUserRole(int userid, int roleid) {
-        String sql = "insert into Users_role(user_id, role_id) vale(:userid, :roleid)";
+        String sql = "insert into users_roles(user_id, role_id) vale(:userid, :roleid)";
         Map<String, Object> map = new HashMap<>();
         map.put("userid", userid);
         map.put("roleid", roleid);

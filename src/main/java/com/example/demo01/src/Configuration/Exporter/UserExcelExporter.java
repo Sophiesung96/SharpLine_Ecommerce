@@ -1,4 +1,4 @@
-package com.example.demo01.src.Configuration;
+package com.example.demo01.src.Configuration.Exporter;
 
 import com.example.demo01.src.Pojo.Users;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -39,7 +39,7 @@ public class UserExcelExporter extends AbstractExporter {
             createRowCell(row, columnindex++, user.getFirst_name(), style);
             createRowCell(row, columnindex++, user.getLast_name(), style);
             createRowCell(row, columnindex++, user.getUsersRole(), style);
-            createRowCell(row, columnindex++, user.getEnabledStatus(), style);
+            createRowCell(row, columnindex++, user.getEnabled(), style);
 
         }
 
