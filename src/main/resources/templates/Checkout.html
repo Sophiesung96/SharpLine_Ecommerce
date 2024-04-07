@@ -18,7 +18,7 @@
 <div class="container">
     <div class="row">
         <div class="navbar navbar-expand-lg bg-dark navbar-dark">
-            <a class="navbar-brand" th:href="@{/home}">
+            <a class="navbar-brand" th:href="@{/index}">
                 <img th:src="@{/image/logo.png}" style="width:100px;height:50px">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -116,14 +116,16 @@
 
 
                             <li class="nav-item">
-                                <a class="nav-link" href="">Reviews</a>
+                                <a class="nav-link" th:href="@{/customers/review}">Reviews</a>
                             </li>
 
 
 
                             <li class="nav-item">
-                                <a class="nav-link" href="">Orders</a>
+                                <a class="nav-link" th:href="@{/customers/Order/1}">Orders</a>
                             </li>
+
+
 
 
                             <li class="nav-item">
@@ -348,7 +350,7 @@
         onError:function (data,action) {
            //error that prevents buyer from  doing checkout
         }
-    }).render("#paypal-button-container")
+    }).render('#paypal-button-container')
 </script>
 </body>
 

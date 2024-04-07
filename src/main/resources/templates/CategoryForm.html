@@ -168,7 +168,6 @@
                                     <option value="0">[No Parent]</option>
                                     <th:block th:each="cat:${clist}">
                                         <option  th:value="${cat.id}">[[${cat.name}]]</option>
-                                        <input type="hidden" th:value="${cat.parentname}">
                                     </th:block>
 
 

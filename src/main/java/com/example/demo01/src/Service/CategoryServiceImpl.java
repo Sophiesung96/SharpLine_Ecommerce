@@ -28,7 +28,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     public List<Category> getallList() {
         List<Category> list = new ArrayList<>();
-        list = categoryDAO.listRootCategories();
+        list = categoryDAO.getallCategories();
         return list;
     }
 
