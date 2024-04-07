@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -248,5 +249,21 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void UpdateReviewCountandAverageRating(int productId) {
         productDAO.UpdateReviewCountandAverageRating(productId);
+    }
+
+    @Override
+    public List<Integer>  getPageCountForCategoriesWithParentId(int parentId) {
+        List<PageNumber>list=productDAO.getPageCountForCategoriesWithParentId(parentId);
+        int pageNumber=0;
+        for(PageNumber DbPageNumber:list){
+            pageNumber=DbPageNumber.getPagenumber();
+        }
+        pageNumber=(pageNumber/6)+1;
+        List<Integer> pageList=new ArrayList<>();
+        for(int i=0;i<pageNumber;i++){
+            pageList.add(i);
+        }
+
+        return pageList;
     }
 }

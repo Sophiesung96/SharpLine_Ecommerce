@@ -21,6 +21,7 @@ public interface ReviewDAO {
      List<Review> ExamineCustomerReviewByProductIdnCustomerId(int productId,int customerId);
      int saveReview(Review review);
      int getVoteCount(int reviewId);
+     List<Review> ListAllReviewWithMostVoted(int productId);
 
 
 }

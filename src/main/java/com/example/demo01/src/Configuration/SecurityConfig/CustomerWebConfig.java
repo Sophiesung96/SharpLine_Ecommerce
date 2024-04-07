@@ -1,4 +1,4 @@
-package com.example.demo01.src.Configuration;
+package com.example.demo01.src.Configuration.SecurityConfig;
 
 import com.example.demo01.src.Security.CustomUserDetailsService;
 import com.example.demo01.src.Security.CustomerOAuth2UserService;
@@ -29,7 +29,7 @@ import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
-@Order(-1)
+@Order(1)
 public class CustomerWebConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -64,7 +64,7 @@ public class CustomerWebConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/oauth2/**").permitAll()
-                .antMatchers("/customer/**", "/checkout", "placeOrder", "/addressBook", "/cart","/process_paypal_order","/customers/Order/**").authenticated()
+                .antMatchers("/customer/**", "/checkout", "placeOrder", "/addressBook", "/cart","/process_paypal_order","/customers/Order/**","/write_view/**","/post/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()

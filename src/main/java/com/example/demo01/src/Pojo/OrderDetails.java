@@ -16,6 +16,7 @@ public class OrderDetails {
     private float subTotal;
     private float productCost;
     private float shippingCost;
+    private int Count;
 
 
 }

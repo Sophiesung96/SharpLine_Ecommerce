@@ -25,12 +25,12 @@ public class OrderDetailReportService extends  AbstractReportService{
         //Generate the chart by Category
         if(reportType.equals(ReportType.CATEGORY)){
             detailList=orderDAO.findOrderDetailListForGoogleChart(startDate,endDate);
+            printRawDataByCategory(detailList);
             //Generate the chart by Product
         }else if(reportType.equals(ReportType.PRODUCT)){
             detailList=orderDAO.findOrderDetailListForGoogleChart(startDate,endDate);
+            printRawDataByProduct(detailList);
         }
-
-        printRawData(detailList);
         List<ReportItem> reportItemList=new ArrayList<>();
         for(TableOrderDetail order:detailList){
             String identifier;
@@ -63,11 +63,19 @@ public class OrderDetailReportService extends  AbstractReportService{
     }
 
 
-    private void printRawData( List<TableOrderDetail>  detailList){
+    private void printRawDataByCategory( List<TableOrderDetail>  detailList){
         for(TableOrderDetail order:detailList){
             System.out.printf("%d, %-20s, %10.2f,%10.2f,%10.2f \n",
                     order.getQuantity(),order.getCategoryName(),order.getSubTotal(),
             order.getProductCost(),order.getShippingCost());
+        }
+    }
+
+    private void printRawDataByProduct( List<TableOrderDetail>  detailList){
+        for(TableOrderDetail order:detailList){
+            System.out.printf("%d, %-20s, %10.2f,%10.2f,%10.2f \n",
+                    order.getQuantity(),order.getProductname(),order.getSubTotal(),
+                    order.getProductCost(),order.getShippingCost());
         }
     }
 

@@ -91,7 +91,7 @@ public class ReviewController {
 
     @GetMapping("/ratings/{productAlias}/page/{pageNo}")
     public String getRatingnReviewByProductPerPage(@PathVariable String productAlias, @PathVariable int pageNo
-            ,Model model,HttpServletRequest request){
+            ,Model model,HttpServletRequest request,@RequestParam (required = false)String sortField,@RequestParam (required = false) String sortDesc){
         Product product=new Product();
         int currentPage=0;
         currentPage=pageNo;
@@ -104,28 +104,49 @@ public class ReviewController {
           return "Error";
         }
         List<Review> ReviewList=reviewService.ListAllReviewListByPage(product,currentPage);
-        log.info("producto:{}",product);
-        log.info("reviewList:{}",ReviewList==null);
+        log.info("product:{}",product);
+        log.info("reviewList is null:{}",ReviewList==null);
         //Get the autneticated customer
         Customer customer=controllerHelper.getAuthenticatedCustomerForReviewVote(request);
-        if(ReviewList!=null){
-            for(Review review:ReviewList){
-                averageRating=review.getAverageRating();
-                model.addAttribute("averageRating",averageRating);
+
+        // This is to indicate that the reviewList is retrieved by wanting the resultset to be sorted by the specified value
+        if(sortDesc !=null && sortField!=null && !sortDesc.isEmpty() && !sortField.isEmpty()){
+            List<Review> MostVotedReviewList=reviewService.ListAllReviewWithMostVoted(product.getId());
+            if(MostVotedReviewList!=null){
+                log.info("Newly sorted reviewList is not null:{}",MostVotedReviewList!=null);
+                for(Review review:MostVotedReviewList){
+                    averageRating=review.getAverageRating();
+                    model.addAttribute("averageRating",averageRating);
+
+                }
+                if(customer!=null){
+                    reviewVoteService.markReviewVotedForProductByCustomer(ReviewList,product.getId(),customer.getId());
+                }
+                model.addAttribute("reviewList",MostVotedReviewList);
             }
-            if(customer!=null){
-                reviewVoteService.markReviewVotedForProductByCustomer(ReviewList,product.getId(),customer.getId());
+
+        }else{
+           if(ReviewList!=null){
+                for(Review review:ReviewList){
+                    averageRating=review.getAverageRating();
+                    model.addAttribute("averageRating",averageRating);
+                }
+                if(customer!=null){
+                    reviewVoteService.markReviewVotedForProductByCustomer(ReviewList,product.getId(),customer.getId());
+                }
+                model.addAttribute("reviewList",ReviewList);
             }
         }
-        model.addAttribute("reviewList",ReviewList);
+
         model.addAttribute("product",product);
         model.addAttribute("currentPage",currentPage);
         return "reviewsProduct";
     }
 
     @GetMapping("/ratings/{productAlias}")
-    public String listReviewByProductFirstPage(@PathVariable String productAlias,Model model,HttpServletRequest request){
-        return getRatingnReviewByProductPerPage(productAlias,1,model,request);
+    public String listReviewByProductFirstPage(@PathVariable String productAlias,Model model,HttpServletRequest request
+            ,@RequestParam (required = false)String sortField,@RequestParam (required = false) String sortDesc){
+        return getRatingnReviewByProductPerPage(productAlias,1,model,request,sortField,sortDesc);
     }
     @GetMapping("/write_review/product/{ProductId}")
     public String showReviewForm(@PathVariable int  ProductId, Model model, HttpServletRequest request){

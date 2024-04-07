@@ -19,6 +19,7 @@ $(document).ready(function () {
         selectedOption=$("option:selected",dropdownList);
         defaultNote=selectedOption.attr('defaultDescription');
         $('#trackNote'+rowNumber).text(defaultNote);
+ 
     })
 
 

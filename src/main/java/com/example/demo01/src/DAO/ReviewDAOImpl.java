@@ -1,6 +1,7 @@
 package com.example.demo01.src.DAO;
 
 import com.example.demo01.src.Mapper.CountReviewMadeByCustomerMapper;
+import com.example.demo01.src.Mapper.MostVotedReviewMapper;
 import com.example.demo01.src.Mapper.ReviewJoinMapper;
 import com.example.demo01.src.Mapper.ReviewMapper;
 import com.example.demo01.src.Pojo.Product;
@@ -235,5 +236,21 @@ public class ReviewDAOImpl implements  ReviewDAO{
         return 0;
     }
 
+
+    @Override
+    public List<Review> ListAllReviewWithMostVoted(int productId) {
+        String sql="select sum(r.votes) over (partition by r.id) as voteSum ,r.id as id,r.comment as comment, r.customer_Id as customerId, r.headline as headline," +
+                "      r.product_Id as productId, (select avg(rating) from reviews r where r.product_Id=p.id ) as averageRating," +
+                "      r.rating as rating, r.review_time as reviewTime,concat(c.first_name,' ',c.last_name) as CustomerName," +
+                "      p.name as productName,r.votes as votes from reviews r inner join customers  c on r.customer_Id=c.id" +
+                "      inner join products p on r.product_Id=p.id where  p.id=:productId order by voteSum desc";
+        Map<String,Object>map=new HashMap<>();
+        map.put("productId",productId);
+        List<Review> list=namedParameterJdbcTemplate.query(sql,map,new MostVotedReviewMapper());
+        if(list.size()>0){
+            return list;
+        }
+        return null;
+    }
 }
 

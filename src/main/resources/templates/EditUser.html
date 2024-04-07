@@ -44,7 +44,24 @@
                     <th:block sec:authorize="hasAnyAuthority('Admin','Editor','SalesPerson','Shipper')">
 
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/products/1}">Products</a>
+                            <div class="dropdown">
+                                <a class="nav-link btn btn-outline- dropdown-toggle"data-bs-toggle="dropdown" th:href="@{/products/1}">Products</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" th:href="@{/products/new}" sec:authorize="hasAnyAuthority('Admin','Editor')">
+                                        Create New
+                                    </a>
+                                    </li>
+                                    <li><a class="dropdown-item" th:href="@{/products/1}">
+                                        View All
+                                    </a>
+                                    </li>
+                                    <li> <a class="dropdown-item" th:href="@{/review}" sec:authorize="hasAuthority('Admin')">
+                                        Reviews
+                                    </a>
+                                    </li>
+                                </ul>
+                            </div>
+
                         </li>
                     </th:block>
 

@@ -38,5 +38,14 @@ class OrderDetailDAOImplTest {
 
     }
 
+    @Test
+    public void testcanCustomerReviewProduct(){
+        int productId=27;
+        int customerId=2;
+        List<OrderDetails>list= orderDetailDAO.CountCustomerOrderByProductIdAndOrderStatus(productId, customerId,OrderStatus.DELIVERED);
+        System.out.println(list.size());
+
+    }
+
 
 }

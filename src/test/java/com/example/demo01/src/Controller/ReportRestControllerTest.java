@@ -1,5 +1,9 @@
 package com.example.demo01.src.Controller;
 
+import com.example.demo01.src.DAO.OrderDAO;
+import com.example.demo01.src.Pojo.Order;
+import com.example.demo01.src.Pojo.ReportItem;
+import com.example.demo01.src.Pojo.ReportType;
 import com.example.demo01.src.Service.MasterOrderReportServiceImpl;
 import com.example.demo01.src.Service.OrderDetailReportService;
 import org.junit.jupiter.api.Test;
@@ -12,8 +16,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,6 +35,9 @@ class ReportRestControllerTest {
 
     @Autowired
     OrderDetailReportService orderDetailReportService;
+
+    @Autowired
+    OrderDAO orderDAO;
 
     @Test
     public void testGetReportDataLast7Days() throws Exception {
@@ -67,10 +75,18 @@ class ReportRestControllerTest {
     public void testGetReportDataByCategory() throws Exception {
         String url="/reports/category/Last_7_days";
         String startDate="2021-01-01";
-        String endDate="2021-01-30";
+        String endDate="2021-01-22";
         mockMvc.perform(get(url))
                 .andDo(print())
                 .andExpect(status().isOk());
+
+    }
+    @Test
+    public void testGetReportData() throws ParseException {
+     List<ReportItem> list=masterOrderReportService.getReportDataLast7Days(ReportType.DAY);
+
+        System.out.println(list);
+
     }
 
 }

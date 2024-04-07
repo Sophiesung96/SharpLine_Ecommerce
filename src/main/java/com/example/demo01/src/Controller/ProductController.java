@@ -418,6 +418,8 @@ public class ProductController {
 
 
 
+
+
     @GetMapping("/p/keyword/{pageno}")
     public String filteredProductdetail(@PathVariable int pageno, Model model, HttpServletRequest request) {
 
