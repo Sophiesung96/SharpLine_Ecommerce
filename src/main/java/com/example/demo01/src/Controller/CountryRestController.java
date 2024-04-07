@@ -2,6 +2,8 @@ package com.example.demo01.src.Controller;
 
 import com.example.demo01.src.Pojo.Country;
 import com.example.demo01.src.Service.CountryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +19,14 @@ public class CountryRestController {
     CountryService countryService;
 
     @GetMapping("/countries/list")
+    @Operation(summary = "Get all Country List" ,description = "Get all Country List")
     public ResponseEntity<List<Country>> listAll(){
         List<Country> list=new ArrayList<>();
         list=countryService.findAllByNameOrderByAsc();
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
     @PostMapping("/countries/save")
+    @Operation(summary = "Save Country" ,description = "Save the newly created Country")
     public  String save(@RequestBody Country country){
         countryService.saveCountry(country);
        Country country1= countryService.getByCountryId(country.getId());
