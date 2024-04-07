@@ -32,7 +32,6 @@ public class Customer {
     private String authenticationType;
     private String resetPasswordToken;
 
-
     public Customer(Integer id) {
         this.id = id;
     }

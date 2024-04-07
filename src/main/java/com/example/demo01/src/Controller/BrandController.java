@@ -1,6 +1,6 @@
 package com.example.demo01.src.Controller;
 
-import com.example.demo01.src.Configuration.FileUploadUtil;
+import com.example.demo01.src.Configuration.Utils.FileUploadUtil;
 import com.example.demo01.src.Pojo.Brand;
 import com.example.demo01.src.Pojo.BrandCategoryName;
 import com.example.demo01.src.Pojo.Category;

@@ -27,9 +27,27 @@ public class ControllerHelper {
         } else {
             String userName = email;
             Customer customer = customerService.getCustomerByfullName(userName);
-            log.info(customer.getFirstName());
             return customer;
 
         }
+    }
+
+    public Customer getAuthenticatedCustomerForReviewVote(HttpServletRequest request){
+        String email = MailConfiguration.getEmailOfAuthenticatedCustomer(request);
+        if (customerService.getCustomerByEmail(email) != null) {
+            return customerService.getCustomerByEmail(email);
+
+        } else if(customerService.getCustomerByEmail(email) == null){
+            String userName = email;
+            if(userName!=null && !userName.isEmpty()){
+                Customer customer = customerService.getCustomerByfullName(userName);
+                log.info("customer name is not null:{}",customer!=null);
+                return customer;
+            }
+            return null;
+        }else{
+            return null;
+        }
+
     }
 }
