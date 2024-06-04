@@ -29,7 +29,7 @@ import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
-@Order(1)
+@Order(-1)
 public class CustomerWebConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired

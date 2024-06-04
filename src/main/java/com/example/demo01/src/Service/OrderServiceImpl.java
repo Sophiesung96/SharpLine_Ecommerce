@@ -91,6 +91,7 @@ public class OrderServiceImpl implements OrderService{
         //we then choose customer's default address instead
         if(address==null){
             copyAddressFromCustomer(order,customer.getId());
+
         }else{
             log.info("shipping address id:{},address.customerId{}",address.getId(),address.getCustomerId());
             copyShippingAddress(order,address,customer);
@@ -105,7 +106,6 @@ public class OrderServiceImpl implements OrderService{
         }
         order.setDeliverDays(checkOutInfo.getDeliverDays());
         order.setDeliverDate(checkOutInfo.getDeliverDate());
-        order.setPostalCode(address.getPostalCode());
         order.setTotal(checkOutInfo.getPaymentTotal());
         order.setProductCost(checkOutInfo.getProductCost());
         order.setPaymentMethod(paymentMethod.name());
@@ -143,16 +143,17 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public void copyAddressFromCustomer(Order order,int customerId) {
-       Customer cusomer=customerDao.findCustomerById(customerId);
-        order.setFirstName(cusomer.getFirstName());
-        order.setLastName(cusomer.getLastName());
-        order.setPhoneNumber(cusomer.getPhoneNumber());
-        order.setAddressline1(cusomer.getAddressline1());
-        order.setAddressline2(cusomer.getAddressline2());
-        order.setCity(cusomer.getCity());
-        order.setCountry(cusomer.getCountryName());
-        order.setPostalCode(cusomer.getPostalCode());
-        order.setState(cusomer.getState());
+       Customer customer=customerDao.findCustomerById(customerId);
+       Customer countryNameCustomer=customerDao.findCountryPerCustomerById(customerId);
+        order.setFirstName(customer.getFirstName());
+        order.setLastName(customer.getLastName());
+        order.setPhoneNumber(customer.getPhoneNumber());
+        order.setAddressline1(customer.getAddressline1());
+        order.setAddressline2(customer.getAddressline2());
+        order.setCity(customer.getCity());
+        order.setCountry(countryNameCustomer.getCountryName());
+        order.setPostalCode(customer.getPostalCode());
+        order.setState(customer.getState());
 
 
 

@@ -2,6 +2,7 @@ package com.example.demo01.src.Controller;
 
 import com.example.demo01.src.Configuration.Exporter.CategoryCsvExporter;
 import com.example.demo01.src.Configuration.Utils.FileUploadUtil;
+import com.example.demo01.src.Pojo.AmazonS3Util;
 import com.example.demo01.src.Pojo.Category;
 import com.example.demo01.src.Service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +65,10 @@ public class CategoryController {
         if (!multipartFile.isEmpty()) {
             String uploadDir = "category-image" + File.separator + cgo.getId();
             try {
-                FileUploadUtil.saveFile(uploadDir, filename, multipartFile);
+                //Removing the existing folder first
+                AmazonS3Util.removeFolder(uploadDir);
+                //Then uploading user pic to aws s3 bucket
+                AmazonS3Util.uploadFile(uploadDir,filename,multipartFile.getInputStream());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -89,7 +93,7 @@ public class CategoryController {
 
         String newimg = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         if (!multipartFile.isEmpty()) {
-            String uploadDir = "./category-image" + File.separator + category.getId();
+            String uploadDir = "categories-images" + File.separator + category.getId();
             FileUploadUtil.saveFile(uploadDir, newimg, multipartFile);
         }
         category.setImage(newimg);
@@ -116,6 +120,9 @@ public class CategoryController {
     @RequestMapping("category/delete/{id}")
     public String deleteCategoryById(@PathVariable int id) {
         categoryService.deleteCategoryById(id);
+        String fileName="categories-images/"+id;
+        //Deleting the specific category's image after removing it from the database.
+        AmazonS3Util.deleteFile(fileName);
         return "redirect:/categories/1";
     }
 

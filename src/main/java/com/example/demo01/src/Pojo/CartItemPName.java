@@ -28,9 +28,11 @@ public class CartItemPName {
     public String getImageMainPath() {
         if (this.productId == 0 || this.productImage == null) {
             return "/image/default.jpeg";
-        } else {
+        }
+        else {
 
-            return "/product-images/" + this.productId + "/" + this.productImage;
+
+            return "https://sharplinebucket.s3.ap-southeast-2.amazonaws.com/product-images/"+this.productId+"/"+this.productImage;
         }
     }
 

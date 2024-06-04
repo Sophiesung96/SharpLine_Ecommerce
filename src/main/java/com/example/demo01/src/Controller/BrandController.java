@@ -1,6 +1,7 @@
 package com.example.demo01.src.Controller;
 
 import com.example.demo01.src.Configuration.Utils.FileUploadUtil;
+import com.example.demo01.src.Pojo.AmazonS3Util;
 import com.example.demo01.src.Pojo.Brand;
 import com.example.demo01.src.Pojo.BrandCategoryName;
 import com.example.demo01.src.Pojo.Category;
@@ -90,7 +91,7 @@ public class BrandController {
     }
 
     @PostMapping("/brand/save")
-    public String insertBrand(@ModelAttribute("brand") Brand brand, HttpSession session, @RequestParam("photo") MultipartFile multipartFile) {
+    public String insertBrand(@ModelAttribute("brand") Brand brand, HttpSession session, @RequestParam("photo") MultipartFile multipartFile) throws IOException {
         String filename = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         brand.setLogo(filename);
         brandService.saveBrand(brand);
@@ -103,12 +104,9 @@ public class BrandController {
         brandService.createBrandCategory(bid, cid);
 
         if (!multipartFile.isEmpty()) {
-            String uploadDir = "brand_logo" + File.separator + b.getId();
-            try {
-                FileUploadUtil.saveFile(uploadDir, filename, multipartFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            String uploadDir = "brand-logos" + File.separator + b.getId();
+            AmazonS3Util.removeFolder(uploadDir);
+            AmazonS3Util.uploadFile(uploadDir,filename,multipartFile.getInputStream());
         }
         String message = "The brand has been saved successfully!";
         session.setAttribute("message", message);
@@ -142,6 +140,8 @@ public class BrandController {
     @GetMapping("/brand/delete/{id}")
     public String deleteBrandById(@PathVariable int id) {
         brandService.deleteBrandById(id);
+        String brandDir="brand-logos/"+id;
+        AmazonS3Util.deleteFile(brandDir);
         return "redirect:/brands/1";
     }
 }
