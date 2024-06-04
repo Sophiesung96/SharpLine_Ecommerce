@@ -41,7 +41,7 @@ function getshippingCost(productId){
     }).done(function (shippingCost) {
         getProductInfo(productId,shippingCost)
     }).fail(function (exception) {
-        alert(exception)
+        alert(exception);
     });
 }
 //get product's info

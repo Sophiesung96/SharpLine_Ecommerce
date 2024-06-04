@@ -128,13 +128,15 @@ public class Order {
     public boolean hasStatus(String status) {
         List<TableOrderDetail>list=new ArrayList<>();
          list=this.orderTrackList;
-        for (TableOrderDetail detail : list) {
-            if (status != null && !status.isEmpty()) {
-                if (status.equals(detail.getStatusCondition())) {
-                    return true;
-                }
-            }
-        }
+         if(list!=null){
+             for (TableOrderDetail detail : list) {
+                 if (status != null && !status.isEmpty()) {
+                     if (status.equals(detail.getStatusCondition())) {
+                         return true;
+                     }
+                 }
+             }
+         }
         return false;
     }
 

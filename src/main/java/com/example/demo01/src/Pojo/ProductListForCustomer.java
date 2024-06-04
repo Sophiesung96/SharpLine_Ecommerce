@@ -51,7 +51,7 @@ public class ProductListForCustomer {
                     for (int i = 0; i < SortedProductId.size(); i++){
                         for (int j = 0; j < newImg.length; j++) {
                             if (i == j) {
-                                SortedMainImage.add("/product-images/" + SortedProductId.get(i) + "/" +  newImg[j]);
+                                SortedMainImage.add("https://sharplinebucket.s3.ap-southeast-2.amazonaws.com/product-images/" + SortedProductId.get(i) + "/" +  newImg[j]);
                             }
                         }
                     }
