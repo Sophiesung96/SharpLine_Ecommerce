@@ -175,19 +175,23 @@
                             <div class="col-sm-1 divCount">
                                 [[${status.count}]]
                             </div>
-                            <div class="col-sm-4">
-                                <img th:src="@{${detail.getMainImagePath()}}" class="img-fluid"/>
+                            <div th:each="image : ${detail.getSortedMainImage()}">
+                                <img th:src="@{${image}}" alt="Main Image" class="img-fluid" style="width: 450px; height: 600px;"/>
                             </div>
+
                             <div class="col-sm-7">
-                                <div class="text-wrap"><b>[[${detail.Productname}]]</b></div>
+                                <div class="text-wrap"><b>[[${detail.getSortedProductName()}]]</b></div>
                                 <th:block th:if="${isvisibleforAdminorSalesPerson}">
-                                    <div>Product Cost: $[[${detail.DetailproductCost}]]</div>
-                                    <div><span>SubTotal:[[${detail.quantity}]]</span>
-                                        X<span>[[${detail.unitPrice}]]</span>
+
+                                    <div>Product Cost: $[[${detail.getSortedDetailProductCost()}]]</div>
+                                    <div><span>SubTotal:[[${detail.getSortedQuantity()}]]</span>
+                                        X<span>[[${detail.getSortedUnitPrice()}]]</span>
                                         =
-                                        <span>$&nbsp;[[${detail.subTotal}]]</span>
+                                        <span>$&nbsp;[[${detail.getSortedSubTotal()}]]</span>
                                     </div>
-                                    <div>Shipping Cost: $[[${detail.shippingCost}]]</div>
+                                    <div th:each="ShippingCost : ${detail.getSortedShippingCost()}">
+                                        <div>Shipping Cost: $[[${ShippingCost}]]</div>
+                                    </div>
                                 </th:block>
 
                             </div>
