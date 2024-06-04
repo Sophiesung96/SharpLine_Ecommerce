@@ -184,7 +184,7 @@ public class CustomerDaoImpl implements CustomerDao{
 
     @Override
     public Customer findCustomerById(int id) {
-        String sql="select * from customers where id=:id";
+        String sql="select * from customers  where id=:id";
         Map<String,Object> map=new HashMap<>();
         map.put("id",id);
         List<Customer>list=new ArrayList<>();

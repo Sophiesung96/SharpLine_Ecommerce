@@ -89,7 +89,7 @@ public class CartItemDaoImpl implements  CartItemDao{
     public List<CartItemPName> getJoinedProductnCustomer(Customer customer) {
         String sql="select cart.quantity as quantity,cart.shippingCost as shippingCost," +
                 "p.id as productId,p.discount_percent as discountPercent,p.width as width," +
-                "p.length as length,p.height as height,p.weight as weight, p.list_price as price,p.name as productName," +
+                "p.length as length,p.height as height,p.weight as weight, p.price as price,p.name as productName," +
                 " p.main_image as productImage, p.alias as productAlias" +
                 " from CartItem cart inner join customers c on cart.customer_id = c.id inner join products p on cart.product_id = p.id\n" +
                 "where cart.customer_id=:id;";
