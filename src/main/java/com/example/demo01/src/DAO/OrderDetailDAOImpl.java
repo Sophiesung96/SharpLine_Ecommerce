@@ -32,9 +32,9 @@ public class OrderDetailDAOImpl implements OrderDetailDAO{
                 "o.first_name as firstName, o.last_name as lastName,o.phone_number as phoneNumber," +
                 "o.city as city,o.status as status,o.product_cost as productCost, o.shipping_cost as shippingCost" +
                 ",o.tax as tax, o.state as state,o.total as total,o.postal_code as postalCode,o.payment_method as paymentmethod" +
-                ",o.country as country,o.deliver_days as deliverDays,o.deliver_Date as deliverDate," +
+                ",o.country as country,o.deliver_days as deliverDays,o.deliver_date as deliverDate," +
                 "c.enabled as enabled, details.quantity as quantity,details.unit_price as unitPrice,details.subtotal as subTotal " +
-                ",details.product_cost as DetailproductCost,track.status as StatusCondition , ca.name as CategoryName from `Order` o inner join Order_details details on o.id=details.order_id  inner join products p on p.id=details.product_id " +
+                ",details.product_cost as DetailproductCost,track.status as StatusCondition , ca.name as CategoryName from orders o inner join Order_details details on o.id=details.order_id  inner join products p on p.id=details.product_id " +
                 "inner join customers c on o.customer_id=c.id " +
                 "inner join categories ca on p.category_id =ca.id" +
                 " inner join order_track track on o.id=track.order_id "+
@@ -51,7 +51,7 @@ public class OrderDetailDAOImpl implements OrderDetailDAO{
 
     @Override
     public List<OrderDetails> CountCustomerOrderByProductIdAndOrderStatus(int productId, int customerId, OrderStatus orderStatus) {
-        String sql="select count(*) as ReviewNum from Order_details d inner join `Order` o on o.id=d.order_Id  where d.product_id=:productId and  o.customer_id=:customerId and o.status='DELIVERED'";
+        String sql="select count(*) as ReviewNum from Order_details d inner join orders o on o.id=d.order_Id  where d.product_id=:productId and  o.customer_id=:customerId and o.status='DELIVERED'";
         Map<String,Object>map=new HashMap<>();
         map.put("productId",productId);
         map.put("customerId",customerId);

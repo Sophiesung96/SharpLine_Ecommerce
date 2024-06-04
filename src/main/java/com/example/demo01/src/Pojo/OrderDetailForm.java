@@ -47,6 +47,7 @@ public class OrderDetailForm {
     private int quantity;
     private String deliverDate;
     private String paymentmethod;
+    private String verificationCode;
     private List<TableOrderDetail> orderTrackList;
     private List<CombinedOrderListForCustomer> orderProductNameList;
 

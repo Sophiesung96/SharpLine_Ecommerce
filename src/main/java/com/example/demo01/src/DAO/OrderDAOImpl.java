@@ -68,7 +68,7 @@ public class OrderDAOImpl implements OrderDAO {
                 "o.first_name as firstName, o.last_name as lastName,o.phone_number as phoneNumber," +
                 "o.city as city,o.status as status,o.product_cost as productCost, o.shipping_cost as shippingCost" +
                 ",o.tax as tax, o.subtotal as subTotal,o.state as state,o.total as total,o.postal_code as postalCode,o.payment_method as paymentmethod" +
-                ",o.country as country,o.deliver_days as deliverDays,o.deliver_Date as deliverDate," +
+                ",o.country as country,o.deliver_days as deliverDays,o.deliver_date as deliverDate," +
                 "c.enabled as enabled from orders o inner join customers c on o.customer_id=c.id where o.id=:orderid";
         Map<String,Object> map=new HashMap<>();
         map.put("orderid",orderId);
@@ -82,7 +82,7 @@ public class OrderDAOImpl implements OrderDAO {
 
     @Override
     public void EditOrder(Order order) {
-        String sql="update orders set customer_id=:customerid,   where id=:orderid";
+        String sql="update orders set customer_id=:customerid  where id=:orderid";
         Map<String,Object> map=new HashMap<>();
         map.put("orderid",order.getId());
         namedParameterJdbcTemplate.update(sql,map);
@@ -108,7 +108,7 @@ public class OrderDAOImpl implements OrderDAO {
     @Override
     public int createorder(Customer customer, Order order) {
         String sql="insert into orders(customer_id,order_time,payment_method,product_cost,shipping_cost,subtotal," +
-                "tax,total,status,first_name,last_name,phone_number,address_line1,address_line2,city,state,postal_code,country,deliver_days,deliver_Date) " +
+                "tax,total,status,first_name,last_name,phone_number,address_line1,address_line2,city,state,postal_code,country,deliver_days,deliver_date) " +
                 "values(:customer_id,:order_time,:payment_method,:product_cost,:shipping_cost,:subtotal," +
                 ":tax,:total,:status,:firstname,:lastname,:phonenumber,:addressline1,:addressline2,:city," +
                 ":state,:postal_code,:country,:deliver_days,:deliver_Date)";
@@ -197,21 +197,77 @@ public class OrderDAOImpl implements OrderDAO {
 
     @Override
     public List<TableOrderDetail> getOrderDetailsList(int orderId) {
-        String sql="select o.id as id,o.order_time as orderTime,o.customer_id as customerId,c.email as email,p.name as Productname, p.main_image as ProductmainImage," +
-                "p.id as productId," +
-                "o.address_line1 as addressline1,o.address_line2 as addressline2," +
-                "o.first_name as firstName, o.last_name as lastName,o.phone_number as phoneNumber," +
-                "o.city as city,o.status as status,o.product_cost as productCost, o.shipping_cost as shippingCost" +
-                ",o.tax as tax, o.state as state,o.total as total,o.postal_code as postalCode,o.payment_method as paymentmethod" +
-                ",o.country as country,o.deliver_days as deliverDays,o.deliver_Date as deliverDate," +
-                "c.enabled as enabled, details.quantity as quantity,details.unit_price as unitPrice,details.subtotal as subTotal " +
-                ",details.product_cost as DetailproductCost,track.status as StatusCondition , ca.name as CategoryName from orders o inner join Order_details details on o.id=details.order_id  inner join products p on p.id=details.product_id " +
-                "inner join customers c on o.customer_id=c.id  " +
-                "inner join categories ca on p.category_id =ca.id " +
-                "inner join order_track track on o.id=track.order_id where o.id=:orderid";
+        String sql="SELECT" +
+                "    o.id as id," +
+                "    o.order_time as orderTime," +
+                "    o.customer_id as customerId," +
+                "    c.email as email," +
+                "    GROUP_CONCAT(p.name) as ProductNames," +
+                "    GROUP_CONCAT(p.main_image) as ProductMainImage," +
+                "    GROUP_CONCAT(p.id) as productIds," +
+                "    GROUP_CONCAT(details.quantity) as Quantities," +
+                "    GROUP_CONCAT(details.unit_price) as UnitPrices," +
+                "    GROUP_CONCAT(details.subtotal) as Subtotals," +
+                "    GROUP_CONCAT(details.product_cost) as DetailProductCosts," +
+                "    GROUP_CONCAT(o.shipping_cost) as ShippingCosts,"+
+                "    GROUP_CONCAT(o.tax) as taxes,"+
+                "    GROUP_CONCAT(ca.name) as CategoryNames,"+
+                "    o.address_line1 as addressLine1," +
+                "    o.address_line2 as addressLine2," +
+                "    o.first_name as firstName," +
+                "    o.last_name as lastName," +
+                "    o.phone_number as phoneNumber," +
+                "    o.city as city," +
+                "    o.status as status," +
+                "    o.product_cost as productCosts," +
+                "    o.shipping_cost as shippingCost," +
+                "    o.tax as tax," +
+                "    o.state as state," +
+                "    o.total as total," +
+                "    o.postal_code as postalCode," +
+                "    o.payment_method as paymentMethod," +
+                "    o.country as country," +
+                "    o.deliver_days as deliverDays," +
+                "    o.deliver_date as deliverDate," +
+                "    c.enabled as enabled " +
+                "FROM" +
+                "    orders o" +
+                "        INNER JOIN" +
+                "    Order_details details ON o.id = details.order_id" +
+                "        INNER JOIN" +
+                "    products p ON p.id = details.product_id" +
+                "        INNER JOIN" +
+                "    customers c ON o.customer_id = c.id " +
+                "        INNER JOIN" +
+                "    categories ca ON ca.id = p.category_id " +
+                "where o.id=:orderId " +
+                "GROUP BY" +
+                "    o.id," +
+                "    o.order_time," +
+                "    o.customer_id," +
+                "    c.email," +
+                "    o.address_line1," +
+                "    o.address_line2," +
+                "    o.first_name," +
+                "    o.last_name," +
+                "    o.phone_number," +
+                "    o.city," +
+                "    o.status," +
+                "    o.product_cost," +
+                "    o.shipping_cost," +
+                "    o.tax," +
+                "    o.state," +
+                "    o.total," +
+                "    o.postal_code," +
+                "    o.payment_method," +
+                "    o.country," +
+                "    o.deliver_days," +
+                "    o.deliver_date," +
+                "    ca.name," +
+                "    c.enabled";
         Map<String,Object> map=new HashMap<>();
-        map.put("orderid",orderId);
-        List<TableOrderDetail>list= namedParameterJdbcTemplate.query(sql,map,new TableOrderDetailMapper());
+        map.put("orderId",orderId);
+        List<TableOrderDetail>list= namedParameterJdbcTemplate.query(sql,map,new OrderDetailJoinOrderMapper());
         if(list.size()>0){
             return list;
         }
@@ -254,7 +310,7 @@ public class OrderDAOImpl implements OrderDAO {
                 "product_cost=:product_cost,shipping_cost=:shipping_cost,subtotal=:subtotal," +
                 "tax=:tax,total=:total,first_name=:firstname," +
                 "last_name=:lastname,phone_number=:phonenumber,address_line1=:addressline1,address_line2=:addressline2,city=:city," +
-                "state=:state,postal_code=:postal_code,country=:country,deliver_days=:deliver_days,deliver_Date=:deliver_Date where id=:id";
+                "state=:state,postal_code=:postal_code,country=:country,deliver_days=:deliver_days,deliver_date=:deliver_Date where id=:id";
         Map<String,Object> map=new HashMap<>();
         map.put("id",order.getId());
         map.put("customerid",order.getCustomerId());
@@ -346,7 +402,7 @@ public class OrderDAOImpl implements OrderDAO {
     public List<CombinedOrderListForCustomer> getOrderListForCustomer(int customerId) {
         String sql="select CombinedOrderListForCustomer.id as OrderId,GROUP_CONCAT(productName) as ProductName from (select o.id ,o.customer_id as customerId " +
                 "     ,p.name as productName" +
-                "       from `Order` o inner join Order_details details on o.id=details.order_id inner join products p on p.id=details.product_id " +
+                "       from orders o inner join Order_details details on o.id=details.order_id inner join products p on p.id=details.product_id " +
                 "where o.customer_id=:customerId) CombinedOrderListForCustomer " +
                 "group by OrderId";
         Map<String,Object>map=new HashMap<>();
@@ -386,8 +442,8 @@ public class OrderDAOImpl implements OrderDAO {
 
 
     public List<ProductListForCustomer> getCustomerOrderDetailList(int customerId,int orderId) {
-        String sql="SELECT\n" +
-                "    SecondLayerQ.OrderId as OrderId,\n" +
+        String sql=" SELECT" +
+                "    SecondLayerQ.OrderId as OrderId," +
                 "    GROUP_CONCAT(SecondLayerQ.MainImage) as MainImage, " +
                 "    GROUP_CONCAT(SecondLayerQ.ProductId) as ProductId, " +
                 "    GROUP_CONCAT(SecondLayerQ.Quantity) as Quantity," +
@@ -395,8 +451,8 @@ public class OrderDAOImpl implements OrderDAO {
                 "    GROUP_CONCAT(SecondLayerQ.Unitprice) as Unitprice," +
                 "    GROUP_CONCAT(SecondLayerQ.ProductName) as ProductName," +
                 "    GROUP_CONCAT(SecondLayerQ.ShippingCost) as ShippingCost," +
-                "    GROUP_CONCAT(SecondLayerQ.ProductCost) as ProductCost\n" +
-                "FROM (" +
+                "    GROUP_CONCAT(SecondLayerQ.ProductCost) as ProductCost" +
+                "    FROM (" +
                 "    SELECT" +
                 "        CombinedOrderListForCustomer.id as OrderId," +
                 "        GROUP_CONCAT(productName) as ProductName," +
@@ -428,7 +484,7 @@ public class OrderDAOImpl implements OrderDAO {
                 "    ) CombinedOrderListForCustomer" +
                 "    GROUP BY OrderId, MainImage, Quantity, Subtotal, Unitprice, ProductId, ShippingCost, ProductCost" +
                 ") SecondLayerQ" +
-                " GROUP BY OrderId;";
+                " GROUP BY OrderId";
         Map<String,Object> map=new HashMap<>();
         map.put("customerId",customerId);
         map.put("orderId",orderId);
@@ -442,7 +498,7 @@ public class OrderDAOImpl implements OrderDAO {
 
     @Override
     public Order getOrderDetailByIdAndCustomer(int customerId, int orderId) {
-        String sql="select * from `Order` where id=:orderId and customer_id=:customerId";
+        String sql="select * from orders where id=:orderId and customer_id=:customerId";
         Map<String,Object> map=new HashMap<>();
         map.put("customerId",customerId);
         map.put("orderId",orderId);
@@ -459,8 +515,7 @@ public class OrderDAOImpl implements OrderDAO {
         String sql="select  o.id as Orderid,track.status as StatusCondition " +
                 "    from orders o " +
                 "    inner join order_track track on track.order_id=o.id " +
-                "    where o.id=:orderId and o.customer_id=:customerId and track.status<>'NEW' and track.status<>'PAID' " +
-                "     and track.status<>'PROCESSING' and track.status<>'CANCELED';";
+                "    where o.id=:orderId and o.customer_id=:customerId";
         Map<String,Object>map=new HashMap<>();
         map.put("orderId",OrderId);
         map.put("customerId",CustomerId);

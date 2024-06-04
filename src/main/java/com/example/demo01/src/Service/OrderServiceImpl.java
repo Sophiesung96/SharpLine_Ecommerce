@@ -9,6 +9,7 @@ import com.example.demo01.src.DAO.CustomerDao;
 import com.example.demo01.src.DAO.OrderDAO;
 import com.example.demo01.src.Pojo.*;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -99,11 +100,6 @@ public class OrderServiceImpl implements OrderService{
         SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date=dateFormat.format(new Date());
         order.setOrderTime(date);
-        if(paymentMethod.equals(PaymentMethod.PAYPAL)){
-            order.setStatus(OrderStatus.PAID.name());
-        }else{
-            order.setStatus(OrderStatus.NEW.name());
-        }
         order.setDeliverDays(checkOutInfo.getDeliverDays());
         order.setDeliverDate(checkOutInfo.getDeliverDate());
         order.setTotal(checkOutInfo.getPaymentTotal());
@@ -133,12 +129,15 @@ public class OrderServiceImpl implements OrderService{
         //Create a new orderTrack along with a new Order
         OrderTrack orderTrack=new OrderTrack();
         orderTrack.setOrderId(orderId);
-        orderTrack.setStatus(OrderStatus.NEW.name());
+        if(paymentMethod.equals(PaymentMethod.PAYPAL)){
+            orderTrack.setStatus(OrderStatus.PAID.name());
+        }else{
+            orderTrack.setStatus(OrderStatus.NEW.name());
+        }
         orderTrack.setNotes(OrderStatus.NEW.defaultdescription());
         orderTrack.setUpdatedTime(new Date());
         orderTrackDAO.createOrderTrack(orderTrack);
         return orderDetailForm;
-
     }
 
     @Override
