@@ -22,7 +22,7 @@ public class AddressDAOImpl implements AddressDAO {
 
     @Override
     public List<Address> findByCustomer(Customer customer) {
-        String sql = "select * from address where customer_id=:id";
+        String sql = "select * from addresses where customer_id=:id";
         List<Address> list = new ArrayList<>();
         Map<String, Object> map = new HashMap<>();
         map.put("id", customer.getId());
@@ -35,7 +35,7 @@ public class AddressDAOImpl implements AddressDAO {
 
     @Override
     public Address findByIdAndCustomer(Integer id, Customer customer) {
-        String sql = "select * from address where customer_id=:customerid and id=:id";
+        String sql = "select * from addresses where customer_id=:customerid and id=:id";
         List<Address> list = new ArrayList<>();
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
@@ -50,7 +50,7 @@ public class AddressDAOImpl implements AddressDAO {
 
     @Override
     public void DeleteByIdAndCustomer(Integer id, Customer customer) {
-        String sql = "delete from address where id=:id, customer_id=:customerid";
+        String sql = "delete from addresses where id=:id, customer_id=:customerid";
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
         map.put("customerid", customer.getId());
@@ -59,7 +59,7 @@ public class AddressDAOImpl implements AddressDAO {
 
     @Override
     public void CreateNewCustomer(Address address, Integer customerId) {
-        String sql = "insert into address(customer_id,first_name,last_name,phone_number,address_line1,address_line2,city,state,country_id" +
+        String sql = "insert into addresses(customer_id,first_name,last_name,phone_number,address_line1,address_line2,city,state,country_id" +
                 ",postal_code,default_address) values(:customerid,:firstname,:lastname,:phonenumber," +
                 ":addressline1,:addressline2,:city,:state,:countryid,:postalcode,:defaultaddress)";
         Map<String, Object> map = new HashMap<>();
@@ -80,7 +80,7 @@ public class AddressDAOImpl implements AddressDAO {
 
     @Override
     public Address ShowCustomerforedit(Integer addressid, Integer customerId) {
-        String sql = "select * from address where id=:id and customer_id=:customerId";
+        String sql = "select * from addresses where id=:id and customer_id=:customerId";
         Map<String, Object> map = new HashMap<>();
         map.put("customerId", customerId);
         map.put("id", addressid);
@@ -93,7 +93,7 @@ public class AddressDAOImpl implements AddressDAO {
 
     @Override
     public void updateAddress(Address address) {
-        String sql = "update address set customer_id=:customerid, first_name=:firstname, last_name=:lastname," +
+        String sql = "update addresses set customer_id=:customerid, first_name=:firstname, last_name=:lastname," +
                 "phone_number=:phonenumber, address_line1=:addressline1, address_line2=:addressline2," +
                 "city=:city, state=:state,country_id=:countryid,postal_code=:postalcode," +
                 "default_address=:defaultaddress where id=:id and customer_id=:customerid";
@@ -125,7 +125,7 @@ public class AddressDAOImpl implements AddressDAO {
 
     @Override
     public void setDefaultAddress(Integer addressid,Integer customerId) {
-        String sql = "update address set default_address=1 where id=:id  and customer_id=:customerid";
+        String sql = "update addresses set default_address=1 where id=:id  and customer_id=:customerid";
         Map<String, Object> map = new HashMap<>();
         map.put("id", addressid);
         map.put("customerid",customerId);
@@ -144,7 +144,7 @@ public class AddressDAOImpl implements AddressDAO {
 
     @Override
     public  Address findefaultAddressById(Integer customerid) {
-        String sql = "select * from address where  default_address =1 and customer_id=:customerid";
+        String sql = "select * from addresses where  default_address =1 and customer_id=:customerid";
         Map<String, Object> map = new HashMap<>();
         map.put("customerid",customerid);
         List<Address>list=namedParameterJdbcTemplate.query(sql,map,new AddressMapper());
@@ -156,7 +156,7 @@ public class AddressDAOImpl implements AddressDAO {
 
     @Override
     public void setDefaultAddress4Primary(Integer addressid, Integer customerId) {
-        String sql = "update address set default_address=0 where customer_id=:customerid";
+        String sql = "update addresses set default_address=0 where customer_id=:customerid";
         Map<String, Object> map = new HashMap<>();
         map.put("customerid",customerId);
        namedParameterJdbcTemplate.update(sql,map);
