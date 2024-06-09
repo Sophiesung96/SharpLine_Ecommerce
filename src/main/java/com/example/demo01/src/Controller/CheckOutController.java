@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -197,6 +198,7 @@ public class CheckOutController {
         javaMailSender.send(mimeMessage);
 
     }
+
 
     @PostMapping("/process_paypal_order")
     public String processPayPalOrder(HttpServletRequest request,Model model){
