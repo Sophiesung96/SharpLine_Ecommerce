@@ -71,13 +71,16 @@ public class ArticleController {
 
     @GetMapping("/article/delete/{id}")
     public String deleteArticleById(@PathVariable int id){
-
+        if(id >0 ){
+            articleService.deleteArticleById(id);
+        }
         return "redirect:/article";
     }
     @GetMapping("/article/detail/{id}")
-    public String examineArticleDetailById(@PathVariable int id){
-
-        return "Article_creation";
+    public String examineArticleDetailById(@PathVariable int id,Model model){
+         Article article=articleService.editArticleById(id);
+         model.addAttribute("article",article);
+        return "article_detail_form";
     }
 
 }

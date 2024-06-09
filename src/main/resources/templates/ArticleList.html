@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+    <link rel="icon" type="image/x-icon"th:href="@{/image/logo.png}">
+    <title>Settings</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <!-- Latest compiled JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <style>
+
+        @media screen and (max-width: 768px) {
+            /*small screen*/
+            div.full-details {
+                display: none;
+            }
+            div.less-details {
+                display: block;
+            }
+
+
+
+        }
+
+        @media screen and (min-width: 768px) and (max-width: 1024px) {
+            /*medium screen*/
+            div.full-details {
+                display: block;
+            }
+            div.less-details {
+                display: none;
+            }
+
+
+        }
+
+        @media screen and (min-width: 1024px) {
+
+            div.full-details {
+                display: block;
+            }
+            div.less-details {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="row">
+        <div class="navbar navbar-expand-lg bg-dark navbar-dark">
+            <a class="navbar-brand" th:href="@{/home}">
+                <img th:src="@{/image/logo.png}" style="width:100px;height:50px">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggle"
+                    aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggle">
+                <ul class="navbar-nav">
+                    <li class="nav-item" sec:authorize="hasAuthority('Admin')">
+                        <a class="nav-link" th:href="@{/users/1}">Users</a>
+                    </li>
+                    <th:block sec:authorize="hasAnyAuthority('Admin','Editor')">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/categories/1}">Categories</a>
+                        </li>
+                    </th:block>
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','Editor')">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/brands/1}">Brands</a>
+                        </li>
+                    </th:block>
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','Editor','SalesPerson','Shipper')">
+
+                        <li class="nav-item">
+                            <div class="dropdown">
+                                <a class="nav-link btn btn-outline- dropdown-toggle"data-bs-toggle="dropdown" th:href="@{/products/1}">Products</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" th:href="@{/products/new}" sec:authorize="hasAnyAuthority('Admin','Editor')">
+                                        Create New
+                                    </a>
+                                    </li>
+                                    <li><a class="dropdown-item" th:href="@{/products/1}">
+                                        View All
+                                    </a>
+                                    </li>
+                                    <li> <a class="dropdown-item" th:href="@{/review}" sec:authorize="hasAuthority('Admin')">
+                                        Reviews
+                                    </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </li>
+                    </th:block>
+
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','Assistant')">
+
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/questions}">Questions</a>
+                        </li>
+                    </th:block>
+                    <th:block sec:authorize="hasAnyAuthority('Admin','SalesPerson')">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/customers}">Customers</a>
+                        </li>
+                    </th:block>
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','SalesPerson')">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/shipping}">Shipping</a>
+                        </li>
+                    </th:block>
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','Editor','Shipper')">
+
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/orders/1}">Orders</a>
+                        </li>
+                    </th:block>
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','SalesPerson')">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/report}">Sales Report</a>
+                        </li>
+                    </th:block>
+
+                    <th:block sec:authorize="hasAnyAuthority('Admin','Editor')">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/article}">Articles</a>
+                        </li>
+                    </th:block>
+
+                    <th:block>
+                        <li class="nav-item" sec:authorize="hasAuthority('Admin')">
+                            <a class="nav-link" th:href="@{/settings}">Settings</a>
+                        </li>
+                    </th:block>
+
+
+                    <li class="nav-item">
+                        <img th:src="@{/image/thumbnail.jpeg}" alt="" width="30" height="30" class="d-inline-block align-text-top">
+                    </li>
+                    <li class="nav-item  mx-2">
+
+                        <div class="dropdown">
+                            <a class="nav-link text-warning btn btn-outline- dropdown-toggle"data-bs-toggle="dropdown" aria-expanded="false" sec:authentication="principal.username"></a>
+
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+
+                </ul>
+            </div>
+
+        </div>
+        <div class="container mt-3 text-center">
+            <div class="row">
+                <div class="col-12">
+                    <h2>Manage Articles</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <a th:href="@{/article/create}">
+                    <i class="fa-regular fa-pen-to-square"></i>&nbsp;Create New Article
+                </a>
+            </div>
+        </div>
+
+        <div>
+
+            <div class="row">
+                <div class="col-md">
+                    <nav class="navbar navbar-expand-sm bg-light">
+                        <div class="collapse navbar-collapse" id="searchNavbars">
+                            <div class="input-group-sm" style="width:35%">
+                                <form class="d-flex" method="get" th:action="@{'/article/keyword'}">
+                                    <input class="form-control me-1" type="search" placeholder="Search" name="keyword">
+                                    <button class="btn btn-success" type="submit">Search</button>
+                                </form>
+                            </div>
+
+                        </div>
+                    </nav>
+                </div>
+
+            </div>
+
+
+
+            <div th:if="${message}!=null" class="alert alert-success text-center">[[${message}]]
+            </div>
+
+
+            <div class="row mt-3">
+                <div class="col-12 full-details">
+
+                    <table class="table table-responsive-md table-striped table-hover text-center">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>
+                                ID
+                            </th>
+
+                            <th>
+                                Title
+                            </th>
+                            <th>
+                                Type
+                            </th>
+
+                            <th class="hiding-column">
+                                Updated Time
+                            </th>
+                            <th>
+                                Created By
+                            </th>
+
+                            <th>
+                              Published
+                            </th>
+
+
+                            <th>
+
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody class="text-center">
+                        <tr th:each="articleList:${list}">
+                            <td class="hiding-column" th:text="${articleList.id}">
+                            </td>
+
+                            <td >
+                                <a class=" article_detail" th:href="@{'/article/detail/'+${articleList.getId()}}"
+                                   title="View detail of this" >
+                                    [[${articleList.title}]]
+                                </a>
+                            </td>
+
+
+
+                            <td  th:text="${articleList.type}">
+
+                            </td>
+
+                            <td th:text="${articleList.updatedTime}">
+
+                            </td>
+
+                            <td th:text="${articleList.createdBy}">
+
+                            </td>
+                            <td>
+                                <a th:if="${articleList.published}==1" th:href="@{'/updatePublished/'+${articleList.published}+'/' + ${articleList.id}}"
+                                   style="text-decoration: none; color:green; font-size: large" >
+                                    <i class="fa-solid fa-circle-check"></i>
+                                </a>
+
+                                <a th:if="${articleList.published}==0" th:href="@{'/updatePublished/'+${articleList.published}+'/' + ${articleList.id}}"
+                                   style="text-decoration: none; color:grey">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                </a>
+
+                            </td>
+
+
+                            <td>
+                                <a class=" article_detail btn  btn-sm flex-auto-m" th:href="@{'/article/detail/'+${articleList.getId()}}"
+                                   title="View detail of this" style="color: green">
+                                    <i class="fa-solid fa-2x fa-circle-info"></i>
+                                </a>
+                                <a style="text-decoration: none;" class="btn btn-primary btn-sm flex-auto-m"
+                                   th:href="@{'/article/edit/'+${articleList.getId()}}">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                                <a style="text-decoration: none;" class="btn btn-danger btn-sm flex-auto-m "
+                                   th:href="@{'article/delete/'+${articleList.getId()}}"
+                                   th:data-confirm-delete="|Are you sure you want to delete this brand ${articleList.getId()}?|"
+                                   onclick="if (!confirm(this.getAttribute('data-confirm-delete'))) return false"
+                                >
+                                    <i class="fa-solid fa-trash"></i>
+
+                                </a>
+                            </td>
+
+
+                        </tr>
+                            <th:block th:if="${keywordList !=null}">
+                                <tr th:each="articleList:${list}">
+                                    <td class="hiding-column" th:text="${articleList.id}">
+                                    </td>
+
+                                    <td>
+                                        <a class=" article_detail" th:href="@{'/article/detail/'+${articleList.getId()}}"
+                                       title="View detail of this" >
+                                        [[${articleList.title}]]
+                                         </a>
+                                     </td>
+
+
+                                    <td  th:text="${articleList.type}">
+
+                                    </td>
+
+                                    <td th:text="${articleList.updatedTime}">
+
+                                    </td>
+
+                                    <td th:text="${articleList.createdBy}">
+
+                                    </td>
+                                    <td>
+                                        <a th:if="${articleList.published}==1" th:href="@{'/updatePublished/'+${articleList.published}+'/' + ${articleList.id}}"
+                                           style="text-decoration: none; color:green; font-size: large" >
+                                            <i class="fa-solid fa-circle-check"></i>
+                                        </a>
+
+                                        <a th:if="${articleList.published}==0" th:href="@{'/updatePublished/'+${articleList.published}+'/' + ${articleList.id}}"
+                                           style="text-decoration: none; color:grey">
+                                            <i class="fa-solid fa-circle-check"></i>
+                                        </a>
+
+                                    </td>
+
+
+                                    <td>
+                                        <a class=" article_detail btn  btn-sm flex-auto-m" th:href="@{'/article/detail/'+${articleList.getId()}}"
+                                           title="View detail of this" style="color: green">
+                                            <i class="fa-solid fa-2x fa-circle-info"></i>
+                                        </a>
+                                        <a style="text-decoration: none;" class="btn btn-primary btn-sm flex-auto-m"
+                                           th:href="@{'/article/edit/'+${articleList.getId()}}">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                        <a style="text-decoration: none;" class="btn btn-danger btn-sm flex-auto-m "
+                                           th:href="@{'article/delete/'+${articleList.getId()}}"
+                                           th:data-confirm-delete="|Are you sure you want to delete this brand ${articleList.getId()}?|"
+                                           onclick="if (!confirm(this.getAttribute('data-confirm-delete'))) return false"
+                                        >
+                                            <i class="fa-solid fa-trash"></i>
+
+                                        </a>
+                                    </td>
+
+
+                               </tr>
+                            </th:block>
+                        </tbody>
+
+
+
+                    </table>
+
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item"><a class="page-link" th:href="@{/article}">1</a></li>
+                        </ul>
+                    </nav>
+
+
+
+                </div>
+            </div>
+            <!--For small mobile devices -->
+            <div class="less-details">
+                <div th:each="plist:${list}" class="row m-1">
+
+                    <div class="col-8">
+                        <div><a class="link-detail article_detail" th:href="@{'/article/detail/'+${plist.getId()}}">
+                            [[${plist.title}]]
+                        </a></div>
+                    </div>
+                    <div class="mt-4">
+                        <a class="fa-solid fa-file fs-2 article_detail" th:href="@{'/article/detail/'+${plist.getId()}}"
+                           title="View detail of this" style="color: green">
+                        </a>
+
+
+                        <a style="text-decoration: none;" class="btn btn-primary btn-sm py-1"
+                           th:href="@{'/article/edit/'+${plist.getId()}}">
+                            Edit
+                        </a>
+                        <a style="text-decoration: none;" class="btn btn-danger btn-sm py-1 "
+                           th:href="@{'/article/delete/'+${plist.getId()}}"
+                           th:data-confirm-delete="|Are you sure you want to delete this category ${plist.getId()}?|"
+                           onclick="if (!confirm(this.getAttribute('data-confirm-delete'))) return false">
+                            Delete
+
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
+        </div>
+
+    </div>
+
+    <div class="modal fade "id="detailModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content"></div>
+        </div>
+    </div>
+
+</div>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var articleDetails = document.querySelectorAll('.article_detail');
+
+        for (var i = 0; i < articleDetails.length; i++) {
+            articleDetails[i].addEventListener('click', function(e) {
+                e.preventDefault();
+                var linkurl = this.getAttribute('href');
+                var modal = new bootstrap.Modal(document.getElementById('detailModal'));
+                modal.show();
+
+                var modalContent = document.querySelector('.modal-content');
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        modalContent.innerHTML = xhr.responseText;
+                    }
+                };
+                xhr.open('GET', linkurl, true);
+                xhr.send();
+            });
+        }
+    });
+
+
+</script>
+
+</body>
+</html>
