@@ -322,7 +322,7 @@
                                             <a class="link-detail order_detail" th:href="@{'/orders/detail/'+${plist.getId()}}">
                                                 <i class="fa-solid fa-2x fa-circle-info"></i>
                                             </a>
-                                            <th:block th:if="${plist.isReturnRequested()}">
+                                           <th:block th:if="${plist.isReturnRequested()}">
                                                 &nbsp;
                                                 <a class="fas fa-undo fa-2x" style="color: deeppink; text-decoration: none" title="Return this Order"></a>
                                             </th:block>
