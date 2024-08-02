@@ -257,19 +257,16 @@ class OrderDAOImplTest {
     public void testgetOrderDetailsList() {
         List<TableOrderDetail> list = orderDAO.getOrderDetailsList(3);
         for(TableOrderDetail detail:list){
-            System.out.println("Sorted subtotal "+detail.getSortedSubTotal());
+            System.out.println("Sorted subtotal "+detail.getSortedSubtotal());
             System.out.println("Sorted product name "+detail.getSortedProductName());
             System.out.println("Sorted product image: "+ detail.getSortedMainImage().get(0));
-            System.out.println("Sorted unit prices "+detail.getSortedUnitPrice());
+            System.out.println("Sorted unit prices "+detail.getSortedUnitprice());
             System.out.println("Sorted quantities "+detail.getSortedQuantity());
             System.out.println("Total price "+detail.getTotal());
-            System.out.println("Sorted Detail ProductCost: "+detail.getSortedDetailProductCost());
-            System.out.println("Sorted Shipping Cost: "+detail.getSortedShippingCost());
-
+            System.out.println("Sorted Detail ProductCost: "+detail.getSortedDetailproductCosts());
+            System.out.println("Sorted Shipping Cost: "+detail.getSortedShippingCosts());
         }
-
-
-        }
+   }
 
 
 
