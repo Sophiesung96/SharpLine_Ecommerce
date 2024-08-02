@@ -47,7 +47,16 @@ public class TableOrderDetail {
     private String paymentmethod;
     private String StatusCondition;
     private String CategoryName;
-
+    private String ProductIds;
+    private String DetailproductCosts;
+    private String SubTotals;
+    private String Productnames;
+    private String ProductMainImages;
+    private String ProductCosts;
+    private String ShippingCosts;
+    private String Quantities;
+    private String UnitPrices;
+    private String CategoryNames;
 
 
     public TableOrderDetail(float productCost, float shippingCost, float subTotal, int quantity, String categoryName) {
