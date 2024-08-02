@@ -197,74 +197,71 @@ public class OrderDAOImpl implements OrderDAO {
 
     @Override
     public List<TableOrderDetail> getOrderDetailsList(int orderId) {
-        String sql="SELECT" +
-                "    o.id as id," +
-                "    o.order_time as orderTime," +
-                "    o.customer_id as customerId," +
-                "    c.email as email," +
-                "    GROUP_CONCAT(p.name) as ProductNames," +
-                "    GROUP_CONCAT(p.main_image) as ProductMainImage," +
-                "    GROUP_CONCAT(p.id) as productIds," +
-                "    GROUP_CONCAT(details.quantity) as Quantities," +
-                "    GROUP_CONCAT(details.unit_price) as UnitPrices," +
-                "    GROUP_CONCAT(details.subtotal) as Subtotals," +
-                "    GROUP_CONCAT(details.product_cost) as DetailProductCosts," +
-                "    GROUP_CONCAT(o.shipping_cost) as ShippingCosts,"+
-                "    GROUP_CONCAT(o.tax) as taxes,"+
-                "    GROUP_CONCAT(ca.name) as CategoryNames,"+
-                "    o.address_line1 as addressLine1," +
-                "    o.address_line2 as addressLine2," +
-                "    o.first_name as firstName," +
-                "    o.last_name as lastName," +
-                "    o.phone_number as phoneNumber," +
-                "    o.city as city," +
-                "    o.status as status," +
-                "    o.product_cost as productCosts," +
-                "    o.shipping_cost as shippingCost," +
-                "    o.tax as tax," +
-                "    o.state as state," +
-                "    o.total as total," +
-                "    o.postal_code as postalCode," +
-                "    o.payment_method as paymentMethod," +
-                "    o.country as country," +
-                "    o.deliver_days as deliverDays," +
-                "    o.deliver_date as deliverDate," +
-                "    c.enabled as enabled " +
-                "FROM" +
-                "    orders o" +
-                "        INNER JOIN" +
-                "    Order_details details ON o.id = details.order_id" +
-                "        INNER JOIN" +
-                "    products p ON p.id = details.product_id" +
-                "        INNER JOIN" +
-                "    customers c ON o.customer_id = c.id " +
-                "        INNER JOIN" +
-                "    categories ca ON ca.id = p.category_id " +
-                "where o.id=:orderId " +
-                "GROUP BY" +
-                "    o.id," +
-                "    o.order_time," +
-                "    o.customer_id," +
-                "    c.email," +
-                "    o.address_line1," +
-                "    o.address_line2," +
-                "    o.first_name," +
-                "    o.last_name," +
-                "    o.phone_number," +
-                "    o.city," +
-                "    o.status," +
-                "    o.product_cost," +
-                "    o.shipping_cost," +
-                "    o.tax," +
-                "    o.state," +
-                "    o.total," +
-                "    o.postal_code," +
-                "    o.payment_method," +
-                "    o.country," +
-                "    o.deliver_days," +
-                "    o.deliver_date," +
-                "    ca.name," +
-                "    c.enabled";
+        String sql="\n" +
+                "    SELECT" +
+                "        o.id as id," +
+                "        o.order_time as orderTime," +
+                "        o.customer_id as customerId," +
+                "        c.email as email," +
+                "        GROUP_CONCAT(p.name) as ProductNames," +
+                "        GROUP_CONCAT(p.main_image) as ProductMainImage," +
+                "        GROUP_CONCAT(p.id) as productIds," +
+                "        GROUP_CONCAT(details.quantity) as Quantities," +
+                "        GROUP_CONCAT(details.unit_price) as UnitPrices," +
+                "        GROUP_CONCAT(details.subtotal) as Subtotals," +
+                "        GROUP_CONCAT(details.product_cost) as DetailProductCosts," +
+                "        GROUP_CONCAT(o.shipping_cost) as ShippingCosts," +
+                "        GROUP_CONCAT(o.tax) as taxes," +
+                "        GROUP_CONCAT(ca.name) as CategoryNames," +
+                "        o.address_line1 as addressLine1," +
+                "        o.address_line2 as addressLine2," +
+                "        o.first_name as firstName," +
+                "        o.last_name as lastName," +
+                "        o.phone_number as phoneNumber," +
+                "        o.city as city," +
+                "        o.status as status," +
+                "        o.product_cost as productCosts," +
+                "        o.shipping_cost as shippingCost," +
+                "        o.tax as tax," +
+                "        o.state as state," +
+                "        o.total as total," +
+                "        o.postal_code as postalCode," +
+                "        o.payment_method as paymentMethod," +
+                "        o.country as country," +
+                "        o.deliver_days as deliverDays," +
+                "        o.deliver_date as deliverDate," +
+                "        c.enabled as enabled" +
+                "    FROM" +
+                "        orders o" +
+                "        INNER JOIN Order_details details ON o.id = details.order_id" +
+                "        INNER JOIN products p ON p.id = details.product_id" +
+                "        INNER JOIN customers c ON o.customer_id = c.id" +
+                "        INNER JOIN categories ca ON ca.id = p.category_id" +
+                "    WHERE" +
+                "        o.id = :orderId" +
+                "    GROUP BY" +
+                "        o.id," +
+                "        o.order_time," +
+                "        o.customer_id," +
+                "        c.email," +
+                "        o.address_line1," +
+                "        o.address_line2," +
+                "        o.first_name," +
+                "        o.last_name," +
+                "        o.phone_number," +
+                "        o.city," +
+                "        o.status," +
+                "        o.product_cost," +
+                "        o.shipping_cost," +
+                "        o.tax," +
+                "        o.state," +
+                "        o.total," +
+                "        o.postal_code," +
+                "        o.payment_method," +
+                "        o.country," +
+                "        o.deliver_days," +
+                "        o.deliver_date," +
+                "        c.enabled ";
         Map<String,Object> map=new HashMap<>();
         map.put("orderId",orderId);
         List<TableOrderDetail>list= namedParameterJdbcTemplate.query(sql,map,new OrderDetailJoinOrderMapper());
