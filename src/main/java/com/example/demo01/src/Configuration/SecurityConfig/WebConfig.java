@@ -33,8 +33,6 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
 
         @Autowired
         DataSource dataSource;
-
-
         @Autowired
         NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
