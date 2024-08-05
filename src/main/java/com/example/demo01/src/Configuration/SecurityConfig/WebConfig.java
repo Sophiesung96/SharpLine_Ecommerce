@@ -1,4 +1,4 @@
-package com.example.demo01.src.Configuration;
+package com.example.demo01.src.Configuration.SecurityConfig;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -33,8 +33,6 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
 
         @Autowired
         DataSource dataSource;
-
-
         @Autowired
         NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 

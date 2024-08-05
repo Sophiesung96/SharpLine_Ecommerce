@@ -23,7 +23,7 @@ public class ArticleController {
 
 
     @GetMapping("/article")
-    public String displayArticleList(@RequestParam(required = false) String keyword, Model model) {
+    public String displayArticleList(@RequestParam(name="keyword",required = false) String keyword, Model model) {
         List<Article> list;
         if (keyword != null && !keyword.isEmpty()) {
             list = articleService.searchByKeyword(keyword);

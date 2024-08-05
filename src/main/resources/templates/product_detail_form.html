@@ -140,7 +140,7 @@
 
             </div>
 
-            <div class="tab-pane fade" id="images" role="tabpanel ">
+            <div class="tab-pane fade" id="images" role="tabpanel">
                 <div class="row" id="divProductImages">
                     <div class="col border m-3 p-2">
                         <div><label>Main Image:[[${product.Mainimage}]]</label></div>
@@ -153,8 +153,8 @@
 
                     <th:block th:each="extraImage,status:${pimage}" >
                         <!--The original extra images if the product had-->
-                        <div class="col border m-3 p-2" >
-                            <div>
+                        <div class="col-3 border m-3 p-2" >
+                            <div >
                                 <label>Extra Image :# [[${status.index+1}]]:[[${extraImage.getName()}]]</label>
 
                             </div>
