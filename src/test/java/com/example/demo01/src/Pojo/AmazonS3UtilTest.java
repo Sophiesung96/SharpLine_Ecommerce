@@ -3,17 +3,22 @@ package com.example.demo01.src.Pojo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
-
+import org.springframework.core.env.Environment;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class AmazonS3UtilTest {
 
+    @Autowired
+    Environment environment;
+
+    @Test
+    public void testEnv(){
+        String awsKey=environment.getProperty("AWS_ACCESS_KEY_ID");
+        System.out.println(awsKey);
+    }
 
     @Test
     public void testListFolder() {
