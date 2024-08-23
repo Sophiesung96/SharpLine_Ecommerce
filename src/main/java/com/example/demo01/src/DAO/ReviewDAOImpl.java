@@ -21,6 +21,7 @@ public class ReviewDAOImpl implements  ReviewDAO{
     @Autowired
     NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+
     @Override
     public List<Review> getAllReviewList() {
         String sql="select * from reviews";
@@ -102,7 +103,7 @@ public class ReviewDAOImpl implements  ReviewDAO{
 
         String sql="select r.id as id,r.comment as comment, r.customer_Id as customerId, r.headline as headline,r.product_Id as productId," +
                 "     r.rating as rating, r.review_time as reviewTime,concat(c.first_name,' ',c.last_name) as CustomerName," +
-                "    p.name as productName, p.average_rating as averageRating from reviews r inner join customers  c on r.customer_Id=c.id" +
+                "    p.name as productName, p.average_rating as averageRating, r.votes as votes from reviews r inner join customers  c on r.customer_Id=c.id" +
                 "   inner join products p on r.product_Id=p.id where r.customer_Id=:customerId";
         Map<String, Object> map=new HashMap<>();
         map.put("customerId",customerId);

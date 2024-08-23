@@ -4,6 +4,7 @@ import com.example.demo01.src.Configuration.Exporter.UserCsvExporter;
 import com.example.demo01.src.Configuration.Exporter.UserExcelExporter;
 import com.example.demo01.src.Configuration.Exporter.UserPDFExporter;
 import com.example.demo01.src.Configuration.Utils.FileUploadUtil;
+import com.example.demo01.src.Pojo.AmazonS3Util;
 import com.example.demo01.src.Pojo.Role;
 import com.example.demo01.src.Pojo.Users;
 import com.example.demo01.src.Pojo.UsersRole;
@@ -114,7 +115,8 @@ public class UserController {
             user.setPhoto(fileName);
             String uploadDir = "user-pics" + File.separator + newuser.getId();
             try {
-                FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+                AmazonS3Util.removeFolder(uploadDir);
+                AmazonS3Util.uploadFile(uploadDir,fileName,multipartFile.getInputStream());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -157,6 +159,10 @@ public class UserController {
     public String DeleteUser(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
 
         userService.DeleteUserById(id);
+        String userPhotoDir="user-photos/"+id;
+        AmazonS3Util.removeFolder(userPhotoDir);
+        redirectAttributes.addFlashAttribute("message","The user ID"+id+"has been deleted successfully");
+
         return "redirect:/users";
     }
 

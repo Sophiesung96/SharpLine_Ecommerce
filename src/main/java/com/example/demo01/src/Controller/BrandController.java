@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.io.File;
@@ -30,8 +31,6 @@ public class BrandController {
 
     @Autowired
     CategoryService categoryService;
-
-
 
 
     @GetMapping("/brands/{pageno}")
@@ -91,7 +90,7 @@ public class BrandController {
     }
 
     @PostMapping("/brand/save")
-    public String insertBrand(@ModelAttribute("brand") Brand brand, HttpSession session, @RequestParam("photo") MultipartFile multipartFile) throws IOException {
+    public String insertBrand(@ModelAttribute("brand") Brand brand, RedirectAttributes redirectAttributes, @RequestParam("photo") MultipartFile multipartFile) throws IOException {
         String filename = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         brand.setLogo(filename);
         brandService.saveBrand(brand);
@@ -109,7 +108,7 @@ public class BrandController {
             AmazonS3Util.uploadFile(uploadDir,filename,multipartFile.getInputStream());
         }
         String message = "The brand has been saved successfully!";
-        session.setAttribute("message", message);
+        redirectAttributes.addFlashAttribute("message", message);
 
         return "redirect:/brands/1";
 
@@ -138,10 +137,11 @@ public class BrandController {
     }
 
     @GetMapping("/brand/delete/{id}")
-    public String deleteBrandById(@PathVariable int id) {
+    public String deleteBrandById(@PathVariable int id,RedirectAttributes redirectAttributes) {
         brandService.deleteBrandById(id);
         String brandDir="brand-logos/"+id;
         AmazonS3Util.deleteFile(brandDir);
+        redirectAttributes.addFlashAttribute("message","The Brand ID"+id+" has been deleted successfully");
         return "redirect:/brands/1";
     }
 }

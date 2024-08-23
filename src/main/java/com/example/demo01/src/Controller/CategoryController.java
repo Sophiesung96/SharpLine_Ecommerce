@@ -90,10 +90,9 @@ public class CategoryController {
     @PostMapping("/categories/update")
     public String updateCategoryList(@ModelAttribute Category category, @RequestParam("photo") MultipartFile multipartFile) throws IOException {
 
-
         String newimg = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         if (!multipartFile.isEmpty()) {
-            String uploadDir = "categories-images" + File.separator + category.getId();
+            String uploadDir = "categories-images" + File.separator + category.getId()+"/";
             FileUploadUtil.saveFile(uploadDir, newimg, multipartFile);
         }
         category.setImage(newimg);
