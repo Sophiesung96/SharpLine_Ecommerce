@@ -16,9 +16,4 @@ public class Constants {
         return S3_BASE_URI;
     }
 
-
-
-
-
-
 }

@@ -174,8 +174,17 @@ public class ProductController {
         String filename = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         if (!multipartFile.isEmpty()) {
 
-            String uploadDiv = "product-images" + File.separator+ p.getId();
-            FileUploadUtil.saveFile(uploadDiv, filename, multipartFile);
+            String uploadDiv = "product-images" + File.separator+ p.getId()+"/";
+            List<String> listObjectKeys=AmazonS3Util.listFolder(uploadDiv);
+            for(String objectKey:listObjectKeys){
+                //If the product image is not one of the extra images
+                // then delete it from AWS S3
+                if(!objectKey.contains("/extras/"))
+                {
+                    AmazonS3Util.deleteFile(objectKey);
+                }
+            }
+            AmazonS3Util.uploadFile(uploadDiv,filename,multipartFile.getInputStream());
 
         }
         // save product's ExtraImages
@@ -183,10 +192,11 @@ public class ProductController {
             String extraDiv = "product-images/" + p.getId() + "/extras/";
             for (MultipartFile File : extraImagefile) {
                 if (File.isEmpty()) continue;
-                String Extrafilename = StringUtils.cleanPath(File.getOriginalFilename());
-                FileUploadUtil.saveFile(extraDiv, Extrafilename, File);
+                String extraFileName = StringUtils.cleanPath(File.getOriginalFilename());
                 //save Extra image to product_image table
-                productService.saveExtraImagesofProduct(Extrafilename, p);
+                productService.saveExtraImagesofProduct(extraFileName, p);
+                AmazonS3Util.removeFolder(extraDiv);
+                AmazonS3Util.uploadFile(extraDiv,extraFileName,File.getInputStream());
             }
         }
     }
@@ -309,7 +319,6 @@ public class ProductController {
         }
         return "redirect:/products/1";
     }
-
 
     @RequestMapping(value={"/getremoveid"},method = {RequestMethod.POST})
     @ResponseBody
