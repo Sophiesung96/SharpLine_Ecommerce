@@ -39,6 +39,9 @@ public class UserController {
     @Autowired
     UserRoleService userRoleService;
 
+    @Autowired
+    AmazonS3Util amazonS3Util;
+
 
 
     @GetMapping("/users/{pageno}")
@@ -115,8 +118,8 @@ public class UserController {
             user.setPhoto(fileName);
             String uploadDir = "user-pics" + File.separator + newuser.getId();
             try {
-                AmazonS3Util.removeFolder(uploadDir);
-                AmazonS3Util.uploadFile(uploadDir,fileName,multipartFile.getInputStream());
+                amazonS3Util.removeFolder(uploadDir);
+                amazonS3Util.uploadFile(uploadDir,fileName,multipartFile.getInputStream());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -160,7 +163,7 @@ public class UserController {
 
         userService.DeleteUserById(id);
         String userPhotoDir="user-photos/"+id;
-        AmazonS3Util.removeFolder(userPhotoDir);
+        amazonS3Util.removeFolder(userPhotoDir);
         redirectAttributes.addFlashAttribute("message","The user ID"+id+"has been deleted successfully");
 
         return "redirect:/users";

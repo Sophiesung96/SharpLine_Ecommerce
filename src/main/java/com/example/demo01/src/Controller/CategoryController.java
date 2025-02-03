@@ -28,6 +28,9 @@ public class CategoryController {
     @Autowired
     CategoryService categoryService;
 
+    @Autowired
+    AmazonS3Util amazonS3Util;
+
 
     @GetMapping("/categories/{pageno}")
     public String getallCategoryList(@PathVariable int pageno, Model model) {
@@ -66,9 +69,9 @@ public class CategoryController {
             String uploadDir = "category-image" + File.separator + cgo.getId();
             try {
                 //Removing the existing folder first
-                AmazonS3Util.removeFolder(uploadDir);
+                amazonS3Util.removeFolder(uploadDir);
                 //Then uploading user pic to aws s3 bucket
-                AmazonS3Util.uploadFile(uploadDir,filename,multipartFile.getInputStream());
+                amazonS3Util.uploadFile(uploadDir,filename,multipartFile.getInputStream());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -121,7 +124,7 @@ public class CategoryController {
         categoryService.deleteCategoryById(id);
         String fileName="categories-images/"+id;
         //Deleting the specific category's image after removing it from the database.
-        AmazonS3Util.deleteFile(fileName);
+        amazonS3Util.deleteFile(fileName);
         return "redirect:/categories/1";
     }
 

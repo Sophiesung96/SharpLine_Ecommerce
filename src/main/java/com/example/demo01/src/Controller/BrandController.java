@@ -32,6 +32,9 @@ public class BrandController {
     @Autowired
     CategoryService categoryService;
 
+    @Autowired
+    AmazonS3Util amazonS3Util;
+
 
     @GetMapping("/brands/{pageno}")
     public String getBrandList(Model model, @PathVariable int pageno) {
@@ -104,8 +107,8 @@ public class BrandController {
 
         if (!multipartFile.isEmpty()) {
             String uploadDir = "brand-logos" + File.separator + b.getId();
-            AmazonS3Util.removeFolder(uploadDir);
-            AmazonS3Util.uploadFile(uploadDir,filename,multipartFile.getInputStream());
+            amazonS3Util.removeFolder(uploadDir);
+            amazonS3Util.uploadFile(uploadDir,filename,multipartFile.getInputStream());
         }
         String message = "The brand has been saved successfully!";
         redirectAttributes.addFlashAttribute("message", message);
@@ -140,7 +143,7 @@ public class BrandController {
     public String deleteBrandById(@PathVariable int id,RedirectAttributes redirectAttributes) {
         brandService.deleteBrandById(id);
         String brandDir="brand-logos/"+id;
-        AmazonS3Util.deleteFile(brandDir);
+        amazonS3Util.deleteFile(brandDir);
         redirectAttributes.addFlashAttribute("message","The Brand ID"+id+" has been deleted successfully");
         return "redirect:/brands/1";
     }

@@ -1,6 +1,10 @@
 package com.example.demo01.src.Pojo;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.core.SdkSystemSetting;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -13,13 +17,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Component
 public class AmazonS3Util {
 
     private final String bucketName;
+
     private final S3Client s3Client;
 
     // Constructor: Inject bucket name & S3Client
-    public AmazonS3Util(String bucketName, S3Client s3Client) {
+    public AmazonS3Util(@Value("${aws.s3.bucket}") String bucketName, S3Client s3Client) {
         this.bucketName = bucketName;
         this.s3Client = s3Client;
         System.setProperty(SdkSystemSetting.AWS_REGION.property(), "ap-southeast-2");

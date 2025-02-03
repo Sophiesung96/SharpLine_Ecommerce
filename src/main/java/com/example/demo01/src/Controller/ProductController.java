@@ -45,6 +45,9 @@ public class ProductController {
     @Autowired
     ReviewVoteService reviewVoteService;
 
+    @Autowired
+    AmazonS3Util amazonS3Util;
+
 
     @GetMapping("/products/{pageno}")
     public String listAll(Model model,@PathVariable int pageno) {
@@ -175,16 +178,16 @@ public class ProductController {
         if (!multipartFile.isEmpty()) {
 
             String uploadDiv = "product-images" + File.separator+ p.getId()+"/";
-            List<String> listObjectKeys=AmazonS3Util.listFolder(uploadDiv);
+            List<String> listObjectKeys=amazonS3Util.listFolder(uploadDiv);
             for(String objectKey:listObjectKeys){
                 //If the product image is not one of the extra images
                 // then delete it from AWS S3
                 if(!objectKey.contains("/extras/"))
                 {
-                    AmazonS3Util.deleteFile(objectKey);
+                    amazonS3Util.deleteFile(objectKey);
                 }
             }
-            AmazonS3Util.uploadFile(uploadDiv,filename,multipartFile.getInputStream());
+            amazonS3Util.uploadFile(uploadDiv,filename,multipartFile.getInputStream());
 
         }
         // save product's ExtraImages
@@ -195,8 +198,8 @@ public class ProductController {
                 String extraFileName = StringUtils.cleanPath(File.getOriginalFilename());
                 //save Extra image to product_image table
                 productService.saveExtraImagesofProduct(extraFileName, p);
-                AmazonS3Util.removeFolder(extraDiv);
-                AmazonS3Util.uploadFile(extraDiv,extraFileName,File.getInputStream());
+                amazonS3Util.removeFolder(extraDiv);
+                amazonS3Util.uploadFile(extraDiv,extraFileName,File.getInputStream());
             }
         }
     }
@@ -373,7 +376,7 @@ public class ProductController {
 
 
     @GetMapping("/p/{product_nickname}/{pageno}")
-    public String viewProductdetail(@PathVariable int pageno, Model model,@PathVariable String product_nickname,HttpServletRequest request)  {
+    public String viewProductDetail(@PathVariable int pageno, Model model,@PathVariable String product_nickname,HttpServletRequest request)  {
         try{
             float averageRating = 0.0f;
             Product product= productService.findByNickName(product_nickname);
@@ -430,7 +433,7 @@ public class ProductController {
 
 
     @GetMapping("/p/keyword/{pageno}")
-    public String filteredProductdetail(@PathVariable int pageno, Model model, HttpServletRequest request) {
+    public String filteredProductDetail(@PathVariable int pageno, Model model, HttpServletRequest request) {
 
        try{
            String keyword=request.getParameter("keyword");
