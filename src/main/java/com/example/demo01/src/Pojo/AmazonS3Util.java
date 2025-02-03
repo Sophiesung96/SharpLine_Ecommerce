@@ -1,4 +1,5 @@
 package com.example.demo01.src.Pojo;
+
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.core.SdkSystemSetting;
@@ -8,96 +9,93 @@ import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
+import java.util.stream.Collectors;
+
 @Slf4j
 public class AmazonS3Util {
 
-    private static final String BUCKET_NAME;
+    private final String bucketName;
+    private final S3Client s3Client;
 
-    static {
-        BUCKET_NAME = System.getenv("AWS_BUCKET_NAME");
-        // Setting up AWS region
+    // Constructor: Inject bucket name & S3Client
+    public AmazonS3Util(String bucketName, S3Client s3Client) {
+        this.bucketName = bucketName;
+        this.s3Client = s3Client;
         System.setProperty(SdkSystemSetting.AWS_REGION.property(), "ap-southeast-2");
     }
 
-    public static List<String> listFolder(String folderName) {
-        List<String>list=new ArrayList<>();
-        try (S3Client s3Client = S3Client.builder().build()) {
-            ListObjectsRequest listObjectsRequest = ListObjectsRequest.builder()
-                    .bucket(BUCKET_NAME)
+    public List<String> listFolder(String folderName) {
+        try {
+            ListObjectsRequest request = ListObjectsRequest.builder()
+                    .bucket(bucketName)
                     .prefix(folderName)
                     .build();
-            ListObjectsResponse listObjectsResponse = s3Client.listObjects(listObjectsRequest);
-            List<S3Object> contents = listObjectsResponse.contents();
-            ListIterator<S3Object> listIterator = contents.listIterator();
-            while (listIterator.hasNext()) {
-                S3Object s3Object = listIterator.next();
-                list.add(s3Object.key());
-                System.out.println("Key: " + s3Object.key());
-                System.out.println("Owner: " + s3Object.owner());
-            };
+            ListObjectsResponse response = s3Client.listObjects(request);
 
+            List<String> fileList = response.contents()
+                    .stream()
+                    .map(S3Object::key)
+                    .collect(Collectors.toList());
+
+            log.info("Files in folder {}: {}", folderName, fileList);
+            return fileList;
         } catch (SdkClientException e) {
-            // Handle S3 client exceptions
-            System.err.println("Error occurred: " + e.getMessage());
+            log.error("Error listing folder {}: {}", folderName, e.getMessage());
+            return List.of();
         }
-        return list;
     }
 
-
-
-    public static void uploadFile(String folderName, String fileName, InputStream inputStream){
-        S3Client s3Client = S3Client.builder().build();
-        PutObjectRequest putObjectRequest=PutObjectRequest
-                .builder()
-                .bucket(BUCKET_NAME)
-                .key(folderName+"/"+fileName)
+    public void uploadFile(String folderName, String fileName, InputStream inputStream) {
+        String objectKey = folderName + "/" + fileName;
+        PutObjectRequest request = PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(objectKey)
                 .acl("public-read")
                 .build();
-        try(inputStream){
-            int contentLength= inputStream.available();
-            s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(inputStream,contentLength));
+
+        try (inputStream) {
+            int contentLength = inputStream.available();
+            s3Client.putObject(request, RequestBody.fromInputStream(inputStream, contentLength));
+            log.info("Successfully uploaded file: {}", objectKey);
         } catch (IOException ex) {
-            ex.printStackTrace();
-            log.error("Could not upload file to Amazon s3",ex);
+            log.error("Could not upload file {} to Amazon S3", objectKey, ex);
         }
     }
 
-    public static void deleteFile(String fileName){
-        S3Client s3Client = S3Client.builder().build();
-        DeleteObjectRequest deleteObjectRequest=DeleteObjectRequest
-                .builder()
-                .bucket(BUCKET_NAME)
-                .key(fileName)
-                .build();
-        s3Client.deleteObject(deleteObjectRequest);
+    public void deleteFile(String fileName) {
+        try {
+            DeleteObjectRequest request = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(fileName)
+                    .build();
+            s3Client.deleteObject(request);
+            log.info("Deleted file: {}", fileName);
+        } catch (SdkClientException e) {
+            log.error("Error deleting file {}: {}", fileName, e.getMessage());
+        }
     }
 
-    public static void removeFolder(String folderName){
-        try (S3Client s3Client = S3Client.builder().build()) {
-            ListObjectsRequest listObjectsRequest = ListObjectsRequest.builder()
-                    .bucket(BUCKET_NAME)
+    public void removeFolder(String folderName) {
+        try {
+            ListObjectsRequest request = ListObjectsRequest.builder()
+                    .bucket(bucketName)
                     .prefix(folderName)
                     .build();
-            ListObjectsResponse listObjectsResponse = s3Client.listObjects(listObjectsRequest);
-            List<S3Object> contents = listObjectsResponse.contents();
-            ListIterator<S3Object> listIterator = contents.listIterator();
+            ListObjectsResponse response = s3Client.listObjects(request);
 
-            while (listIterator.hasNext()) {
-                S3Object s3Object = listIterator.next();
-                DeleteObjectRequest deleteObjectRequest=DeleteObjectRequest
-                        .builder()
-                        .bucket(BUCKET_NAME)
+            response.contents().forEach(s3Object -> {
+                DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
+                        .bucket(bucketName)
                         .key(s3Object.key())
                         .build();
-                s3Client.deleteObject(deleteObjectRequest);
-                System.out.println("Deleted the folder:"+s3Object.key());
-            }
+                s3Client.deleteObject(deleteRequest);
+                log.info("Deleted: {}", s3Object.key());
+            });
+
+            log.info("Successfully removed folder: {}", folderName);
         } catch (SdkClientException e) {
-            // Handle S3 client exceptions
-            System.err.println("Error occurred: " + e.getMessage());
+            log.error("Error removing folder {}: {}", folderName, e.getMessage());
         }
     }
 }
