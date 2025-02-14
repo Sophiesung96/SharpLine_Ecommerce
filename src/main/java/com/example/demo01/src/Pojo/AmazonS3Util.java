@@ -28,7 +28,6 @@ public class AmazonS3Util {
     public AmazonS3Util(@Value("${aws.s3.bucket}") String bucketName, S3Client s3Client) {
         this.bucketName = bucketName;
         this.s3Client = s3Client;
-        System.setProperty(SdkSystemSetting.AWS_REGION.property(), "ap-southeast-2");
     }
 
     public List<String> listFolder(String folderName) {
