@@ -28,10 +28,17 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-        private static String sqlstatement = "SELECT first_name as name ,password,enabled from Users WHERE first_name=?";
-        private static String sqlquote = "SELECT Users.first_name as name,r.name as role from Users INNER JOIN Users_role Ur on Users.id = Ur.user_id  INNER JOIN role r on Ur.role_id = r.id  WHERE Users.first_name=?";
+    private static String sqlstatement = "SELECT first_name as username, password, enabled FROM users WHERE first_name=?";
+    private static String sqlquote =
+            "SELECT users.first_name as username, r.name as authority " +
+                    "FROM users " +
+                    "INNER JOIN users_roles ur ON users.id = ur.user_id " +
+                    "INNER JOIN roles r ON ur.role_id = r.id " +
+                    "WHERE users.first_name = ?";
 
-        @Autowired
+
+
+    @Autowired
         DataSource dataSource;
         @Autowired
         NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -101,10 +108,10 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
             String rawpassword = "testing";
             String encodepassword = passwordEncoder().encode(rawpassword);
             //Update the original password in database as an encoded password
-            String encodesql = "UPDATE Users SET password=:userpassword WHERE first_name=:username";
+            String encodesql = "UPDATE users SET password=:userpassword WHERE first_name=:username";
             Map<String, Object> map = new HashMap<>();
             map.put("userpassword", encodepassword);
-            map.put("username", "testing10");
+            map.put("username", "Allada");
             namedParameterJdbcTemplate.update(encodesql, map);
             //This configuration is temporary
 
