@@ -17,7 +17,7 @@ public class ShippingRateDAOImpl implements ShippingRateDAO{
 
     @Override
     public ShippingRate getShippingRateForAddress(String state, int  CountryId) {
-        String sql="select * from ShippingRate where country_id=:countryid and state=:state ";
+        String sql="select * from shipping_rates where country_id=:countryid and state=:state ";
         Map<String,Object> map=new HashMap<>();
         map.put("countryid",CountryId);
         map.put("state",state);
