@@ -20,7 +20,7 @@ import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
-@Order(1)
+@Order(-1)
 public class WebConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
@@ -28,7 +28,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-        private static String sqlstatement = "SELECT first_name as name ,password, enabledStatus as enabled from Users WHERE first_name=?";
+        private static String sqlstatement = "SELECT first_name as name ,password,enabled from Users WHERE first_name=?";
         private static String sqlquote = "SELECT Users.first_name as name,r.name as role from Users INNER JOIN Users_role Ur on Users.id = Ur.user_id  INNER JOIN role r on Ur.role_id = r.id  WHERE Users.first_name=?";
 
         @Autowired
