@@ -9,14 +9,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Category {
 
-    private Integer id;
+    private int id;
     private String name;
     private String nickname;
     private String image;
-    private Integer enabled;
-    private Integer parentid;
+    private int enabled;
+    private int parentid;
     private String parentname;
-    private Integer level;
+    private int level;
     private Constants constants;
 
 

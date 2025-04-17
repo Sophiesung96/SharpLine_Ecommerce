@@ -28,7 +28,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void insertUser(Users user) {
         String sql = "INSERT INTO users" +
-                "(Email,enable,first_name,last_name,password,photo)" +
+                "(email,enabled,first_name,last_name,password,photo)" +
                 " value " +
                 "( :Email, :enabledStatus, :first_name, :last_name, :password, :photo)";
         Map<String, Object> map = new HashMap<>();

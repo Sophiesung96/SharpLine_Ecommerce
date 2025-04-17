@@ -194,19 +194,23 @@ public class TableOrderDetail {
     }
 
     public List<String> getSortedMainImage() {
+        SortedMainImage = new ArrayList<>();
+        String baseUrl = "https://sharplinebucket.s3.amazonaws.com/product-images/";
 
-        SortedMainImage=new ArrayList<>();
-        if(ProductMainImages!=null)
-        {
-            String [] splitMainImages=ProductMainImages.split(",");
-            if(splitMainImages.length>0){
-                for(String s:splitMainImages){
-                    SortedMainImage.add(s);
-                }
+        if (ProductIds != null && ProductMainImages != null) {
+            String[] ids = ProductIds.split(",");
+            String[] images = ProductMainImages.split(",");
+
+            for (int i = 0; i < images.length; i++) {
+                String productId = (i < ids.length) ? ids[i] : "unknown";
+                String filename = images[i];
+                String fullUrl = baseUrl + productId + "/" + filename;
+                SortedMainImage.add(fullUrl);
             }
         }
         return SortedMainImage;
     }
+
 
     public List<String> getSortedCategoryNames() {
 

@@ -183,13 +183,13 @@
                                 <div class="text-wrap"><b>[[${detail.getSortedProductName()}]]</b></div>
                                 <th:block th:if="${isvisibleforAdminorSalesPerson}">
 
-                                    <div>Product Cost: $[[${detail.getSortedDetailProductCost()}]]</div>
+                                    <div>Product Cost: $[[${detail.getSortedDetailproductCosts()}]]</div>
                                     <div><span>SubTotal:[[${detail.getSortedQuantity()}]]</span>
-                                        X<span>[[${detail.getSortedUnitPrice()}]]</span>
+                                        X<span>[[${detail.getSortedUnitprice()}]]</span>
                                         =
-                                        <span>$&nbsp;[[${detail.getSortedSubTotal()}]]</span>
+                                        <span>$&nbsp;[[${detail.getSortedSubtotal()}]]</span>
                                     </div>
-                                    <div th:each="ShippingCost : ${detail.getSortedShippingCost()}">
+                                    <div th:each="ShippingCost : ${detail.getSortedShippingCosts()}">
                                         <div>Shipping Cost: $[[${ShippingCost}]]</div>
                                     </div>
                                 </th:block>

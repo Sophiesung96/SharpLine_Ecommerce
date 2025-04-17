@@ -51,32 +51,56 @@ public class CategoryController {
         model.addAttribute("clist", list);
         return "CategoryForm";
     }
-
     @PostMapping("/category/save")
-    public String newCategoryList(@ModelAttribute Category category, HttpSession session, @RequestParam("photo") MultipartFile multipartFile) {
-        String filename = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-        category.setImage(filename);
-        Category cgo = new Category();
-        String parentname = category.getParentname();
-        Integer parentid = Integer.parseInt(parentname);
-        category.setParentid(parentid);
+    public String newCategoryList(
+            @ModelAttribute Category category,
+            HttpSession session,
+            @RequestParam("photo") MultipartFile multipartFile) {
+
+        // Convert parentname (assumed to be String) into an integer ID
+        try {
+            Integer parentId = Integer.parseInt(category.getParentname());
+            category.setParentid(parentId);
+        } catch (NumberFormatException e) {
+            session.setAttribute("message", "Invalid parent category ID");
+            return "redirect:/categories/1";
+        }
+
+        // First save the category to generate its ID (if new)
         categoryService.saveCategory(category);
-        cgo = categoryService.getcategoryByName(category.getName());
+
+        // Only handle the image upload if a file is selected
         if (!multipartFile.isEmpty()) {
-            String uploadDir = "category-image" + File.separator + cgo.getId();
+            String filename = StringUtils.cleanPath(multipartFile.getOriginalFilename())
+                    .replaceAll(" ", "_");
+            category.setImage(filename);  // Set image name in DB
+
+            String uploadDir = "categories-images/" + category.getId();
+
             try {
-                //Removing the existing folder first
-                AmazonS3Util.removeFolder(uploadDir);
-                //Then uploading user pic to aws s3 bucket
-                AmazonS3Util.uploadFile(uploadDir,filename,multipartFile.getInputStream());
+
+                // Upload the new image to S3
+                AmazonS3Util.uploadFile(uploadDir, filename, multipartFile.getInputStream());
+
+                log.info("Uploading to:{} ",uploadDir + "/ {}",filename);
+
+
             } catch (IOException e) {
                 e.printStackTrace();
+                session.setAttribute("message", "Failed to upload category image.");
+                return "redirect:/categories/1";
             }
+
+            // Save the category again to persist the image name
+            categoryService.saveCategory(category);
         }
-        String message = "The category has been saved successfully!";
-        session.setAttribute("message", message);
+
+        // Add success message to session
+        session.setAttribute("message", "The category has been saved successfully!");
+
         return "redirect:/categories/1";
     }
+
 
     @RequestMapping("/category/edit/{id}")
     public String editCategoryList(@PathVariable Integer id, Model model) {
@@ -88,18 +112,34 @@ public class CategoryController {
     }
 
     @PostMapping("/categories/update")
-    public String updateCategoryList(@ModelAttribute Category category, @RequestParam("photo") MultipartFile multipartFile) throws IOException {
+    public String updateCategoryList(
+            @ModelAttribute Category category,
+            @RequestParam("photo") MultipartFile multipartFile) throws IOException {
 
-        String newimg = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         if (!multipartFile.isEmpty()) {
-            String uploadDir = "categories-images" + File.separator + category.getId()+"/";
-            FileUploadUtil.saveFile(uploadDir, newimg, multipartFile);
-        }
-        category.setImage(newimg);
-        categoryService.UpdateCategory(category);
+            // Clean and extract new image file name
+            String newImage = StringUtils.cleanPath(multipartFile.getOriginalFilename())
+                    .replaceAll(" ", "_");
 
+            // Upload the new image to the server or cloud storage
+            String uploadDir = "categories-images/" + category.getId();
+            AmazonS3Util.removeFolder(uploadDir); // Optional: clear old logo
+            // Upload the new image to S3
+            AmazonS3Util.uploadFile(uploadDir, newImage, multipartFile.getInputStream());
+
+            // Update the image field only if a new file was uploaded
+            category.setImage(newImage);
+            log.info("category's image name:{}",newImage);
+        } else {
+            // If no new file is uploaded, preserve the existing image
+            Category existing = categoryService.getCategoriesById(category.getId());
+            category.setImage(existing.getImage());
+        }
+
+        categoryService.UpdateCategory(category);
         return "redirect:/categories/1";
     }
+
 
     @RequestMapping("/category/update/enabled/{id}/{Permission}")
     public String updateCategoryEnabledStatus(@PathVariable int id, @PathVariable int Permission) {

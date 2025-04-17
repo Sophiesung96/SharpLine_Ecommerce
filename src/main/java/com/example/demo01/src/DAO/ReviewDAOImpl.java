@@ -36,10 +36,25 @@ public class ReviewDAOImpl implements  ReviewDAO{
 
     @Override
     public List<Review> getAllReviewListWithCustomerFullName() {
-        String sql="select r.id as id,r.comment as comment, r.customer_Id as customerId, r.headline as headline,r.product_Id as productId," +
-                "     r.rating as rating, r.review_time as reviewTime,concat(c.first_name,' ',c.last_name) as CustomerName," +
-                "    p.name as productName from reviews r inner join customers  c on r.customer_Id=c.id" +
-                "   inner join products p on r.product_Id=p.id ";
+        String sql="SELECT\n" +
+                "  r.id AS id,\n" +
+                "  r.comment AS comment,\n" +
+                "  r.customer_Id AS customerId,\n" +
+                "  r.headline AS headline,\n" +
+                "  r.product_Id AS productId,\n" +
+                "  r.rating AS rating,\n" +
+                "  r.review_time AS reviewTime,\n" +
+                "  r.votes AS votes," +
+                "  CONCAT(c.first_name, ' ', c.last_name) AS CustomerName,\n" +
+                "  p.name AS productName,\n" +
+                "  (\n" +
+                "    SELECT AVG(r2.rating)\n" +
+                "    FROM reviews r2\n" +
+                "    WHERE r2.product_Id = r.product_Id\n" +
+                "  ) AS average_ratings\n" +
+                "FROM reviews r\n" +
+                "INNER JOIN customers c ON r.customer_Id = c.id\n" +
+                "INNER JOIN products p ON r.product_Id = p.id\n";
         Map<String, Object> map=new HashMap<>();
         List<Review>list=new ArrayList<>();
         list=namedParameterJdbcTemplate.query(sql,map,new ReviewJoinMapper());
@@ -117,7 +132,7 @@ public class ReviewDAOImpl implements  ReviewDAO{
 
     @Override
     public void SaveReview(Review review) {
-     String sql="insert into reviews(headline,comment,rating,product_Id,customerId) values(:headline,:comment,:rating,:productId,:customerId,:reviewTime)";
+     String sql="insert into reviews(headline,comment,rating,product_Id,customerId,average_ratings) values(:headline,:comment,:rating,:productId,:customerId,:reviewTime,:average)";
      Map<String,Object>map=new HashMap<>();
      map.put("headline",review.getHeadline());
      map.put("comment",review.getComment());
@@ -125,6 +140,7 @@ public class ReviewDAOImpl implements  ReviewDAO{
      map.put("product_Id",review.getProductId());
      map.put("customerId",review.getCustomerId());
      map.put("review_Time",review.getReviewTime());
+     map.put("average",review.getAverageRating());
      KeyHolder keyHolder=new GeneratedKeyHolder();
      namedParameterJdbcTemplate.update(sql,new MapSqlParameterSource(map),keyHolder);
     }
