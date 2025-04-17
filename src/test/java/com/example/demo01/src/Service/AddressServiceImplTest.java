@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,12 +50,8 @@ PasswordEncoder passwordEncoder;
     }
 
 
-    @Test
-    public void test(){
-        String testing="testing01";
-        String newtest=passwordEncoder.encode(testing);
-        System.out.println(newtest);
-    }
+
+
 
 
 

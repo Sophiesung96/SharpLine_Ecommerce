@@ -8,7 +8,8 @@
                     converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
 
     <!-- Define the storage location for log files. Do not use relative paths in LogBack configuration. -->
-    <property name="LOG_HOME" value="/Users/sophie/Desktop/demo01/src/main/resources/Log"/>
+    <property name="LOG_HOME" value="logs"/>
+
 
     <!-- Define the log pattern -->
     <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%thread] [%-30.30logger{30}] %msg%n"/>

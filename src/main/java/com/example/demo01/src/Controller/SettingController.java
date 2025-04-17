@@ -31,6 +31,9 @@ public class SettingController {
     @Autowired
     CurrencyService currencyService;
 
+    @Autowired
+    AmazonS3Util amazonS3Util;
+
     @GetMapping("/settings")
     public String listAll(Model model){
       List<Setting> list=settingService.listAllSettings();
@@ -61,8 +64,8 @@ public class SettingController {
             generalSettingBag.updateSiteLogo(value);
             String uploadDir="site-logo/";
             //Updating the folder to the latest and upload the file
-            AmazonS3Util.removeFolder(uploadDir);
-            AmazonS3Util.uploadFile(uploadDir,fileName,multipartFile.getInputStream());
+            amazonS3Util.removeFolder(uploadDir);
+            amazonS3Util.uploadFile(uploadDir,fileName,multipartFile.getInputStream());
 
         }
 
