@@ -1,5 +1,6 @@
 package com.example.demo01.src.Controller;
 
+import com.example.demo01.src.Configuration.Utils.ControllerHelper;
 import com.example.demo01.src.Exception.OrderNotFoundExcption;
 import com.example.demo01.src.Pojo.*;
 import com.example.demo01.src.Service.OrderService;
@@ -37,6 +38,9 @@ public class OrderController {
    @Autowired
     UserService userService;
 
+   @Autowired
+    ControllerHelper controllerHelper;
+
 
     @GetMapping("/orders/{pageno}")
     public String getPage(@PathVariable int pageno, Model model,  @AuthenticationPrincipal Authentication user,HttpServletRequest request){
@@ -45,7 +49,7 @@ public class OrderController {
 
             log.info("order id:{}",order.getId());
           //Get the order Status of each order
-            List<TableOrderDetail> orderStatusList=orderService.getTrackStatusList(order.getId());
+            List<TableOrderDetail> orderStatusList=orderService.getTrackStatusList(order.getCustomerId());
             // check whether the orderStatusList is null
             if(orderStatusList!=null){
                 orderStatusList.stream().forEach(detail->log.info("order Status:{}",detail.getStatusCondition()));
@@ -116,18 +120,20 @@ public class OrderController {
 
 
 
-
+    //Get customer's orderDetail if the user is authorized
     @GetMapping("/orders/detail/{id}")
     public String getOrderDetails(@PathVariable int id,Model model,@AuthenticationPrincipal  Authentication user ){
         OrderDetailForm order=orderService.getOrderDetailById(id);
         List<OrderTrack> list=orderTrackService.findOrderTrackById(order.getId());
         List<TableOrderDetail> orderDetailFormList=orderService.getOrderDetailsList(order.getId());
-        boolean isvisibleforAdminorSalesPerson=true;
+        boolean isvisibleforAdminorSalesPerson=false;
         List<UsersRole> Rolelist=getUsersRoles(user);
+        //Checking if the user has a role as an admin or as a shipper
+        //If the user has either of the role, then displays the details that they are entitled to examine
         for(UsersRole role:Rolelist){
             if(role.getName().equals("Admin") ||role.getName().equals("Shipper")){
                 log.info("logged user's role name:{}",role.getName());
-                isvisibleforAdminorSalesPerson=false;
+                isvisibleforAdminorSalesPerson=true;
             }
         }
         model.addAttribute("isvisibleforAdminorSalesPerson",isvisibleforAdminorSalesPerson);
@@ -136,6 +142,8 @@ public class OrderController {
         model.addAttribute("tracklist",list);
         return "OrderDetails";
     }
+
+
 
     @GetMapping("/orders/edit/{id}")
     public String showOrderEdit(@PathVariable int id,Model model,RedirectAttributes rs){
@@ -146,12 +154,16 @@ public class OrderController {
             List<OrderStatus>orderStatusList=getStatus();
             List<TableOrderDetail> orderDetailFormList=orderService.getOrderDetailsList(order.getId());
             List<OrderTrack> Tracklist=orderTrackService.findOrderTrackById(order.getId());
+            //get every product's detail in each order
+            List<ProductListForCustomer> productNameList=orderService.getCustomerOrderDetailList(order.getCustomerId(),order.getId());
             model.addAttribute("pageTitle","Edit Order (ID:"+id+")");
             model.addAttribute("order",order);
+            model.addAttribute("customerId", order.getCustomerId());
             model.addAttribute("orderDetailFormList",orderDetailFormList);
             model.addAttribute("orderStatusList",orderStatusList);
             model.addAttribute("paymentMethodList",paymentMethodList);
             model.addAttribute("countries",list);
+            model.addAttribute("CustomerProductList",productNameList);
             model.addAttribute("tracklist",Tracklist);
             return "OrderEditForm";
         }

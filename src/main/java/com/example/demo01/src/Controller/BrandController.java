@@ -1,18 +1,21 @@
 package com.example.demo01.src.Controller;
 
-import com.example.demo01.src.Configuration.FileUploadUtil;
+import com.example.demo01.src.Configuration.Utils.FileUploadUtil;
+import com.example.demo01.src.Pojo.AmazonS3Util;
 import com.example.demo01.src.Pojo.Brand;
 import com.example.demo01.src.Pojo.BrandCategoryName;
 import com.example.demo01.src.Pojo.Category;
 import com.example.demo01.src.Service.BrandService;
 import com.example.demo01.src.Service.CategoryService;
 import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.io.File;
@@ -21,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@Log
+@Slf4j
 public class BrandController {
 
     @Autowired
@@ -29,8 +32,6 @@ public class BrandController {
 
     @Autowired
     CategoryService categoryService;
-
-
 
 
     @GetMapping("/brands/{pageno}")
@@ -90,32 +91,44 @@ public class BrandController {
     }
 
     @PostMapping("/brand/save")
-    public String insertBrand(@ModelAttribute("brand") Brand brand, HttpSession session, @RequestParam("photo") MultipartFile multipartFile) {
-        String filename = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-        brand.setLogo(filename);
+    public String insertBrand(
+            @ModelAttribute("brand") Brand brand,
+            RedirectAttributes redirectAttributes,
+            @RequestParam("photo") MultipartFile multipartFile) throws IOException {
+
+        // Save brand first to get the generated ID
         brandService.saveBrand(brand);
-        Brand b = brandService.getBrandIdByName(brand.getName());
-        Integer bid = b.getId();
-        ;
-        String cname = brand.getParentname();
-        log.info("cname {}"+cname);
-        Integer cid = Integer.parseInt(cname);
-        brandService.createBrandCategory(bid, cid);
+        Brand savedBrand = brandService.getBrandIdByName(brand.getName());
+        Integer brandId = savedBrand.getId();
 
-        if (!multipartFile.isEmpty()) {
-            String uploadDir = "brand_logo" + File.separator + b.getId();
-            try {
-                FileUploadUtil.saveFile(uploadDir, filename, multipartFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        // Associate brand with category
+        try {
+            Integer categoryId = Integer.parseInt(brand.getParentname());  // Assuming parentname stores the category ID
+            brandService.createBrandCategory(brandId, categoryId);
+        } catch (NumberFormatException e) {
+            log.error("Invalid category ID in brand.getParentname(): {}", brand.getParentname());
         }
-        String message = "The brand has been saved successfully!";
-        session.setAttribute("message", message);
 
+        // Handle logo upload if file was selected
+        if (!multipartFile.isEmpty()) {
+            String filename = StringUtils.cleanPath(multipartFile.getOriginalFilename())
+                    .replaceAll(" ", "_");
+
+            String uploadDir = "brand-logos/" + brandId;
+
+            // Remove old logo folder (optional) and upload new one
+            AmazonS3Util.removeFolder(uploadDir);
+            AmazonS3Util.uploadFile(uploadDir, filename, multipartFile.getInputStream());
+
+            // Update brand with logo filename and save again
+            savedBrand.setLogo(filename);
+            brandService.saveBrand(savedBrand);
+        }
+
+        redirectAttributes.addFlashAttribute("message", "The brand has been saved successfully!");
         return "redirect:/brands/1";
-
     }
+
 
     @GetMapping("/brand/edit/{id}")
     public String gotoBrandEdit(@PathVariable int id, Model model) {
@@ -127,21 +140,41 @@ public class BrandController {
     }
 
     @PostMapping("/brand/edit")
-    public String EdtBrand(@ModelAttribute("brand") Brand brand, @RequestParam("photo") MultipartFile multipartFile) throws IOException {
-        String newimg = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-        if (!multipartFile.isEmpty()) {
-            String uploadDir = "brand-image" + File.separator + brand.getId();
-            FileUploadUtil.saveFile(uploadDir, newimg, multipartFile);
-        }
-        brand.setLogo(newimg);
-        brandService.editBrandById(brand);
+    public String editBrand(
+            @ModelAttribute("brand") Brand brand,
+            @RequestParam("photo") MultipartFile multipartFile) throws IOException {
 
+        if (!multipartFile.isEmpty()) {
+            // Clean file name
+            String newImage = StringUtils.cleanPath(multipartFile.getOriginalFilename())
+                    .replaceAll(" ", "_");
+
+            // Upload to S3
+            String uploadDir = "brand-logos/" + brand.getId();
+            AmazonS3Util.removeFolder(uploadDir); // Optional: clear old logo
+            AmazonS3Util.uploadFile(uploadDir, newImage, multipartFile.getInputStream());
+
+            // Update logo only if file is uploaded
+            brand.setLogo(newImage);
+            log.info("Updated brand logo to: {}/{}", uploadDir, newImage);
+        } else {
+            // No new image uploaded – preserve existing one
+            Brand existingBrand = brandService.getBrandIdByName(brand.getName());
+            brand.setLogo(existingBrand.getLogo());
+        }
+
+        // Save changes
+        brandService.editBrandById(brand);
         return "redirect:/brands/1";
     }
 
+
     @GetMapping("/brand/delete/{id}")
-    public String deleteBrandById(@PathVariable int id) {
+    public String deleteBrandById(@PathVariable int id,RedirectAttributes redirectAttributes) {
         brandService.deleteBrandById(id);
+        String brandDir="brand-logos/"+id;
+        AmazonS3Util.deleteFile(brandDir);
+        redirectAttributes.addFlashAttribute("message","The Brand ID"+id+" has been deleted successfully");
         return "redirect:/brands/1";
     }
 }

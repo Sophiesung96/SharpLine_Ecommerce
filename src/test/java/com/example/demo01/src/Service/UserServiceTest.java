@@ -1,6 +1,7 @@
 package com.example.demo01.src.Service;
 
 import com.example.demo01.src.DAO.UserDao;
+import com.example.demo01.src.Pojo.Constants;
 import com.example.demo01.src.Pojo.Users;
 import com.example.demo01.src.Pojo.UsersRole;
 import com.example.demo01.src.Service.UserService;
@@ -35,7 +36,7 @@ public class UserServiceTest {
         user.setEmail("meowmeow@gmail.com");
         user.setFirst_name("Sophie");
         user.setLast_name("Liung");
-        user.setEnabledStatus("false");
+        user.setEnabled(0);
         list.add(user);
         Mockito.when(userDao.listAll()).thenReturn(list);
         List<Users> testlist = new ArrayList<>();
@@ -46,7 +47,7 @@ public class UserServiceTest {
             assertEquals(testuser.getPassword(), "$2a$10$F127XwVTUrLNVip/1.yu7OG5XJ5F.95e3gu6XalhiP8LnlrIbVIoG");
             assertEquals(testuser.getFirst_name(), "Sophie");
             assertEquals(testuser.getLast_name(), "Liung");
-            assertEquals(testuser.getEnabledStatus(), "false");
+            assertEquals(testuser.getEnabled(), 0);
         }
 
 
@@ -74,12 +75,12 @@ public class UserServiceTest {
     @Test
     public void getUserByPagination() {
         List<Users> list = new ArrayList<>();
-        list.add(new Users(1, "meowmeow@gmail.com", "false", "Sophie", "Liung", "$2a$10$F127XwVTUrLNVip/1.yu7OG5XJ5F.95e3gu6XalhiP8LnlrIbVIoG"));
-        list.add(new Users(2, "nam@codejava.net", "true", "Nam", "Nung", "{noop}ha123"));
+        list.add(new Users(1, "meowmeow@gmail.com", 0, "Sophie", "Liung", "$2a$10$F127XwVTUrLNVip/1.yu7OG5XJ5F.95e3gu6XalhiP8LnlrIbVIoG",new Constants()));
+        list.add(new Users(2, "nam@codejava.net", 1, "Nam", "Nung", "{noop}ha123",new Constants()));
         Mockito.when(userDao.getUserByPagination(Mockito.eq(1))).thenReturn(list);
-        Users tuser = list.stream().filter(test -> "false".equals(test.getEnabledStatus()) && "Sophie".equals(test.getFirst_name()) && "meowmeow@gmail.com".equals(test.getEmail())).findAny().orElse(null);
+        Users tuser = list.stream().filter(test -> 0==(test.getEnabled()) && "Sophie".equals(test.getFirst_name()) && "meowmeow@gmail.com".equals(test.getEmail())).findAny().orElse(null);
         assertEquals(1, tuser.getId());
-        assertEquals("false", tuser.getEnabledStatus());
+        assertEquals(0, tuser.getEnabled());
         assertEquals("meowmeow@gmail.com", tuser.getEmail());
         assertEquals("Sophie", tuser.getFirst_name());
 

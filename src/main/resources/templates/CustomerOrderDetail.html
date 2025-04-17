@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+    <title>Customer OrderDetail Form</title>
+    <!-- Latest compiled and minified CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <!-- Latest compiled JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        @media screen and (max-width: 768px) {
+            /*small screen*/
+            div.full-detail {
+                display: none;
+            }
+
+            div.less-detail {
+                display: block;
+            }
+
+
+
+        }
+
+        @media screen and (min-width: 768px) and (max-width: 1024px) {
+            /*medium screen*/
+            div.full-detail {
+                display: block;
+            }
+            div.less-detail {
+                display: none;
+            }
+
+
+
+        }
+
+        @media screen and (min-width: 1024px) {
+            /*large screen*/
+
+            div.full-detail {
+                display: block;
+            }
+            div.less-detail {
+                display: none;
+            }
+
+
+        }
+    </style>
+</head>
+<body>
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-Title">My Order Details:</h4>
+    <button type="button" class="close" data-bs-dismiss="modal">&times</button>
+</div>
+
+<div>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#overview" role="tab">Overview</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#products" role="tab">Products</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#details" role="tab">Shipping</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#track" role="tab">Track</a>
+        </li>
+
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade  active p-3" id="overview" role="tabpanel">
+            <!--Order overview-->
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Order ID:</label>
+                <div class="col-sm-10">
+                    <input type="text"  class="form-control" th:value="${order.id}" readonly="readonly"
+                    >
+                </div>
+            </div>
+
+
+
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Subtotal:</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" type="text" th:value="${order.SubTotal}"
+                               readonly>
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Shipping Cost:</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" type="text" th:value="'$ '+${order.shippingCost}"
+                               readonly>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Tax</label>
+                    <div class="col-sm-10 mt-2">
+                        <input class="form-control"  type="text"  th:value="'$ '+${order.tax}" readonly>
+                    </div>
+
+                </div>
+
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Total:</label>
+                <div class="col-sm-10 mt-2">
+                    <input class="form-control"  type="text"  th:value="'$ '+${order.total}" readonly>
+                </div>
+            </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-10 mt-2">
+                        <div class="m-2">TOTAL=SubTotal+ Shipping Cost+ Tax</div>
+                    </div>
+
+                </div>
+
+
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Payment Method:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" th:value="${order.paymentMethod}"
+                           readonly>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Status:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" th:value="${order.status}"
+                           readonly>
+                </div>
+            </div>
+
+
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Order Date:</label>
+                <div class="col-sm-10 mt-2">
+                    <span th:text="${order.deliverDate}"></span>
+
+                </div>
+
+            </div>
+        </div>
+        <!--Product overview-->
+        <div class="tab-pane fade  active p-3" id="products" role="tabpanel">
+            <div>
+                <th:block th:each="detail,status:${CustomerProductList}">
+                    <div class="border rounded p-1" th:id="'list'+${status.count}">
+                        <div class="row" mt-2>
+                            <!--Product Count-->
+                            <th:block th:each="Id,status:${detail.SortedProductId}">
+                                <div class="col-sm-1 divCount" >
+                                    [[${status.count}]]
+                                </div>
+                                <!--Product Image-->
+                                <div class="col-sm-4">
+                                        <div class="card" style="width: 22rem;">
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item"> <img th:src="@{${detail.getSortedMainImage().get(status.index)}}" class="img-fluid"/></li>
+                                            </ul>
+                                        </div>
+                                </div>
+
+
+                                <!--Product Name-->
+                                <div class="col-sm-7">
+                                    <div class="text-wrap card">
+                                            <div><b>[[${detail.getSortedProductName().get(status.index)}]]</b></div>
+                                            <div>
+                                                <span>SubTotal: [[${detail.SortedQuantity.get(status.index)}]]</span>
+                                                X<span>[[${detail.SortedUnitprice.get(status.index)}]]</span>
+                                                =
+                                                <span>$&nbsp;[[${detail.SortedSubtotal.get(status.index)}]]</span>
+                                            </div>
+                                        <!--Write a review about the product-->
+                                        <div th:if="${!detail.isReviewByCustomer()}">
+                                           <a th:href="@{'/write_review/product/'+ ${Id}}" class="btn btn-info">Write a Review</a>
+                                        </div>
+                                        <!--Review a review about the product-->
+                                        <div th:if="${detail.isReviewByCustomer()}">
+                                            <a th:href="@{'/review/customer/'+${Id}}" class="btn btn-warning">See Your Review</a>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </th:block>
+
+
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+
+        </div>
+
+
+
+
+        <!--Shipping overview-->
+        <div class="tab-pane fade  active p-3" id="details" role="tabpanel">
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Deliver Days:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:value="${order.deliverDays}" readonly="readonly"
+                    >
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Expected Deliver Date:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" th:value="${order.deliverDate}"
+                           readonly="readonly">
+                </div>
+
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">First Name:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" th:value="${order.firstName}"
+                           readonly>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Last Name:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" th:value="${order.lastName}"
+                           readonly>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Phone Number:</label>
+                <div class="col-sm-10 mt-2">
+                    <input class="form-control" type="text" th:value="${order.phoneNumber}" readonly="readonly">
+                </div>
+
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">AddressLine 1:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:value="${order.addressline1}" readonly="readonly"
+                    >
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">AddressLine 2:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" th:value="${order.addressline2}"
+                           readonly="readonly">
+                </div>
+
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">City:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" th:value="${order.city}"
+                           readonly>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">State:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" th:value="${order.state}"
+                           readonly>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Country:</label>
+                <div class="col-sm-10 mt-2">
+                    <input class="form-control" type="text" th:value="${order.country}" readonly="readonly">
+                </div>
+
+            </div>
+
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Postal Code:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" th:value="${order.postalCode}" readonly>
+                </div>
+
+            </div>
+
+
+
+
+
+        </div>
+
+        <!--Tracking overview-->
+        <div class="tab-pane fade  active p-3" id="track" role="tabpanel">
+            <div class="full-detail">
+                <table class="table table-responsive-md table-striped table-hover text-center ">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Notes</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="track:${tracklist}">
+                        <td>[[${track.updatedTime}]]</td>
+                        <td>[[${track.status}]]</td>
+                        <td><i>[[${track.notes}]]</i></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+
+            </div>
+            <!--Less Track Details-->
+            <div class="less-detail" id="less-track" >
+                <th:block  th:each="track:${tracklist}">
+                    <div class="row p-1">
+                        <span></span>
+                        [[${track.updatedTime}]]
+                    </div>
+                    <div class="row p-1">
+                        <span class="text-primary">&nbsp;&nbsp;<b>[[${track.status}]]:<i> [[${track.notes}]]</i></b></span>
+                    </div>
+
+                </th:block>
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+
+
+
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+</div>
+
+
+
+</body>
+</html>

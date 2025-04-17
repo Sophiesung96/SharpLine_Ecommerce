@@ -12,11 +12,7 @@ import java.util.Map;
 @ControllerAdvice
 public class MyExceptionHandler {
 
-   /* @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handle(RuntimeException exception){
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                .body("RuntimeException:"+exception.getMessage());
-    }*/
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handle(IllegalArgumentException exception){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -29,5 +25,11 @@ public class MyExceptionHandler {
         exception.getBindingResult().getFieldErrors()
                 .forEach(error->errorMap.put(error.getField(),error.getDefaultMessage()));
        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMap);
+    }
+
+    @ExceptionHandler(CustomerNotFoundException.class)
+    public ResponseEntity<String> handle(CustomerNotFoundException exception){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(exception.getMessage());
     }
 }

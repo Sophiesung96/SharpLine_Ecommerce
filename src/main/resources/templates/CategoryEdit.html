@@ -43,7 +43,24 @@
                     <th:block sec:authorize="hasAnyAuthority('Admin','Editor','SalesPerson','Shipper')">
 
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/products/1}">Products</a>
+                            <div class="dropdown">
+                                <a class="nav-link btn btn-outline- dropdown-toggle"data-bs-toggle="dropdown" th:href="@{/products/1}">Products</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" th:href="@{/products/new}" sec:authorize="hasAnyAuthority('Admin','Editor')">
+                                        Create New
+                                    </a>
+                                    </li>
+                                    <li><a class="dropdown-item" th:href="@{/products/1}">
+                                        View All
+                                    </a>
+                                    </li>
+                                    <li> <a class="dropdown-item" th:href="@{/review}" sec:authorize="hasAuthority('Admin')">
+                                        Reviews
+                                    </a>
+                                    </li>
+                                </ul>
+                            </div>
+
                         </li>
                     </th:block>
 
@@ -156,14 +173,14 @@
                             <label class="col-sm-4" for="CheckDefault">Enabled:</label>
 
                             <div class="col-sm-8">
-                                <input type="checkbox" name="enabled" th:field="*{enabled}" id="CheckDefault"
-                                       value="true" class="m-2">
+                                <input type="hidden" name="enabled" value="0"/>
+                                <input type="checkbox" th:field="*{enabled}" value="1" id="CheckDefault" class="m-2"/>
                             </div>
                         </div>
 
                         <div class="text-center mt-3">
                             <input type="submit" value="save" class="btn btn-primary" id="button">
-                            <a th:href="@{/category/save}">
+                            <a th:href="@{/categories/1}">
                                 <input type="button" value="cancel" class="btn btn-secondary"/>
                             </a>
 

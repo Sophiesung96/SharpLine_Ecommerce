@@ -1,4 +1,6 @@
+var productDetailCount;
 $(document).ready(function () {
+    productDetailCount=$('.hiddenProductId').length+1;
  $('#products').on('click','#linkAddProduct',function (e) {
      e.preventDefault();
      link=$(this);
@@ -39,7 +41,7 @@ function getshippingCost(productId){
     }).done(function (shippingCost) {
         getProductInfo(productId,shippingCost)
     }).fail(function (exception) {
-        alert(exception)
+        alert(exception);
     });
 }
 //get product's info
@@ -61,8 +63,9 @@ function getProductInfo(productId,shippingCost){
 }
 
 function insertNewProduct(productId,productName,mainImagePath,productCost,productPrice,shippingCost){
-    nextcount=$('.hiddenProductId').length+1;
-    rowId='rowTrack'+nextcount;
+    nextcount=productDetailCount+1;
+    productDetailCount++;
+    rowId='list'+nextcount;
     qunantityId='quantity'+nextcount;
     priceId='price'+nextcount;
     SubtotalId='subtotal'+nextcount;

@@ -57,10 +57,12 @@ public class CheckOutServiceImpl implements CheckOutService {
         for (CartItemPName cartItem : cartItems) {
             Total += cartItem.getSubTotal();
         }
-
+        // Creating a BigDecimal from Total
         BigDecimal costBigDecimal = BigDecimal.valueOf(Total);
+
         // Rounding the cost to two decimal places
         BigDecimal roundedCost = costBigDecimal.setScale(2, RoundingMode.HALF_UP);
+
         // Converting the roundedCost back to a float
         float result = roundedCost.floatValue();
         return result;

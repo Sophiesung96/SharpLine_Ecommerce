@@ -1,6 +1,7 @@
 package com.example.demo01.src.Controller;
 
-import com.example.demo01.src.Configuration.FileUploadUtil;
+import com.example.demo01.src.Configuration.Utils.FileUploadUtil;
+import com.example.demo01.src.Pojo.AmazonS3Util;
 import com.example.demo01.src.Pojo.Currency;
 import com.example.demo01.src.Pojo.GeneralSettingBag;
 import com.example.demo01.src.Pojo.Setting;
@@ -56,13 +57,14 @@ public class SettingController {
     private void saveSiteLogo(MultipartFile multipartFile, List<Setting> settingList,GeneralSettingBag generalSettingBag) throws IOException {
         if(!multipartFile.isEmpty()){
             String fileName= StringUtils.cleanPath(multipartFile.getOriginalFilename());
-            String value="SITE_LOGO/";
+            String value="SITE_LOGO/"+fileName;
             generalSettingBag.updateSiteLogo(value);
-            FileUploadUtil.saveFile(value,fileName, multipartFile);
+            String uploadDir="site-logo/";
+            //Updating the folder to the latest and upload the file
+            AmazonS3Util.removeFolder(uploadDir);
+            AmazonS3Util.uploadFile(uploadDir,fileName,multipartFile.getInputStream());
 
         }
-
-
 
     }
 

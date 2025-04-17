@@ -136,11 +136,12 @@ public class ProductDAOImpl implements ProductDAO {
         Map<String, Object> map = new HashMap<>();
         map.put("id",id);
         List<Product> list = new ArrayList<>();
-        Product p=new Product();
         list=namedParameterJdbcTemplate.query(sql,map,new ProductMapper());
-        p=list.get(0);
+        if(list.size()>0){
+            return  list.get(0);
 
-        return p;
+        }
+        return null;
     }
 
     @Override
@@ -169,7 +170,7 @@ public class ProductDAOImpl implements ProductDAO {
 
     @Override
     public List<ProductImage> selectExtraByProductId(int id) {
-        String sql="select * from product_image where product_id=:pid";
+        String sql="select * from product_images where product_id=:pid";
         Map<String,Object> map=new HashMap<>();
         map.put("pid",id);
         List<ProductImage>list=new ArrayList<>();
@@ -202,8 +203,8 @@ public class ProductDAOImpl implements ProductDAO {
 
     @Override
     public void saveEditedProductById(Product product) {
-        String sql="update products set name=:name,alias=:alias,short_description=:short_description,full_context=:full_context," +
-                "main_image=:main_image,updated_Time=:updated_Time,enabled=:enabled,in_stock=:in_stock, list_price=:list_price,discount_percent=:discount_percent," +
+        String sql="update products set name=:name,alias=:alias,short_description=:short_description,full_description=:full_context," +
+                "main_Image=:main_image,updated_Time=:updated_Time,enabled=:enabled,in_stock=:in_stock, price=:list_price,discount_percent=:discount_percent," +
                 "brand_id=:brand_id,category_id=:category_id,length=:length,width=:width,height=:height,weight=:weight,average_rating=:average_rating,review_Count=:review_Count," +
                 "cost=:cost where id=:id";
         Map<String,Object>map=new HashMap<>();
@@ -286,7 +287,19 @@ public class ProductDAOImpl implements ProductDAO {
         return null;
     }
 
-
+    @Override
+    public List<PageNumber> getPageCountForCategoriesWithParentId(int parentId) {
+        String sql="select count(*) as total from categories" +
+                " inner join products on categories.id = products.category_id where categories.parent_id=:parentId";
+        List<PageNumber>list=new ArrayList<>();
+        Map<String,Object>map=new HashMap<>();
+        map.put("parentId",parentId);
+        list=namedParameterJdbcTemplate.query(sql,map,new PageNumberMapper());
+        if(list.size()>0){
+            return  list;
+        }
+        return null;
+    }
 
     @Override
     public List<Product> getProductByCategoryId(int categoryId,int pageno) {
@@ -304,21 +317,21 @@ public class ProductDAOImpl implements ProductDAO {
 
     @Override
     public Product findByNickName(String alias) {
-        Product product=new Product();
-        String sql="select * from products where alias=:alias";
-        Map<String,Object>map=new HashMap<>();
-        map.put("alias",alias);
-        List<Product>list=namedParameterJdbcTemplate.query(sql,map,new ProductMapper());
-        if(list.size()>0){
-            product=list.get(0);
-            return product;
+        Product product = null;
+        String sql = "SELECT * FROM products WHERE alias = :alias"; // Modify SQL query
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("alias", alias); // Pass alias to SQL query
+        List<Product> list = namedParameterJdbcTemplate.query(sql, paramMap, new ProductMapper());
+        if (!list.isEmpty()) {
+            product = list.get(0);
         }
-        return null;
+        return product;
     }
+
 
     @Override
     public List<Product> SearchByKeyword(int pageno, String search) {
-        String sql= "SELECT * FROM products WHERE MATCH(name,short_description,full_context) AGAINST(:search) limit :pageno,10";
+        String sql= "SELECT * FROM products WHERE MATCH(name,short_description,full_description) AGAINST(:search) limit :pageno,10";
         Map<String,Object>map=new HashMap<>();
         map.put("search",search);
         map.put("pageno",(pageno-1)*10);
@@ -331,7 +344,7 @@ public class ProductDAOImpl implements ProductDAO {
 
     @Override
     public List<PageNumber> getFilteredPageCount(String search) {
-        String sql="select count(*)as total from products  WHERE MATCH(name,short_description,full_context) AGAINST(:search)";
+        String sql="select count(*)as total from products  WHERE MATCH(name,short_description,full_description) AGAINST(:search)";
         List<PageNumber>list=new ArrayList<>();
         Map<String,Object>map=new HashMap<>();
         map.put("search",search);
@@ -366,6 +379,15 @@ public class ProductDAOImpl implements ProductDAO {
             return list;
         }
         return null;
+    }
+
+    @Override
+    public void UpdateReviewCountandAverageRating(int productId) {
+      String sql="update  products p set average_rating =(select avg(rating) from reviews r where r.product_Id=:productId)," +
+              "   review_Count=(select count(r.id) from reviews r where r.product_Id=:productId) where p.id=:productId";
+      Map<String,Object> map=new HashMap<>();
+      map.put("productId",productId);
+      namedParameterJdbcTemplate.update(sql,map);
     }
 }
 

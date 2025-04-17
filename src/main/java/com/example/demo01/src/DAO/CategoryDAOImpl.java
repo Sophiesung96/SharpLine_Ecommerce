@@ -1,6 +1,7 @@
 package com.example.demo01.src.DAO;
 
 import com.example.demo01.src.Mapper.CategoryMapper;
+import com.example.demo01.src.Mapper.NestedCategoryMapper;
 import com.example.demo01.src.Mapper.PageNumberMapper;
 import com.example.demo01.src.Pojo.Category;
 import com.example.demo01.src.Pojo.PageNumber;
@@ -36,7 +37,7 @@ public class CategoryDAOImpl implements CategoryDAO {
 
     @Override
     public void saveCategory(Category category) {
-        String sql = "insert into categories(name,nickname,image,enabled,parent_id) value(:name, :nickname,:image,:enabled,:parentid)";
+        String sql = "insert into categories(name,alias,image,enabled,parent_id) value(:name, :nickname,:image,:enabled,:parentid)";
         Map<String, Object> map = new HashMap<>();
         map.put("name", category.getName());
         map.put("nickname", category.getNickname());
@@ -78,7 +79,7 @@ public class CategoryDAOImpl implements CategoryDAO {
 
     @Override
     public void UpdateCategory(Category category) {
-        String sql = "update categories set name=:name, nickname=:nickname, image=:image,enabled=:enabled,parent_id=:parentid where id=:id";
+        String sql = "update categories set name=:name, alias=:nickname, image=:image,enabled=:enabled,parent_id=:parentid where id=:id";
         Map<String, Object> map = new HashMap<>();
         map.put("id", category.getId());
         map.put("name", category.getName());
@@ -120,8 +121,8 @@ public class CategoryDAOImpl implements CategoryDAO {
     }
 
     @Override
-    public void UpdateEnabledStatus(int id, String enabled) {
-        String sql = "update categories set enabled=:enabled where id=:id";
+    public void UpdateEnabledStatus(int id, int enabled) {
+        String sql = "update categories set enabled= :enabled where id= :id";
         Map<String, Object> map = new HashMap<>();
         map.put("enabled", enabled);
         map.put("id", id);
@@ -167,12 +168,89 @@ public class CategoryDAOImpl implements CategoryDAO {
 
     @Override
     public Category findByAliasEnabled(String alias) {
-        String sql="select * from categories where nickname=:nickname and enabled='true'";
+        String sql="select * from categories where name=:alias and enabled=1";
         Map<String, Object> map = new HashMap<>();
-        map.put("nickname",alias);
+        map.put("alias",alias);
         List<Category>list=namedParameterJdbcTemplate.query(sql,map,new CategoryMapper());
         if(list.size()>0){
             return list.get(0);
+        }
+        return null;
+    }
+
+    @Override
+    public List<Category> listRootCategories() {
+        String sql="select * from categories where parent_id is null";
+        Map<String,Object> map=new HashMap<>();
+        List<Category> list=namedParameterJdbcTemplate.query(sql,map,new CategoryMapper());
+        if(list.size()>0){
+            return list;
+        }
+        return null;
+    }
+
+
+    @Override
+    public List<Category> selectNestedCategoriesWithParentId() {
+        String sql="WITH RECURSIVE CategoryHierarchy AS (" +
+                "    SELECT" +
+                "        id," +
+                "        name," +
+                "        parent_id," +
+                "        0 AS level" +
+                "    FROM" +
+                "        categories" +
+                "    WHERE" +
+                "        parent_id IS NULL" +
+                "    UNION ALL" +
+                "    SELECT" +
+                "        c.id," +
+                "        c.name," +
+                "        c.parent_id, " +
+                "        ch.level + 1 " +
+                "    FROM " +
+                 "        categories c " +
+                "            INNER JOIN " +
+                "        CategoryHierarchy ch ON c.parent_id = ch.id " +
+                ") " +
+                " SELECT" +
+                "    id," +
+                "    name," +
+                "    parent_id," +
+                "    level" +
+                " FROM" +
+                "    CategoryHierarchy " +
+                " ORDER BY" +
+                "    level, id";
+        Map<String,Object> map=new HashMap<>();
+        List<Category> list=namedParameterJdbcTemplate.query(sql,map,new NestedCategoryMapper());
+        if(list.size()>0){
+            return list;
+        }
+        return null;
+    }
+
+    @Override
+    public List<Category> listAllCategoriesOrderedByParentName(String ParentName,int level) {
+        String sql="WITH RECURSIVE CategoryHierarchy AS (SELECT id, name, parent_id, name AS parent_name, 0 AS level FROM categories WHERE parent_id IS NULL UNION ALL SELECT c.id, c.name, c.parent_id, ch.parent_name, ch.level + 1 FROM categories c INNER JOIN CategoryHierarchy ch ON c.parent_id = ch.id) SELECT id, name, parent_id, parent_name, level FROM CategoryHierarchy WHERE parent_name=:parentName AND level=:level ORDER BY level, id;";
+        Map<String,Object> map=new HashMap<>();
+        map.put("parentName",ParentName);
+        map.put("level",level);
+        List<Category> list=namedParameterJdbcTemplate.query(sql,map,new NestedCategoryMapper());
+        if(list.size()>0){
+            return list;
+        }
+        return null;
+    }
+
+    @Override
+    public List<Category> listChildrenCategoreisByParentId(int parentId) {
+        String sql="select * from categories where parent_id=:parentId";
+        Map<String, Object> map = new HashMap<>();
+        map.put("parentId",parentId);
+        List<Category>list=namedParameterJdbcTemplate.query(sql,map,new CategoryMapper());
+        if(list.size()>0){
+            return list;
         }
         return null;
     }

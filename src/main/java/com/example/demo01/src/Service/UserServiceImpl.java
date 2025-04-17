@@ -118,8 +118,8 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void UpdateEnabledStatus(Integer id, String enablestatus) {
-        userDao.UpdateEnabledStatus(id, enablestatus);
+    public void UpdateEnabledStatus(Integer id, int enabled) {
+        userDao.UpdateEnabledStatus(id, enabled);
     }
 
     @Override

@@ -20,7 +20,6 @@ public class Product {
     private String alias;
     private String shortDescription;
     private String fullContent;
-
     private Date createdTime;
 @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date UpdatedTime;
@@ -42,18 +41,21 @@ public class Product {
     private String categoryName;
     private String brandName;
     private List<ProductDetail> detail;
+    private Constants constants;
+
 
     public Product(Integer id) {
         this.id = id;
     }
 
     public String getMainImagePath(){
+        this.constants=new Constants();
         if(this.id<0|| this.Mainimage==null){
             return "/image/default.jpeg";
         }
         else{
 
-            return"/product-images/"+this.id+"/"+this.Mainimage;
+            return constants.getS3BaseUri()+"/product-images/"+this.id+"/"+this.Mainimage;
         }
     }
 

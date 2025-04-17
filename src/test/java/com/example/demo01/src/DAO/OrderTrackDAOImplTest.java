@@ -19,7 +19,7 @@ class OrderTrackDAOImplTest {
     @Test
     public void testUpdateOrderTrackByOrderId(){
          int orderId=1;
-        OrderTrack orderTrack=new OrderTrack(1,1, OrderStatus.NEW.name(),new Date(),OrderStatus.NEW.defaultdscription());
+        OrderTrack orderTrack=new OrderTrack(1,1, OrderStatus.NEW.name(),new Date(),OrderStatus.NEW.defaultdescription());
          orderTrackDAO.updateOrderTrackByOrderId(orderTrack,1);
     }
 

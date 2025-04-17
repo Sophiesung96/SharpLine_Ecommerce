@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Scanner;
+
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
@@ -19,6 +21,5 @@ public class Role {
     public Role(String name) {
         this.name = name;
     }
-
 
 }

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Return_Order_Modal</title>
+</head>
+<body>
+<div th:fragment="Return">
+    <div class="modal fade" id="ReturnOrderModal">
+        <div class="modal-dialog">
+            <form onsubmit="return submitReturnOrderForm(this)">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center" id="returnOrderModalTitle">Return Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                    <div class="modal-body" id="confirm-text">
+                        <div>
+                            <div>Reason:</div>
+                            <div><input type="radio" name='reason' value="I bought the wrong items."/> I bought the wrong items.</div>
+                            <div><input type="radio" name='reason' value="I received the wrong items."/> I received the wrong items.</div>
+                            <div><input type="radio" name='reason' value="The product was damaged/defective."/> The product was damaged/defective.</div>
+                            <div><input type="radio"name='reason'  value="The product arrived too late"/> The product arrived too late</div>
+                            <div><textarea  class="form-control m-1" rows="4" id="returnNote" maxlength="120"></textarea></div>
+                        </div>
+                    </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success"id="firstButton" data-bs-dismiss="modal">Send Request</button>
+                    <button type="button" class="btn btn-danger"id="secondButton" data-bs-dismiss="modal">Cancel</button>
+                </div>
+
+
+               </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
+<div th:fragment="Response">
+    <div class="modal fade" id="ResponsorderModal">
+        <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-center" id="ResponseOrderModalTitle">Return Message</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body" id="Response-text">
+                            <div>
+                            <p class="text-center">Return request has been sent!</p>
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger"id="ResponseButton" data-bs-dismiss="modal">Close</button>
+                    </div>
+
+
+
+                </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

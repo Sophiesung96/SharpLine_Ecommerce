@@ -1,5 +1,8 @@
 package com.example.demo01.src.Exception;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+
 public class PayPalApiException extends RuntimeException{
     public PayPalApiException(String message) {
         super(message);

@@ -1,9 +1,10 @@
 package com.example.demo01.src.Controller;
 
-import com.example.demo01.src.Configuration.UserCsvExporter;
-import com.example.demo01.src.Configuration.UserExcelExporter;
-import com.example.demo01.src.Configuration.UserPDFExporter;
-import com.example.demo01.src.Configuration.FileUploadUtil;
+import com.example.demo01.src.Configuration.Exporter.UserCsvExporter;
+import com.example.demo01.src.Configuration.Exporter.UserExcelExporter;
+import com.example.demo01.src.Configuration.Exporter.UserPDFExporter;
+import com.example.demo01.src.Configuration.Utils.FileUploadUtil;
+import com.example.demo01.src.Pojo.AmazonS3Util;
 import com.example.demo01.src.Pojo.Role;
 import com.example.demo01.src.Pojo.Users;
 import com.example.demo01.src.Pojo.UsersRole;
@@ -83,9 +84,8 @@ public class UserController {
     //Direct to create new user form page
     @PostMapping("/user/save")
     public String saveUser(@ModelAttribute Users user, HttpSession session, @RequestParam("image") MultipartFile multipartFile) {
-        if (user.getEnabledStatus() == null) {
-            String status = "false";
-            user.setEnabledStatus(status);
+        if (user.getEnabled() == 0) {
+            user.setEnabled(0);
         }
         // Create new user
         userService.CreateUser(user);
@@ -115,7 +115,8 @@ public class UserController {
             user.setPhoto(fileName);
             String uploadDir = "user-pics" + File.separator + newuser.getId();
             try {
-                FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+                AmazonS3Util.removeFolder(uploadDir);
+                AmazonS3Util.uploadFile(uploadDir,fileName,multipartFile.getInputStream());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -158,17 +159,22 @@ public class UserController {
     public String DeleteUser(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
 
         userService.DeleteUserById(id);
+        String userPhotoDir="user-photos/"+id;
+        AmazonS3Util.removeFolder(userPhotoDir);
+        redirectAttributes.addFlashAttribute("message","The user ID"+id+"has been deleted successfully");
+
         return "redirect:/users";
     }
 
     @RequestMapping("/update/Enabledstatus/{id}/{enabledStatus}")
     public String UpdateEnabledStatus(@PathVariable Integer id, @PathVariable String enabledStatus) {
+        int enabled = 0;
         if (enabledStatus.equals("true")) {
-            enabledStatus = "false";
-            userService.UpdateEnabledStatus(id, enabledStatus);
+            enabled=0;
+            userService.UpdateEnabledStatus(id, enabled);
         } else {
-            enabledStatus = "true";
-            userService.UpdateEnabledStatus(id, enabledStatus);
+            enabled = 1;
+            userService.UpdateEnabledStatus(id, enabled);
 
         }
 

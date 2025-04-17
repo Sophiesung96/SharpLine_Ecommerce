@@ -2,30 +2,37 @@ package com.example.demo01.src.DAO;
 
 import com.example.demo01.src.Pojo.*;
 
+import java.util.Date;
 import java.util.List;
 
 public interface OrderDAO {
 
-    public List<Order> findAllByKeyword(int pageNo, String keyword);
-     public List<OrderDetails> getOrderDetailsByOrderId(int orderId);
-     public List<Order> findAll(int pageNo);
-     public Integer getTotalPage();
-     public int createorder(Customer customer,Order order);
-     public void createOrderDetail(Order order,Iterable<OrderDetails> list,Customer customer);
-     public OrderDetailForm getOrderDetailById(int orderId);
-    public Order getOrderById(int orderId);
-    public Order getOrderByCustomerId(int customerid);
+     List<Order> findAllByKeyword(int pageNo, String keyword);
+      List<OrderDetails> getOrderDetailsByOrderId(int orderId);
+      List<Order> findAll(int pageNo);
+      Integer getTotalPage();
+      int createorder(Customer customer,Order order);
+      void createOrderDetail(Order order,Iterable<OrderDetails> list,Customer customer);
+      OrderDetailForm getOrderDetailById(int orderId);
+     Order getOrderById(int orderId);
+     List<Order> getOrderByCustomerId(int customerid);
     void updatePaymentMethod(String method,int id);
-     public void DeleteOrderById(int orderId);
-     public void EditOrder(Order order);
+      void DeleteOrderById(int orderId);
+      void EditOrder(Order order);
      List<TableOrderDetail> getOrderDetailsList(int orderId);
      List<Country> listAllCountries();
-     public void updateOrderDetailsByOrderId(OrderDetails orderDetails);
-     public void updateOriginalOrderById(Order order);
-     public void updateTrackStatus(String trackStatus,Order order);
-     public List<TableOrderDetail> getTrackStatusList(int orderId);
-     public List<Order> getOrderTrackByKeyword(String keyword,int pageNo);
-
+      void updateOrderDetailsByOrderId(OrderDetails orderDetails);
+      void updateOriginalOrderById(Order order);
+      void updateTrackStatus(String trackStatus,Order order);
+      List<TableOrderDetail> getTrackStatusList(int orderId);
+      List<Order> getOrderTrackByKeyword(String keyword,int pageNo);
+      List<CombinedOrderListForCustomer> getOrderListForCustomer(int customerId);
+      Integer getTotalPageForCustomerOrderList(int customerId);
+    List<ProductListForCustomer>getCustomerOrderDetailList(int customerId,int orderId);
+    Order getOrderDetailByIdAndCustomer(int customerId,int orderId);
+    List<TableOrderDetail> getCustomerTrackStatusList(int CustomerId,int OrderId);
+    List<Order> findByOrderTimeBetween(Date startTime, Date endTime);
+    List<TableOrderDetail> findOrderDetailListForGoogleChart(Date startDate,Date enddate);
 
 
 }

@@ -1,6 +1,7 @@
 package com.example.demo01.src.Controller;
 
 import com.example.demo01.src.Configuration.MailConfiguration;
+import com.example.demo01.src.Configuration.Utils.ControllerHelper;
 import com.example.demo01.src.Exception.CustomerNotFoundException;
 import com.example.demo01.src.Pojo.*;
 import com.example.demo01.src.Service.*;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -55,10 +57,13 @@ public class CheckOutController {
     @Autowired
     PayPalService payPalService;
 
+    @Autowired
+    ControllerHelper controllerHelper;
+
 
     @GetMapping("/checkout")
     public String showCheckOut(Model model, HttpServletRequest request) {
-        Customer customer = getAuthenticatedCustomer(request);
+        Customer customer = controllerHelper.getAuthenticatedCustomer(request);
         List<CartItem> list = shoppingCartService.listAllCartItem(customer);
         //contains more detailed products
         List<CartItemPName> pList = shoppingCartService.getJoinedProductnCustomer(customer);
@@ -100,7 +105,7 @@ public class CheckOutController {
             model.addAttribute("currencyCode", currencyCode);
             model.addAttribute("checkOutInfo", checkOutInfo);
             model.addAttribute("cartItemlist", list);
-            //for customers using paypal paymentgateaway
+            //for customers using paypal payment gateaway
              Country country=countryService.getByCountryId(customer.getCountryId());
              customer.setCountryCode(country.getCode());
             model.addAttribute("customer", customer);
@@ -118,29 +123,12 @@ public class CheckOutController {
     }
 
 
-    private Customer getAuthenticatedCustomer(HttpServletRequest request) {
-        String email = MailConfiguration.getEmailOfAuthenticatedCustomer(request);
-        if (email == null) {
-            throw new CustomerNotFoundException("No Aunthenticated Customer");
-        }
-        if (customerService.getCustomerByEmail(email) != null) {
-            return customerService.getCustomerByEmail(email);
-
-        } else {
-            String userName = email;
-            Customer customer = customerService.getCustomerByfullName(userName);
-            log.info(customer.getFirstName());
-            return customer;
-
-        }
-
-    }
 
     @PostMapping("/placeOrder")
     public String placeOrder(HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
         String paymentType = request.getParameter("paymentMethod");
         PaymentMethod paymentMethod = PaymentMethod.valueOf(paymentType);
-        Customer customer = getAuthenticatedCustomer(request);
+        Customer customer = controllerHelper.getAuthenticatedCustomer(request);
         List<CartItem> list = shoppingCartService.listAllCartItem(customer);
         List<Integer> productId = new ArrayList<>();
         //contains more detailed products
@@ -210,6 +198,7 @@ public class CheckOutController {
         javaMailSender.send(mimeMessage);
 
     }
+
 
     @PostMapping("/process_paypal_order")
     public String processPayPalOrder(HttpServletRequest request,Model model){

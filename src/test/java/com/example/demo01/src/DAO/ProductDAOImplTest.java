@@ -1,5 +1,6 @@
 package com.example.demo01.src.DAO;
 
+import com.example.demo01.src.Pojo.PageNumber;
 import com.example.demo01.src.Pojo.Product;
 import com.example.demo01.src.Pojo.ProductDetail;
 import com.example.demo01.src.Pojo.ProductImage;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ class ProductDAOImplTest {
 
 
 
-    @MockBean
+    @SpyBean
     ProductDAO productDAO;
 
     @Test
@@ -58,6 +60,8 @@ class ProductDAOImplTest {
         int id=1;
         int enabled=0;
         productDAO.UpdateEnabledStatus(id,enabled);
+        Product product=productDAO.editProductById(id);
+        assertEquals(0,product.getEnabled());
 
     }
     @Test
@@ -65,6 +69,8 @@ class ProductDAOImplTest {
     public void deleteProductById(){
         int id=1;
         productDAO.deleteProductById(id);
+      Product product= productDAO.editProductById(id);
+      assertNotNull(product);
     }
 
     @Test
@@ -83,7 +89,6 @@ class ProductDAOImplTest {
        p.setId(1);
         productImage.setName("testing01");
         productDAO.saveExtraImagesofProduct(productImage.getName(),p);
-
     }
     @Test
     public void selectProductDetailById(){
@@ -97,9 +102,23 @@ class ProductDAOImplTest {
             assertEquals("test",p.getValue());
 
         }
-
-
+    }
+    @Test
+    @Transactional
+    public void UpdateReviewCountandAverageRating(){
+        int productId=6;
+        Product product=new Product();
+        productDAO.UpdateReviewCountandAverageRating(productId);
+       product=productDAO.editProductById(productId);
+      assertEquals(product.getAverageRating(),4);
     }
 
+    @Test
+    public void testgetPageCountForCategoriesWithParentId(){
+        int parentId=2;
+        List<PageNumber> list = productDAO.getPageCountForCategoriesWithParentId(parentId);
+        list.forEach(num-> System.out.println(num.getPagenumber()));
+
+    }
 
 }

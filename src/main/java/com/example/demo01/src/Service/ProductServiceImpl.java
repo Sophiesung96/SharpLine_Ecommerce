@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -45,7 +46,6 @@ public class ProductServiceImpl implements ProductService {
     public void saveProduct(Product product) {
         if (product.getId() == null) {
             product.setCreatedTime(new Date());
-
         }
         if (product.getAlias() == null || product.getAlias().isEmpty()) {
             String defaultAlias = product.getName();
@@ -238,5 +238,32 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> ProductSearchByKeywordforOrder(int pageno, String search) {
         List<Product> list=productDAO.ProductSearchByKeywordforOrder(pageno, search);
         return list;
+    }
+
+    @Override
+    public Product findById(int id) {
+        Product product=productDAO.findById(id);
+        return product;
+    }
+
+    @Override
+    public void UpdateReviewCountandAverageRating(int productId) {
+        productDAO.UpdateReviewCountandAverageRating(productId);
+    }
+
+    @Override
+    public List<Integer>  getPageCountForCategoriesWithParentId(int parentId) {
+        List<PageNumber>list=productDAO.getPageCountForCategoriesWithParentId(parentId);
+        int pageNumber=0;
+        for(PageNumber DbPageNumber:list){
+            pageNumber=DbPageNumber.getPagenumber();
+        }
+        pageNumber=(pageNumber/6)+1;
+        List<Integer> pageList=new ArrayList<>();
+        for(int i=0;i<pageNumber;i++){
+            pageList.add(i);
+        }
+
+        return pageList;
     }
 }

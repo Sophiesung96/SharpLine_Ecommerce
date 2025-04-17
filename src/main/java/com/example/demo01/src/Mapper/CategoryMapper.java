@@ -13,12 +13,11 @@ public class CategoryMapper implements RowMapper<Category> {
     public Category mapRow(ResultSet resultSet, int i) throws SQLException {
         Category category = new Category();
         category.setId(resultSet.getInt("id"));
-        category.setNickname(resultSet.getString("nickname"));
+        category.setNickname(resultSet.getString("alias"));
         category.setName(resultSet.getString("name"));
         category.setImage(resultSet.getString("image"));
-        category.setEnabled(resultSet.getString("enabled"));
+        category.setEnabled(resultSet.getInt("enabled"));
         category.setParentid(resultSet.getInt("parent_id"));
-
         return category;
     }
 }

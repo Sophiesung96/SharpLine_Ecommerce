@@ -1,6 +1,13 @@
 var confirmText;
 var yesButton;
 var noButton;
+var iconNames={
+    'PICKED':'fa-people-carry',
+    'SHIPPING':'fa-solid fa-truck-fast',
+    'DELIVERED':'fa-box-open',
+    'RETURNED':'fa-undo',
+    'PACKAGED':'fa-solid fa-cube'
+}
 $(document).ready(function () {
     confirmText=$('#confirm-text');
     yesButton=$('#yes-Button');
@@ -22,7 +29,7 @@ function showdateConfirmModal(link){
     var modal = new bootstrap.Modal(document.getElementById('ConfirmModal'));
     $('#ConfirmModal').find('.modal-body').text('Are you sure you want to update status ' +
         'of the Order ID'+"#"+" "+orderId
-    +"to"+" "+Modalstatus+"?");
+    +"to "+" "+Modalstatus+"?");
     modal.show();
 }
 
@@ -58,6 +65,6 @@ function showMessageModal(message){
 
 function updateStatusColor(orderId,status){
     link=$('#link'+status+orderId);
+    link.replaceWith("<i class='iconNames[status]" + " fa-2x icon-green'></i>");
 
-    link.css('background-color', '#f37a27');
 }

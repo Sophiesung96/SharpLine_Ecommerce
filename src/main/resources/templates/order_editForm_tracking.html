@@ -46,7 +46,7 @@
                                     <th:block th:each="orderStatus:${orderStatusList}">
                                         <option th:selected="${orderStatus.name()==track.getStatus() }"
                                                 th:value="${orderStatus.name()}"
-                                                th:defaultDescription="${orderStatus.defaultdscription()}"
+                                                th:defaultDescription="${orderStatus.defaultdescription()}"
                                         >[[${orderStatus.name()}]]</option>
                                     </th:block>
                                 </select>

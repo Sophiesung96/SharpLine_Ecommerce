@@ -39,9 +39,18 @@ public class Order {
     private Date DeliverDate;
     private List<OrderDetails> orderDetailList;
     private List<TableOrderDetail> orderTrackList;
+    private List<String> productNameList;
 
     public Order(int id) {
         this.id = id;
+    }
+
+    public Order(int id, String OrderTime,float productCost, float total, float subTotal) {
+        this.id = id;
+        ProductCost = productCost;
+        Total = total;
+        orderTime=OrderTime;
+        SubTotal = subTotal;
     }
 
     public String getCustomerFullName(){
@@ -119,13 +128,15 @@ public class Order {
     public boolean hasStatus(String status) {
         List<TableOrderDetail>list=new ArrayList<>();
          list=this.orderTrackList;
-        for (TableOrderDetail detail : list) {
-            if (status != null && !status.isEmpty()) {
-                if (status.equals(detail.getStatusCondition())) {
-                    return true;
-                }
-            }
-        }
+         if(list!=null){
+             for (TableOrderDetail detail : list) {
+                 if (status != null && !status.isEmpty()) {
+                     if (status.equals(detail.getStatusCondition())) {
+                         return true;
+                     }
+                 }
+             }
+         }
         return false;
     }
 
@@ -144,10 +155,7 @@ public class Order {
     public boolean isPackaged(){
         return hasStatus("PACKAGED");
     }
-
-
-
-
-
+    public boolean isReturnRequested(){return hasStatus("REQUEST_RETURNED");};
 
 }
+

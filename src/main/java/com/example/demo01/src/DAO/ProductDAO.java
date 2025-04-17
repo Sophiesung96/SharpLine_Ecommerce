@@ -6,38 +6,39 @@ import java.util.List;
 
 public interface ProductDAO {
 
-    public List<Product> listAll();
+    List<Product> listAll();
+    List<PageNumber> getPageCountForCategoriesWithParentId(int parentId);
+    List<Product> listAllOrderByName();
 
-    public List<Product> listAllOrderByName();
+    List<ProductCBName> selectCategoyrnBrandByName();
+    ProductCBName selectCategoyrnBrandByProductId(int id);
 
-    public List<ProductCBName> selectCategoyrnBrandByName();
-    public ProductCBName selectCategoyrnBrandByProductId(int id);
+    void saveProduct(Product product);
 
-    public void saveProduct(Product product);
+    List<Product> selectProductByName(Product product);
 
-    public  List<Product> selectProductByName(Product product);
+    void UpdateEnabledStatus(int id, int enabled);
+     void deleteProductById(int id);
+     Product findById(int id);
+     void saveProductDetails(ProductDetail detail,int Pid);
+     List<ProductDetail> selectProductDetailsById(int id);
+    List<Product> selectProductByPagination(int pageno);
+    List<PageNumber> getPageCount();
+    Product editProductById(int id);
+    void saveExtraImagesofProduct(String name,Product product);
 
-    public void UpdateEnabledStatus(int id, int enabled);
-    public void deleteProductById(int id);
-    public Product findById(int id);
-    public void saveProductDetails(ProductDetail detail,int Pid);
-    public List<ProductDetail> selectProductDetailsById(int id);
-    public List<Product> selectProductByPagination(int pageno);
-    public List<PageNumber> getPageCount();
-    public Product editProductById(int id);
-    public void saveExtraImagesofProduct(String name,Product product);
+    List<ProductImage> selectExtraByProductId(int id);
+    void saveEditedProductById(Product product);
+    void UpdateProductImage(ProductImage image,Product product);
+    void UpdateProductDetails(ProductDetail productDetail,Product product);
+    void DeleteProductDetailsByProductId(int productId,int id);
+    List<Product> getProductByCategoryId(int categoryId,int pageno);
+    Product findByNickName(String nickname);
+    List<Product> SearchByKeyword(int pageno,String search);
 
-    public List<ProductImage> selectExtraByProductId(int id);
-    public void saveEditedProductById(Product product);
-    public void UpdateProductImage(ProductImage image,Product product);
-    public void UpdateProductDetails(ProductDetail productDetail,Product product);
-    public void DeleteProductDetailsByProductId(int productId,int id);
-    public  List<Product> getProductByCategoryId(int categoryId,int pageno);
-    public Product findByNickName(String nickname);
-    public  List<Product> SearchByKeyword(int pageno,String search);
+    List<PageNumber> getFilteredPageCount(String search);
 
-    public List<PageNumber> getFilteredPageCount(String search);
-
-    public List<Product> ProductSearchByKeywordforOrder(int pageno, String search);
+    List<Product> ProductSearchByKeywordforOrder(int pageno, String search);
+    void UpdateReviewCountandAverageRating(int productId);
 
 }

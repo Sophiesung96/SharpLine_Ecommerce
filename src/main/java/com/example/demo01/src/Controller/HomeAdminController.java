@@ -34,4 +34,7 @@ public class HomeAdminController {
         model.addAttribute("list",list);
         return "index";
     }
+
+
+
 }

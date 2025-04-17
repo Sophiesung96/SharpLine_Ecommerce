@@ -5,23 +5,26 @@
     <title>order_StatusFragment</title>
 </head>
 <body>
- <div  th:fragment="content(statusVar,statusName)">
-     <th:block th:if="${statusVar}">
-         <a class="linkUpdateStatus" style="text-decoration: none">
+ <div  th:fragment="content(statusVar,statusName,iconName)">
+         <th:block th:if="${statusVar}">
+             <a>
+                 <i th:class="${iconName} + ' fa-2x'" style="color:orange;"></i>
+             </a>
+         </th:block>
+         <th:block th:unless="${statusVar}">
+             <div>
+                 <a th:class="linkUpdateStatus"
+                    style="text-decoration: none"
+                    th:href="@{'/orders_shipper/update/'+${order.id}+'/'+${statusName}}"
+                    th:orderId="${order.id}"
+                    th:status="${statusName}"
+                    th:id="'link'+${statusName}+${order.id}"
+                 >
+                     <i th:class=" ${iconName} + ' fa-2x'" style="color:darkblue"></i>
+                 </a>
+             </div>
 
-             <p class="py-1 px-2 rounded text-white"
-                style="background-color: #f37a27;" th:text="${statusName}"></p>
-         </a>
-     </th:block>
-     <th:block th:unless="${statusVar}">
-         <a class="linkUpdateStatus" style="text-decoration: none"
-            th:href="@{'/orders_shipper/update/'+${order.id}+'/'+${statusName}}"
-            th:orderId="${order.id}" status="PACKAGED">
-             <p class="py-1 px-2 rounded text-white"
-                th:id="'link'+statusName+${order.id}"
-                style="background-color: #555555;" th:text="${statusName}"></p>
-         </a>
-     </th:block>
- </div>
+         </th:block>
+     </div>
 </body>
 </html>

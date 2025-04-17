@@ -67,7 +67,24 @@
                     <th:block sec:authorize="hasAnyAuthority('Admin','Editor','SalesPerson','Shipper')">
 
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/products/1}">Products</a>
+                            <div class="dropdown">
+                                <a class="nav-link btn btn-outline- dropdown-toggle"data-bs-toggle="dropdown" th:href="@{/products/1}">Products</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" th:href="@{/products/new}" sec:authorize="hasAnyAuthority('Admin','Editor')">
+                                        Create New
+                                    </a>
+                                    </li>
+                                    <li><a class="dropdown-item" th:href="@{/products/1}">
+                                        View All
+                                    </a>
+                                    </li>
+                                    <li> <a class="dropdown-item" th:href="@{/review}" sec:authorize="hasAuthority('Admin')">
+                                        Reviews
+                                    </a>
+                                    </li>
+                                </ul>
+                            </div>
+
                         </li>
                     </th:block>
 
@@ -197,14 +214,14 @@
                             </td>
 
                             <td>
-                                <a th:if="${list.enabled=='true'}"
-                                   th:href="@{'/update/enabled/'+${list.getId()}+'/'+${list.getEnabled()}}"
+                                <a th:if="${list.enabled==1}"
+                                   th:href="@{'/category/update/enabled/'+${list.getId()}+'/'+${list.getEnabled()}}"
                                    style="text-decoration: none; color:deeppink">
                                     <i class="fa-solid fa-circle-check"></i>
 
                                 </a>
-                                <a th:if="${list.enabled=='false'}"
-                                   th:href="@{'/update/enabled/'+${list.getId()}+'/'+${list.getEnabled()}}"
+                                <a th:if="${list.enabled==0}"
+                                   th:href="@{'/category/update/enabled/'+ ${list.getId()}+'/'+${list.getEnabled()}}"
                                    style="text-decoration: none; color:grey">
                                     <i class="fa-solid fa-circle-check"></i>
                                 </a>

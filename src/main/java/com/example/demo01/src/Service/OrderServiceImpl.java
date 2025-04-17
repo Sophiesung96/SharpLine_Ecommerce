@@ -1,6 +1,7 @@
 package com.example.demo01.src.Service;
 
 import com.example.demo01.src.DAO.*;
+import com.example.demo01.src.Exception.OrderNotFoundExcption;
 import com.example.demo01.src.Pojo.*;
 import com.example.demo01.src.DAO.AddressDAO;
 import com.example.demo01.src.DAO.CountryDao;
@@ -8,11 +9,13 @@ import com.example.demo01.src.DAO.CustomerDao;
 import com.example.demo01.src.DAO.OrderDAO;
 import com.example.demo01.src.Pojo.*;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -89,6 +92,7 @@ public class OrderServiceImpl implements OrderService{
         //we then choose customer's default address instead
         if(address==null){
             copyAddressFromCustomer(order,customer.getId());
+
         }else{
             log.info("shipping address id:{},address.customerId{}",address.getId(),address.getCustomerId());
             copyShippingAddress(order,address,customer);
@@ -96,14 +100,8 @@ public class OrderServiceImpl implements OrderService{
         SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date=dateFormat.format(new Date());
         order.setOrderTime(date);
-        if(paymentMethod.equals(PaymentMethod.PAYPAL)){
-            order.setStatus(OrderStatus.PAID.name());
-        }else{
-            order.setStatus(OrderStatus.NEW.name());
-        }
         order.setDeliverDays(checkOutInfo.getDeliverDays());
         order.setDeliverDate(checkOutInfo.getDeliverDate());
-        order.setPostalCode(address.getPostalCode());
         order.setTotal(checkOutInfo.getPaymentTotal());
         order.setProductCost(checkOutInfo.getProductCost());
         order.setPaymentMethod(paymentMethod.name());
@@ -128,23 +126,33 @@ public class OrderServiceImpl implements OrderService{
         orderDAO.createOrderDetail(order,detailListlist,customer);
 
         OrderDetailForm orderDetailForm=orderDAO.getOrderDetailById(orderId);
-
+        //Create a new orderTrack along with a new Order
+        OrderTrack orderTrack=new OrderTrack();
+        orderTrack.setOrderId(orderId);
+        if(paymentMethod.equals(PaymentMethod.PAYPAL)){
+            orderTrack.setStatus(OrderStatus.PAID.name());
+        }else{
+            orderTrack.setStatus(OrderStatus.NEW.name());
+        }
+        orderTrack.setNotes(OrderStatus.NEW.defaultdescription());
+        orderTrack.setUpdatedTime(new Date());
+        orderTrackDAO.createOrderTrack(orderTrack);
         return orderDetailForm;
-
     }
 
     @Override
     public void copyAddressFromCustomer(Order order,int customerId) {
-       Customer cusomer=customerDao.findCustomerById(customerId);
-        order.setFirstName(cusomer.getFirstName());
-        order.setLastName(cusomer.getLastName());
-        order.setPhoneNumber(cusomer.getPhoneNumber());
-        order.setAddressline1(cusomer.getAddressline1());
-        order.setAddressline2(cusomer.getAddressline2());
-        order.setCity(cusomer.getCity());
-        order.setCountry(cusomer.getCountryName());
-        order.setPostalCode(cusomer.getPostalCode());
-        order.setState(cusomer.getState());
+       Customer customer=customerDao.findCustomerById(customerId);
+       Customer countryNameCustomer=customerDao.findCountryPerCustomerById(customerId);
+        order.setFirstName(customer.getFirstName());
+        order.setLastName(customer.getLastName());
+        order.setPhoneNumber(customer.getPhoneNumber());
+        order.setAddressline1(customer.getAddressline1());
+        order.setAddressline2(customer.getAddressline2());
+        order.setCity(customer.getCity());
+        order.setCountry(countryNameCustomer.getCountryName());
+        order.setPostalCode(customer.getPostalCode());
+        order.setState(customer.getState());
 
 
 
@@ -239,7 +247,7 @@ public class OrderServiceImpl implements OrderService{
                 OrderTrack NeworderTrack=new OrderTrack();
                 NeworderTrack.setOrderId(orderId);
                 NeworderTrack.setStatus(status);
-                NeworderTrack.setNotes(orderStatus.defaultdscription());
+                NeworderTrack.setNotes(orderStatus.defaultdescription());
                 NeworderTrack.setUpdatedTime(new Date());
                 orderTrackList.add(NeworderTrack);
                 orderTrackDAO.createOrderTrack(NeworderTrack);
@@ -250,6 +258,103 @@ public class OrderServiceImpl implements OrderService{
         }
 
 
+        @Override
+        public List<CombinedOrderListForCustomer>  getOrderListForCustomer(int customerId) {
+            List<CombinedOrderListForCustomer>  list=orderDAO.getOrderListForCustomer(customerId);
+            return list;
+    }
+
+
+    @Override
+    public List<Order> getOrderByCustomerId(int customerid) {
+        List<Order> list=orderDAO.getOrderByCustomerId(customerid);
+        return list;
+    }
+
+    @Override
+    public List<Integer> getTotalPageForCustomerOrderList(int customerid) {
+        Integer number=orderDAO.getTotalPageForCustomerOrderList(customerid);
+        number=(number/5)+1;
+        List<Integer> pageList=new ArrayList<>();
+        for(int i=1;i<=number;i++){
+            pageList.add(i);
+        }
+        return pageList;
+    }
+
+
+    @Override
+    public List<ProductListForCustomer> getCustomerOrderDetailList(int customerId,int orderId) {
+        List<ProductListForCustomer> list=orderDAO.getCustomerOrderDetailList(customerId,orderId);
+        for(ProductListForCustomer customer:list){
+            String UnsortedProductName=customer.getProductName();
+            String SortedProductName[]=UnsortedProductName.split(",");
+            String UnsortedQuantity=customer.getQuantity();
+            String SortedQuantity[]=UnsortedQuantity.split(",");
+            String UnsortedSubTotal=customer.getSubtotal();
+            String SortedSubTotal[]=UnsortedSubTotal.split(",");
+            String UnsortedUnitPrice=customer.getUnitprice();
+            String SortedUnitPrice[]=UnsortedUnitPrice.split(",");
+            String UnsortedProductId=customer.getProductId();
+            String SortedProductId[]=UnsortedProductId.split(",");
+            String UnsortedShippingCost=customer.getShippingCost();
+            String SortedShippingCost[]=UnsortedShippingCost.split(",");
+            String UnsortedProductCost=customer.getProductCost();
+            String SortedProductCost[]=UnsortedProductCost.split(",");
+            customer.setSortedProductName(Arrays.asList(SortedProductName));
+            customer.setSortedQuantity(Arrays.asList(SortedQuantity));
+            customer.setSortedSubtotal(Arrays.asList(SortedSubTotal));
+            customer.setSortedUnitprice(Arrays.asList(SortedUnitPrice));
+            customer.setSortedProductId(Arrays.asList(SortedProductId));
+            customer.setSortedShippingCost(Arrays.asList(SortedShippingCost));
+            customer.setSortedProductCost(Arrays.asList(SortedProductCost));
+        }
+        return list;
+
+
+    }
+
+
+    @Override
+    public Order getOrderDetailByIdAndCustomer(int customerId, int orderId) {
+      Order order= orderDAO.getOrderDetailByIdAndCustomer(customerId, orderId);
+        return order;
+    }
+
+
+    @Override
+    public void setOrderReturnRequested(OrderReturnRequest returnRequest, Customer customer, Order order) {
+        if(order==null){
+
+         throw new OrderNotFoundExcption("Order ID:"+returnRequest.getId()+"Not Found");
+        }
+        if(order.isReturnRequested()){
+            return;
+        }
+        OrderTrack orderTrack=new OrderTrack();
+        orderTrack.setOrderId(returnRequest.getId());
+        orderTrack.setUpdatedTime(new Date());
+        orderTrack.setStatus("RETURN_REQUESTED");
+        String notes="Reason:"+returnRequest.getReason();
+        if(!"".equals(returnRequest.getNote())){
+            notes+=". "+returnRequest.getNote();
+        }
+        orderTrack.setNotes(notes);
+        orderDAO.updateTrackStatus("RETURN_REQUESTED",order);
+        orderTrackDAO.createOrderTrack(orderTrack);
+    }
+
+    @Override
+    public List<TableOrderDetail> getCustomerTrackStatusList(int CustomerId, int OrderId) {
+        List<TableOrderDetail> list=orderDAO.getCustomerTrackStatusList(CustomerId,OrderId);
+        return list;
+    }
+
+    @Override
+    public List<Order> findByOrderTimeBetween(Date startTime, Date endTime) {
+        List<Order> list=orderDAO.findByOrderTimeBetween(startTime, endTime);
+        return list;
+    }
 }
 
 

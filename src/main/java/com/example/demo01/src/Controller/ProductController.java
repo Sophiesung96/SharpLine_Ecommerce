@@ -1,11 +1,12 @@
 package com.example.demo01.src.Controller;
 
-import com.example.demo01.src.Configuration.FileUploadUtil;
+import com.example.demo01.src.Configuration.MailConfiguration;
+import com.example.demo01.src.Configuration.Utils.ControllerHelper;
+import com.example.demo01.src.Configuration.Utils.FileUploadUtil;
+import com.example.demo01.src.Exception.CustomerNotFoundException;
 import com.example.demo01.src.Pojo.*;
-import com.example.demo01.src.Service.BrandService;
-import com.example.demo01.src.Service.CategoryService;
-import com.example.demo01.src.Service.ProductService;
-import lombok.extern.java.Log;
+import com.example.demo01.src.Service.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
-@Log
+@Slf4j
 public class ProductController {
 
 
@@ -33,6 +35,16 @@ public class ProductController {
 
     @Autowired
     CategoryService categoryService;
+    @Autowired
+    ReviewService reviewService;
+    @Autowired
+    CustomerService customerService;
+    @Autowired
+    ControllerHelper controllerHelper;
+
+    @Autowired
+    ReviewVoteService reviewVoteService;
+
 
     @GetMapping("/products/{pageno}")
     public String listAll(Model model,@PathVariable int pageno) {
@@ -50,14 +62,11 @@ public class ProductController {
                     Product p = list.get(j);
                     p.setCategoryName(categoryName);
                     p.setBrandName(brandName);
-
-
                 }
                 model.addAttribute("list", list);
                 model.addAttribute("pagelist",pagelist);
                 model.addAttribute("currentPage",pageno);
             }
-
         }
 
         return "Product";
@@ -165,8 +174,17 @@ public class ProductController {
         String filename = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         if (!multipartFile.isEmpty()) {
 
-            String uploadDiv = "product-images" + File.separator+ p.getId();
-            FileUploadUtil.saveFile(uploadDiv, filename, multipartFile);
+            String uploadDiv = "product-images" + File.separator+ p.getId()+"/";
+            List<String> listObjectKeys=AmazonS3Util.listFolder(uploadDiv);
+            for(String objectKey:listObjectKeys){
+                //If the product image is not one of the extra images
+                // then delete it from AWS S3
+                if(!objectKey.contains("/extras/"))
+                {
+                    AmazonS3Util.deleteFile(objectKey);
+                }
+            }
+            AmazonS3Util.uploadFile(uploadDiv,filename,multipartFile.getInputStream());
 
         }
         // save product's ExtraImages
@@ -174,10 +192,11 @@ public class ProductController {
             String extraDiv = "product-images/" + p.getId() + "/extras/";
             for (MultipartFile File : extraImagefile) {
                 if (File.isEmpty()) continue;
-                String Extrafilename = StringUtils.cleanPath(File.getOriginalFilename());
-                FileUploadUtil.saveFile(extraDiv, Extrafilename, File);
+                String extraFileName = StringUtils.cleanPath(File.getOriginalFilename());
                 //save Extra image to product_image table
-                productService.saveExtraImagesofProduct(Extrafilename, p);
+                productService.saveExtraImagesofProduct(extraFileName, p);
+                AmazonS3Util.removeFolder(extraDiv);
+                AmazonS3Util.uploadFile(extraDiv,extraFileName,File.getInputStream());
             }
         }
     }
@@ -301,7 +320,6 @@ public class ProductController {
         return "redirect:/products/1";
     }
 
-
     @RequestMapping(value={"/getremoveid"},method = {RequestMethod.POST})
     @ResponseBody
     public int getExtraImageId(@RequestBody ProductDetail productDetail){
@@ -325,21 +343,24 @@ public class ProductController {
         return "product_detail_form";
     }
 
-    @GetMapping("/c/{nickname}/{page}")
-    public String viewCategory(  @PathVariable int page,@PathVariable String nickname, Model m){
+    @GetMapping("/c/{name}/{page}")
+    public String viewCategory(  @PathVariable int page,@PathVariable String name, Model m){
         try{
-            Category category=categoryService.findByAliasEnabled(nickname);
+            log.info("category name:{}",name);
+           Category category=categoryService.findByAliasEnabled(name);
             if(category==null){
+                log.info("There's something wrong with this category");
                 return "Error";
             }
-
             List<Integer> pagelist=new ArrayList<>();
-            pagelist=productService.getPageCount();
+            pagelist=productService.getPageCountForCategoriesWithParentId(category.getId());
             int currentpage=page;
-            m.addAttribute("nickname",nickname);
+            List<Category>categoryList=categoryService.listChildrenCategoreisByParentId(category.getId());
+            m.addAttribute("nickname",name);
             m.addAttribute("pagelist",pagelist);
             m.addAttribute("currentpage",currentpage);
             m.addAttribute("category",category);
+            m.addAttribute("categoryList",categoryList);
             List<Product>list= productService.getProductByCategoryId(category.getId(),page);
             m.addAttribute("plist",list);
         }
@@ -352,20 +373,43 @@ public class ProductController {
 
 
     @GetMapping("/p/{product_nickname}/{pageno}")
-    public String viewProductdetail(@PathVariable int pageno, Model model,@PathVariable String product_nickname)  {
+    public String viewProductdetail(@PathVariable int pageno, Model model,@PathVariable String product_nickname,HttpServletRequest request)  {
         try{
+            float averageRating = 0.0f;
             Product product= productService.findByNickName(product_nickname);
-            Category category=categoryService.getCategoriesById(product.getCategoryId());
             List<Integer> pagelist=productService.getPageCount();
             ProductCBName productCBName=productService.selectCategoyrnBrandByProductId(product.getId());
             List<ProductDetail> detailList=productService.selectProductDetailsById(product.getId());
             List<ProductImage> extraList=productService.selectExtraByProductId(product.getId());
+            //Get all reviews for the product
+            List<Review> reviewList=reviewService.List3MostRecentReviews(product.getId());
             if(product==null){
                 return "Error";
 
             }
-            model.addAttribute("category",category);
+            if(reviewList!=null){
+                Customer customer=controllerHelper.getAuthenticatedCustomerForReviewVote(request);
+                for(Review review:reviewList){
+                    averageRating=review.getAverageRating();
+                    model.addAttribute("reviewList",reviewList);
+                }
+
+                if(customer!=null){
+                    boolean IsReviewBefore=reviewService.didCustomerReviewProductBefore(customer.getId(),product.getId());
+                  boolean isVotedByCustomer=reviewVoteService.markReviewVotedForProductByCustomer(reviewList, product.getId(),customer.getId());
+                    log.info("Is this review is voted by "+customer.getFirstName()+" "+isVotedByCustomer);
+                    if(IsReviewBefore){
+                        log.info("IsReviewBefore:{}",IsReviewBefore);
+                        model.addAttribute("IsReviewBefore",IsReviewBefore);
+                    }else{
+                        boolean customercanReview=reviewService.canCustomerReviewProduct(product.getId(),customer.getId());
+                        log.info("customercanReview:{}",customercanReview);
+                        model.addAttribute("customercanReview",customercanReview);
+                    }
+                }
+            }
             model.addAttribute("product",product);
+            model.addAttribute("averageRating",averageRating);
             model.addAttribute("nickname",product_nickname);
             model.addAttribute("currentpage",pageno);
             model.addAttribute("pagelist",pagelist);
@@ -383,10 +427,13 @@ public class ProductController {
 
 
 
+
+
     @GetMapping("/p/keyword/{pageno}")
-    public String filteredProductdetail(@PathVariable int pageno,@RequestParam(name="keyword")String keyword, Model model) {
+    public String filteredProductdetail(@PathVariable int pageno, Model model, HttpServletRequest request) {
 
        try{
+           String keyword=request.getParameter("keyword");
            List<Integer>pagelist=productService.getFilteredPageCount(keyword);
            List<Product> list=productService.SearchByKeyword(pageno,keyword);
            boolean item;
@@ -410,8 +457,6 @@ public class ProductController {
         return"ProductByCategory";
 
     }
-
-
 
 
 

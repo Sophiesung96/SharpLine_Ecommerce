@@ -10,5 +10,6 @@ public interface OrderTrackDAO {
     void createOrderTrack(OrderTrack orderTrack);
     void updateOrderTrackByOrderId(OrderTrack orderTrack,int orderId);
     List<OrderTrack> findOrderTrackById(int id);
-
+    public List<OrderTrack> getTrackStatusList(int orderId);
+    public List<OrderTrack> getCustomerTrackStatusList(int orderId);
 }
