@@ -57,18 +57,27 @@ public class SettingController {
         return "redirect:/settings";
     }
 
-    private void saveSiteLogo(MultipartFile multipartFile, List<Setting> settingList,GeneralSettingBag generalSettingBag) throws IOException {
-        if(!multipartFile.isEmpty()){
-            String fileName= StringUtils.cleanPath(multipartFile.getOriginalFilename());
-            String value="SITE_LOGO/"+fileName;
-            generalSettingBag.updateSiteLogo(value);
-            String uploadDir="site-logo/";
-            //Updating the folder to the latest and upload the file
-            amazonS3Util.removeFolder(uploadDir);
-            amazonS3Util.uploadFile(uploadDir,fileName,multipartFile.getInputStream());
+    private void saveSiteLogo(MultipartFile multipartFile,
+                              List<Setting> settingList,
+                              GeneralSettingBag generalSettingBag) throws IOException {
 
+        if (multipartFile == null || multipartFile.isEmpty()) {
+            return;
         }
 
+        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename())
+                .replaceAll("\\s+", "_");
+
+        String uploadDir = "site-logo";
+        String value = uploadDir + "/" + fileName;
+
+        generalSettingBag.updateSiteLogo(value);
+
+        amazonS3Util.removeFolder(uploadDir);
+
+        try (var is = multipartFile.getInputStream()) {
+            amazonS3Util.uploadFile(uploadDir, fileName, is, multipartFile.getSize());
+        }
     }
 
 

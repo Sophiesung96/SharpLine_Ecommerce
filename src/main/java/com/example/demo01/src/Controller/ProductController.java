@@ -172,34 +172,47 @@ public class ProductController {
 
 
     //save main image and extra images if there's any
-    private void saveUploadImage(MultipartFile multipartFile, MultipartFile[] extraImagefile, Product p) throws IOException {
-        // save product's MainImage
-        String filename = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-        if (!multipartFile.isEmpty()) {
+    private void saveUploadImage(MultipartFile mainImageFile,
+                                 MultipartFile[] extraImageFiles,
+                                 Product p) throws IOException {
 
-            String uploadDiv = "product-images" + File.separator+ p.getId()+"/";
-            List<String> listObjectKeys=amazonS3Util.listFolder(uploadDiv);
-            for(String objectKey:listObjectKeys){
-                //If the product image is not one of the extra images
-                // then delete it from AWS S3
-                if(!objectKey.contains("/extras/"))
-                {
-                    amazonS3Util.deleteFile(objectKey);
+        // 1) Main image
+        if (mainImageFile != null && !mainImageFile.isEmpty()) {
+            String mainFileName = StringUtils.cleanPath(mainImageFile.getOriginalFilename())
+                    .replaceAll("\\s+", "_");
+
+            // S3 key/prefix 一律用 "/"，不要用 File.separator
+            String mainPrefix = "product-images/" + p.getId();
+
+            // 刪掉 mainPrefix 底下「非 extras」的檔案，保留 extras
+            List<String> objectKeys = amazonS3Util.listFolder(mainPrefix + "/");
+            for (String key : objectKeys) {
+                if (!key.contains("/extras/")) {
+                    amazonS3Util.deleteFile(key);
                 }
             }
-            amazonS3Util.uploadFile(uploadDiv,filename,multipartFile.getInputStream());
 
+            try (var is = mainImageFile.getInputStream()) {
+                amazonS3Util.uploadFile(mainPrefix, mainFileName, is, mainImageFile.getSize());
+            }
         }
-        // save product's ExtraImages
-        if (extraImagefile.length > 0) {
-            String extraDiv = "product-images/" + p.getId() + "/extras/";
-            for (MultipartFile File : extraImagefile) {
-                if (File.isEmpty()) continue;
-                String extraFileName = StringUtils.cleanPath(File.getOriginalFilename());
-                //save Extra image to product_image table
+
+        // 2) Extra images
+        if (extraImageFiles != null && extraImageFiles.length > 0) {
+            String extrasPrefix = "product-images/" + p.getId() + "/extras";
+
+            for (MultipartFile extraFile : extraImageFiles) {
+                if (extraFile == null || extraFile.isEmpty()) continue;
+
+                String extraFileName = StringUtils.cleanPath(extraFile.getOriginalFilename())
+                        .replaceAll("\\s+", "_");
+
+                // save to db
                 productService.saveExtraImagesofProduct(extraFileName, p);
-                amazonS3Util.removeFolder(extraDiv);
-                amazonS3Util.uploadFile(extraDiv,extraFileName,File.getInputStream());
+
+                try (var is = extraFile.getInputStream()) {
+                    amazonS3Util.uploadFile(extrasPrefix, extraFileName, is, extraFile.getSize());
+                }
             }
         }
     }

@@ -51,16 +51,16 @@ public class AmazonS3Util {
         }
     }
 
-    public void uploadFile(String folderName, String fileName, InputStream inputStream) {
+    public void uploadFile(String folderName, String fileName, InputStream inputStream, long contentLength) {
         String objectKey = folderName + "/" + fileName;
+
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(objectKey)
-                .acl("public-read")
+                .acl(ObjectCannedACL.PUBLIC_READ)
                 .build();
 
         try (inputStream) {
-            int contentLength = inputStream.available();
             s3Client.putObject(request, RequestBody.fromInputStream(inputStream, contentLength));
             log.info("Successfully uploaded file: {}", objectKey);
         } catch (IOException ex) {

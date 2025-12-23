@@ -116,10 +116,11 @@ public class UserController {
         if (!multipartFile.isEmpty()) {
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
             user.setPhoto(fileName);
-            String uploadDir = "user-pics" + File.separator + newuser.getId();
+            String uploadDir = "user-pics/" + newuser.getId();
             try {
                 amazonS3Util.removeFolder(uploadDir);
-                amazonS3Util.uploadFile(uploadDir,fileName,multipartFile.getInputStream());
+                amazonS3Util.uploadFile(uploadDir, fileName, multipartFile.getInputStream(), multipartFile.getSize());
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

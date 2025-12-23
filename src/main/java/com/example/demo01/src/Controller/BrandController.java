@@ -1,15 +1,11 @@
-package com.example.demo01.src.Controller;
-
-import com.example.demo01.src.Configuration.Utils.FileUploadUtil;
 import com.example.demo01.src.Pojo.AmazonS3Util;
 import com.example.demo01.src.Pojo.Brand;
 import com.example.demo01.src.Pojo.BrandCategoryName;
 import com.example.demo01.src.Pojo.Category;
 import com.example.demo01.src.Service.BrandService;
 import com.example.demo01.src.Service.CategoryService;
-import lombok.extern.java.Log;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -17,118 +13,116 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @Slf4j
+@RequiredArgsConstructor
 public class BrandController {
 
-    @Autowired
-    BrandService brandService;
-
-    @Autowired
-    CategoryService categoryService;
-
+    private final BrandService brandService;
+    private final CategoryService categoryService;
+    private final AmazonS3Util amazonS3Util;
 
     @GetMapping("/brands/{pageno}")
     public String getBrandList(Model model, @PathVariable int pageno) {
-        List<Brand> list = new ArrayList<>();
-        list = brandService.getBrandByPagination(pageno);
-        List<BrandCategoryName> categoryNames = new ArrayList<>();
-        categoryNames = brandService.getCategoryName();
-        List<Integer> totallist = new ArrayList<>();
-        totallist = categoryService.getPageCount();
+
+        List<Brand> list = brandService.getBrandByPagination(pageno);
+        List<BrandCategoryName> categoryNames = brandService.getCategoryName();
+        List<Integer> totallist = categoryService.getPageCount();
+
         model.addAttribute("currentPage", pageno);
         model.addAttribute("totalpage", totallist);
-        for (int i = 0; i < categoryNames.size(); i++) {
-            String name = categoryNames.get(i).getName();
 
-            for (int j = 0; j < list.size(); j++) {
-                if (i == j) {
-                    Brand b = list.get(i);
-                    b.setParentname(name);
-                }
-                model.addAttribute("list", list);
-            }
+
+        int size = Math.min(list.size(), categoryNames.size());
+        for (int i = 0; i < size; i++) {
+            list.get(i).setParentname(categoryNames.get(i).getName());
         }
 
+        model.addAttribute("list", list);
         return "brandList";
     }
 
     @PostMapping("/brands/1/keyword")
     public String getfilteredlist(Model model, @RequestParam("keyword") String keyword) {
-        //user use filter function to select list
-        List<Brand> filteredList = new ArrayList<>();
-        filteredList = brandService.getFilterByKeyword(keyword);
-        List<BrandCategoryName> categoryNames = new ArrayList<>();
-        categoryNames = brandService.getCategoryName();
-        for (int i = 0; i < categoryNames.size(); i++) {
-            String name = categoryNames.get(i).getName();
 
-            for (int j = 0; j < filteredList.size(); j++) {
-                if (i == j) {
-                    Brand b = filteredList.get(i);
-                    b.setParentname(name);
-                }
-                model.addAttribute("list", filteredList);
-            }
+        List<Brand> filteredList = brandService.getFilterByKeyword(keyword);
+        List<BrandCategoryName> categoryNames = brandService.getCategoryName();
+
+        int size = Math.min(filteredList.size(), categoryNames.size());
+        for (int i = 0; i < size; i++) {
+            filteredList.get(i).setParentname(categoryNames.get(i).getName());
         }
 
+        model.addAttribute("list", filteredList);
         return "brandList";
     }
 
     @GetMapping("/brands/new")
     public String displayBForm(Model model) {
         List<Category> list = categoryService.getallList();
-        Brand brand = new Brand();
-        model.addAttribute("brand", brand);
+        model.addAttribute("brand", new Brand());
         model.addAttribute("clist", list);
         return "BrandForm";
     }
 
     @PostMapping("/brand/save")
-    public String insertBrand(
-            @ModelAttribute("brand") Brand brand,
-            RedirectAttributes redirectAttributes,
-            @RequestParam("photo") MultipartFile multipartFile) throws IOException {
+    public String insertBrand(@ModelAttribute("brand") Brand brand,
+                              RedirectAttributes redirectAttributes,
+                              @RequestParam("photo") MultipartFile multipartFile) {
 
-        // Save brand first to get the generated ID
-        brandService.saveBrand(brand);
-        Brand savedBrand = brandService.getBrandIdByName(brand.getName());
-        Integer brandId = savedBrand.getId();
-
-        // Associate brand with category
         try {
-            Integer categoryId = Integer.parseInt(brand.getParentname());  // Assuming parentname stores the category ID
-            brandService.createBrandCategory(brandId, categoryId);
-        } catch (NumberFormatException e) {
-            log.error("Invalid category ID in brand.getParentname(): {}", brand.getParentname());
+            // 1) 先存 brand（確保拿到 id）
+            brandService.saveBrand(brand);
+
+            // 你原本用 name 查回 brand id（可能重名），這裡假設 save 後 brand 已有 id
+            Integer brandId = brand.getId();
+            if (brandId == null) {
+                // 如果你的 save 不會回填 id，那才用查詢，但建議改 service
+                Brand savedBrand = brandService.getBrandIdByName(brand.getName());
+                brandId = savedBrand != null ? savedBrand.getId() : null;
+            }
+            if (brandId == null) {
+                redirectAttributes.addFlashAttribute("message", "Failed to save brand (no ID).");
+                return "redirect:/brands/1";
+            }
+
+            // 2) 建 brand-category 關聯
+            try {
+                Integer categoryId = Integer.parseInt(brand.getParentname());
+                brandService.createBrandCategory(brandId, categoryId);
+            } catch (NumberFormatException e) {
+                log.error("Invalid category ID in brand.getParentname(): {}", brand.getParentname());
+            }
+
+            // 3) 上傳 logo
+            if (multipartFile != null && !multipartFile.isEmpty()) {
+                String filename = StringUtils.cleanPath(multipartFile.getOriginalFilename())
+                        .replaceAll("\\s+", "_");
+
+                String uploadPrefix = "brand-logos/" + brandId;
+
+                // 想確保每個 brand 只留一張 logo：清 prefix
+                amazonS3Util.removeFolder(uploadPrefix);
+
+                try (var is = multipartFile.getInputStream()) {
+                    amazonS3Util.uploadFile(uploadPrefix, filename, is, multipartFile.getSize());
+                }
+
+                brand.setLogo(filename);
+                brandService.saveBrand(brand);
+            }
+
+            redirectAttributes.addFlashAttribute("message", "The brand has been saved successfully!");
+            return "redirect:/brands/1";
+
+        } catch (Exception e) {
+            log.error("Failed to save brand", e);
+            redirectAttributes.addFlashAttribute("message", "Failed to save brand.");
+            return "redirect:/brands/1";
         }
-
-        // Handle logo upload if file was selected
-        if (!multipartFile.isEmpty()) {
-            String filename = StringUtils.cleanPath(multipartFile.getOriginalFilename())
-                    .replaceAll(" ", "_");
-
-            String uploadDir = "brand-logos/" + brandId;
-
-            // Remove old logo folder (optional) and upload new one
-            AmazonS3Util.removeFolder(uploadDir);
-            AmazonS3Util.uploadFile(uploadDir, filename, multipartFile.getInputStream());
-
-            // Update brand with logo filename and save again
-            savedBrand.setLogo(filename);
-            brandService.saveBrand(savedBrand);
-        }
-
-        redirectAttributes.addFlashAttribute("message", "The brand has been saved successfully!");
-        return "redirect:/brands/1";
     }
-
 
     @GetMapping("/brand/edit/{id}")
     public String gotoBrandEdit(@PathVariable int id, Model model) {
@@ -140,41 +134,57 @@ public class BrandController {
     }
 
     @PostMapping("/brand/edit")
-    public String editBrand(
-            @ModelAttribute("brand") Brand brand,
-            @RequestParam("photo") MultipartFile multipartFile) throws IOException {
+    public String editBrand(@ModelAttribute("brand") Brand brand,
+                            @RequestParam("photo") MultipartFile multipartFile,
+                            RedirectAttributes redirectAttributes) {
 
-        if (!multipartFile.isEmpty()) {
-            // Clean file name
-            String newImage = StringUtils.cleanPath(multipartFile.getOriginalFilename())
-                    .replaceAll(" ", "_");
+        try {
+            Brand existingBrand = brandService.selectBrandById(brand.getId());
+            if (existingBrand == null) {
+                redirectAttributes.addFlashAttribute("message", "Brand not found.");
+                return "redirect:/brands/1";
+            }
 
-            // Upload to S3
-            String uploadDir = "brand-logos/" + brand.getId();
-            AmazonS3Util.removeFolder(uploadDir); // Optional: clear old logo
-            AmazonS3Util.uploadFile(uploadDir, newImage, multipartFile.getInputStream());
+            if (multipartFile != null && !multipartFile.isEmpty()) {
+                String newImage = StringUtils.cleanPath(multipartFile.getOriginalFilename())
+                        .replaceAll("\\s+", "_");
 
-            // Update logo only if file is uploaded
-            brand.setLogo(newImage);
-            log.info("Updated brand logo to: {}/{}", uploadDir, newImage);
-        } else {
-            // No new image uploaded – preserve existing one
-            Brand existingBrand = brandService.getBrandIdByName(brand.getName());
-            brand.setLogo(existingBrand.getLogo());
+                String uploadPrefix = "brand-logos/" + brand.getId();
+                amazonS3Util.removeFolder(uploadPrefix);
+
+                try (var is = multipartFile.getInputStream()) {
+                    amazonS3Util.uploadFile(uploadPrefix, newImage, is, multipartFile.getSize());
+                }
+
+                brand.setLogo(newImage);
+                log.info("Updated brand logo to: {}/{}", uploadPrefix, newImage);
+            } else {
+                // 沒上傳新圖：保留舊 logo
+                brand.setLogo(existingBrand.getLogo());
+            }
+
+            brandService.editBrandById(brand);
+            redirectAttributes.addFlashAttribute("message", "Brand updated successfully!");
+            return "redirect:/brands/1";
+
+        } catch (Exception e) {
+            log.error("Failed to edit brand id={}", brand.getId(), e);
+            redirectAttributes.addFlashAttribute("message", "Failed to update brand.");
+            return "redirect:/brands/1";
         }
-
-        // Save changes
-        brandService.editBrandById(brand);
-        return "redirect:/brands/1";
     }
 
-
     @GetMapping("/brand/delete/{id}")
-    public String deleteBrandById(@PathVariable int id,RedirectAttributes redirectAttributes) {
-        brandService.deleteBrandById(id);
-        String brandDir="brand-logos/"+id;
-        AmazonS3Util.deleteFile(brandDir);
-        redirectAttributes.addFlashAttribute("message","The Brand ID"+id+" has been deleted successfully");
+    public String deleteBrandById(@PathVariable int id, RedirectAttributes redirectAttributes) {
+        try {
+            amazonS3Util.removeFolder("brand-logos/" + id);
+
+            brandService.deleteBrandById(id);
+            redirectAttributes.addFlashAttribute("message", "The Brand ID " + id + " has been deleted successfully");
+        } catch (Exception e) {
+            log.error("Failed to delete brand id={}", id, e);
+            redirectAttributes.addFlashAttribute("message", "Failed to delete brand.");
+        }
         return "redirect:/brands/1";
     }
 }
